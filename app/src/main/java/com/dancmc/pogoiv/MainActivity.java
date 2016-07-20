@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 mPokemon = new Pokemon(mPokemonName, mHP, mCP, mStardust, mFreshMeat);
 
                 StringBuilder stringBuilder = new StringBuilder();
-                mFirstOutput = mPokemon.ivCombos();
+                //delete this mFirstOutput = mPokemon.ivCombos();
                 for (int i = 0; i < mFirstOutput.size(); i++) {
                     stringBuilder.append(mFirstOutput.get(i) + "\n");
                 }
