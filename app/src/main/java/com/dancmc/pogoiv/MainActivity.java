@@ -39,21 +39,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFirstPokemon = (Button)findViewById(R.id.first_pokemon);
-        mSecondPokemon = (Button)findViewById(R.id.second_pokemon);
+        //Autocomplete textview setup
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, Pokemon.POKEDEX);
         mPokemonNameInput = (AutoCompleteTextView) findViewById(R.id.enter_pokemon_name);
         mPokemonNameInput.setAdapter(adapter);
         mOutputView = (TextView) findViewById(R.id.output);
 
-        //First pokemon
         mCalculateButton = (Button) findViewById(R.id.calculate_button);
         mCalculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                buttonPressedSetup();
-                mPokemon = new Pokemon(mPokemonName, mHP, mCP, mStardust, mFreshMeat);
+                //hides keyboard
+                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                createPokemonFromInput();
+                try {
+                mPokemon = new Pokemon(mPokemonName, mHP, mCP, mStardust, mFreshMeat);}
+                catch (IllegalArgumentException e) {
+                    mOutputView.setText(e.toString());
+                    return;
+                }
 
                 StringBuilder stringBuilder = new StringBuilder();
                 //delete this mFirstOutput = mPokemon.ivCombos();
@@ -65,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 mFirstPokemon.setText("1st : " + mPokemonName);
                 mSecondPokemon.setText("2nd : None");
 
-                //hides keyboard
-                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
             }
         });
 
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void buttonPressedSetup() {
+    private void createPokemonFromInput() {
         mHP = parseInput((EditText) findViewById(R.id.enter_hp));
         mCP = parseInput((EditText) findViewById(R.id.enter_cp));
         mStardust = parseInput((EditText) findViewById(R.id.enter_stardust));

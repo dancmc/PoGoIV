@@ -61,7 +61,15 @@ public class Pokemon {
         mGoBaseStamina = STAMINAS[mPokemonNumber];
         mGoBaseAtk = ATKS[mPokemonNumber];
         mGoBaseDef = DEFS[mPokemonNumber];
-        mFreshMeat = freshMeat;
+        getLevelsFromStardust(mStardust, freshMeat);
+
+        //handling invalid stardust amounts and Pokemon names
+        if(mLevelRange.size()==0) {
+            throw new IllegalArgumentException("Please re-enter your stardust and try again.");
+        } else if (mPokemonNumber==0) {
+            throw new IllegalArgumentException("Your Pokemon name is not valid.";)
+        }
+
 
         mLevelRange = new ArrayList<Integer>();
     }
@@ -83,21 +91,10 @@ public class Pokemon {
     }
 
 
-    public ArrayList<String> ivCombos(){
+    public void generateIV(){
         mComboRanking = new ArrayList<Double>();
         mResult = new ArrayList<String>();
         mResult.add("Pokemon Name is " + mPokemonName+ ", Pokedex Number " + mPokemonNumber);
-        getLevelsFromStardust(mStardust, mFreshMeat);
-
-        //handling invalid stardust amounts and Pokemon names
-        if(mLevelRange.size()==0) {
-            mResult.add("Please re-enter your stardust and try again.");
-            return mResult;
-        } else if (mPokemonNumber==0) {
-            mResult.add("Your Pokemon Name is invalid, please select from the suggestions.");
-            return mResult;
-        }
-
 
         Log.d(TAG, "Possible Level Range is " + mLevelRange.get(0) + " to " + mLevelRange.get(mLevelRange.size()-1));
         mResult.add("Possible Level Range is " + mLevelRange.get(0) + " to " + mLevelRange.get(mLevelRange.size()-1));
