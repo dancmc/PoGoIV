@@ -31,20 +31,16 @@ public class Pokemon {
     private int mKnownLevel;
 
     private boolean hasHP;
-    private boolean hasCP;
     private boolean hasStardust;
+
 
     //possible levels of pokemon based on stardust & whether powered up
     private ArrayList<Integer> mLevelRange;
 
     //calculating values
-    private int mLevelHolding;
-
-    private ArrayList<int[]> mIVCombinationsArray;
+    private ArrayList<double[]> mIVCombinationsArray;
     private int mSumAllStats;
     int mNumberOfResults;
-
-
     private ArrayList<Double> mIVPercentRange;
 
     //PoGo recalculated base stats (direct from table)
@@ -68,19 +64,20 @@ public class Pokemon {
         mStardust = stardust;
         mPokemonName = pokemonName;
         mPokemonNumber = getPokemonNumberFromName(pokemonName);
+        if (mPokemonNumber == 0) {
+            throw new IllegalArgumentException("Your Pokemon name is not valid.");
+        }
 
         mGoBaseStamina = STAMINAS[mPokemonNumber];
         mGoBaseAtk = ATKS[mPokemonNumber];
         mGoBaseDef = DEFS[mPokemonNumber];
 
+        mLevelRange = new ArrayList<Integer>();
+        mIVCombinationsArray = new ArrayList<double[]>();
+        mIVPercentRange = new ArrayList<Double>();
         getLevelsFromStardust(mStardust, freshMeat);
 
-        if (mPokemonNumber == 0) {
-            throw new IllegalArgumentException("Your Pokemon name is not valid.");
-        }
-
-        mLevelRange = new ArrayList<Integer>();
-        //*delete*mIVPercentRange = new ArrayList<Double>();
+        generateIV();
     }
 
 
@@ -88,31 +85,28 @@ public class Pokemon {
 
         Log.d(TAG, "Possible Level Range is " + mLevelRange.get(0) + " to " + mLevelRange.get(mLevelRange.size() - 1));
 
-        double[] ivArrayTemp = new double[5];
 
         for (int i = 0; i < mLevelRange.size(); i++) {
-            int levelHolder = mLevelRange.get(i);
-            double cpMHolding = CP_MULTIPLIERS[levelHolder];
+            int level = mLevelRange.get(i);
+            double cpMHolding = CP_MULTIPLIERS[level];
 
             for (int staIV = 0; staIV <= 15; staIV++) {
-                int staHolding = staIV;
                 int hp = calculateHPFromStamina(mGoBaseStamina, staIV, cpMHolding);
 
-                if (!hasHP||hp == mHP) {
+                if (!hasHP || hp == mHP) {
                     for (int atkIV = 15; atkIV >= 0; atkIV--) {
-                        int atkHolding = atkIV;
 
                         for (int defIV = 0; defIV <= 15; defIV++) {
-                            int defHolding = defIV;
                             int cpHolding = calculateCP(staIV, atkIV, defIV, cpMHolding);
 
                             if (cpHolding == mCP) {
-                                Log.d(TAG, "ivCombo " + i + ": level " + levelHolder + " CPM " + cpMHolding + " Sta " + staHolding + " Atk " + atkHolding + " Def " + defHolding);
-                                double percent = (staHolding + atkHolding + defHolding) / 45f * 100f;
-                                mSumAllStats += (staHolding + atkHolding + defHolding);
+                                Log.d(TAG, "ivCombo " + i + ": level " + level + " CPM " + cpMHolding + " Sta " + staIV + " Atk " + atkIV + " Def " + defIV);
+                                double percent = (staIV + atkIV + defIV) / 45f * 100f;
+                                mSumAllStats += (staIV + atkIV + defIV);
                                 mNumberOfResults += 1;
                                 mIVPercentRange.add(percent);
-
+                                double[] ivArrayTemp = {level, staIV, atkIV, defIV, percent};
+                                mIVCombinationsArray.add(ivArrayTemp);
 
                             } else if (cpHolding > mCP)
                                 break;
@@ -125,8 +119,6 @@ public class Pokemon {
             }
         }
         Collections.sort(mIVPercentRange);
-
-
     }
 
 
@@ -158,20 +150,22 @@ public class Pokemon {
                 for (int i = 1; i < STARDUST_AMOUNTS.length; i += 2) {
                     if (stardust == STARDUST_AMOUNTS[i]) {
                         mLevelRange.add(i);
-                    } else if (stardust > STARDUST_AMOUNTS[i])
+                        Log.d(TAG, "getLevelsFromStardust: " + mStardust + i);
+                    } else if (stardust < STARDUST_AMOUNTS[i])
                         break;
                 }
             } else {
                 for (int i = 1; i < STARDUST_AMOUNTS.length; i++) {
                     if (stardust == STARDUST_AMOUNTS[i]) {
                         mLevelRange.add(i);
-                    } else if (stardust > STARDUST_AMOUNTS[i])
+                    } else if (stardust < STARDUST_AMOUNTS[i])
                         break;
                 }
             }
         }
-        if (mLevelRange.size() == 0)
+        if (mLevelRange.size() == 0) {
             throw new IllegalArgumentException("Please re-enter a valid stardust amount and try again.");
+        }
     }
 
     private int calculateHPFromStamina(int baseStamina, int staminaIV, double totalCPMultiplier) {
@@ -186,7 +180,7 @@ public class Pokemon {
     }
 
     public double getAveragePower() {
-        return mSumAllStats / mNumberOfResults / 45 * 100;
+        return mSumAllStats / mNumberOfResults / 45f * 100f;
     }
 
     public int getCP() {
@@ -211,6 +205,22 @@ public class Pokemon {
 
     public ArrayList<Double> getIVPercentRange() {
         return mIVPercentRange;
+    }
+
+    public int getSumAllStats() {
+        return mSumAllStats;
+    }
+
+    public ArrayList<double[]> getIVCombinationsArray() {
+        return mIVCombinationsArray;
+    }
+
+    public int getNumberOfResults() {
+        return mNumberOfResults;
+    }
+
+    public ArrayList<Integer> getLevelRange() {
+        return mLevelRange;
     }
 
 }

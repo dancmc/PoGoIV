@@ -3,7 +3,6 @@ package com.dancmc.pogoiv;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -13,16 +12,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private AutoCompleteTextView mPokemonNameInput;
-    private Button mCalculateButton;
-    private Button mRecalculateButton;
-    private Button mFirstPokemon;
-    private Button mSecondPokemon;
     private TextView mOutputView;
     private Pokemon mPokemon;
     private StringBuilder mStringBuilder;
@@ -39,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
         mPokemonNameInput.setAdapter(adapter);
         mOutputView = (TextView) findViewById(R.id.output);
 
-        mCalculateButton = (Button) findViewById(R.id.calculate_button);
-        mCalculateButton.setOnClickListener(new View.OnClickListener() {
+        Button calculateButton = (Button) findViewById(R.id.calculate_button);
+        calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mStringBuilder = new StringBuilder();
@@ -52,33 +47,36 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     createPokemonFromInput();
                 } catch (Exception e) {
-                    mOutputView.setText(e.toString());
+                    mOutputView.setText(e.getMessage());
                     return;
                 }
 
 
+                if (mPokemon != null) {
+                    mStringBuilder.append("Pokemon Name is " + mPokemon.getPokemonName() + ", Pokedex Number " + mPokemon.getPokemonNumber() + "\n");
+                    mStringBuilder.append("Possible Level Range is " + mPokemon.getLevelRange().get(0) + " to " + mPokemon.getLevelRange().get(mPokemon.getLevelRange().size() - 1) + "\n");
+                    mStringBuilder.append("Listed as Stamina/Attack/Defence\n\n");
+                    if (mPokemon.getNumberOfResults() != 0) {
+                        mStringBuilder.append("Estimated average power " + String.format(Locale.US, "%.1f", mPokemon.getAveragePower()) + "%, range is " + String.format(Locale.US, "%.1f", mPokemon.getIVPercentRange().get(0)) + "% to " + String.format(Locale.US, "%.1f", mPokemon.getIVPercentRange().get(mPokemon.getIVPercentRange().size() - 1)) + "%, " + mPokemon.getNumberOfResults() + " possible combinations.\n\n");
 
-                mStringBuilder.append("S");
-//mResult.add("Level " + mLevelHolding + " : " + mStaHolding + "/" + mAtkHolding + "/" + mDefHolding + "   " + String.format(Locale.US,"%.1f", percent)+ "%");
-                //*delete*mResult.add(3, "Estimated average power " +String.format(Locale.US,"%.1f", average)+ "%, range is "+String.format(Locale.US,"%.1f", mIVComboRanking.get(0)) + "% to " +String.format(Locale.US,"%.1f", mIVComboRanking.get(mIVComboRanking.size()-1)) + "%, "+ mNumberOfResults+ " possible combinations.\n");
-
-                mFirstPokemon.setText("1st : " + mPokemonName);
-                mSecondPokemon.setText("2nd : None");
-
+                        for (int i = 0; i < mPokemon.getIVCombinationsArray().size(); i++) {
+                            double[] tempArray = mPokemon.getIVCombinationsArray().get(i);
+                            mStringBuilder.append("Level " + (int) tempArray[0] + " : " + (int) tempArray[1] + "/" + (int) tempArray[2] + "/" + (int) tempArray[3] + "    " + String.format(Locale.US, "%.1f", tempArray[4]) + "%\n");
+                        }
+                    } else {
+                        mStringBuilder.append("There were no combinations found.");
+                    }
+                }
+                mOutputView.setText(mStringBuilder.toString());
 
             }
         });
 
         //Second comparison pokemon
-        mRecalculateButton = (Button) findViewById(R.id.second_calculate_button);
-        mRecalculateButton.setOnClickListener(new View.OnClickListener() {
+        Button compareButton = (Button) findViewById(R.id.compare_button);
+        compareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                buttonPressedSetup();
-                mPokemon = new Pokemon(mPokemonName, mHP, mCP, mStardust, false);
-
-
 
 
                 //hides keyboard
@@ -110,12 +108,15 @@ public class MainActivity extends AppCompatActivity {
     //returns the integer in an number EditText, or if blank, returns 0
     private int parseIntInput(int editTextID) {
         int number;
-        String input = ((EditText)findViewById(editTextID)).getText().toString();
+        String input = ((EditText) findViewById(editTextID)).getText().toString();
         if (input.equals("")) {
-            switch(editTextID){
-                case (R.id.enter_cp) : throw new IllegalArgumentException("You must enter a CP value.");
-                case (R.id.enter_hp) : mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n");
-                case (R.id.enter_stardust) : mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n");
+            switch (editTextID) {
+                case (R.id.enter_cp):
+                    throw new IllegalArgumentException("You must enter a CP value.");
+                case (R.id.enter_hp):
+                    mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n");
+                case (R.id.enter_stardust):
+                    mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n");
             }
             return -1;
         } else {
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (NumberFormatException e) {
                 throw new NumberFormatException("You have to enter whole numbers.");
             }
-            if(number<0)
+            if (number < 0)
                 throw new NumberFormatException("You have to enter positive numbers.");
 
         }
