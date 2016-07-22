@@ -179,7 +179,7 @@
     </ScrollView>
 
     <ImageButton
-        android:id="@+id/add_pokemon_fab"
+        android:id="@+id/fab"
         android:layout_width="@dimen/fab_size"
         android:layout_height="@dimen/fab_size"
         android:layout_alignParentBottom="true"

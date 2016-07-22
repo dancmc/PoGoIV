@@ -76,18 +76,18 @@ public class PokeballsDataSource {
     public ArrayList<Pokemon> getAllPokeballs() {
         ArrayList<Pokemon> pokeballs = new ArrayList<Pokemon>(Arrays.asList(new Pokemon[]{null, null, null, null, null, null, null, null}));
         for (int i = 1; i < 7; i++) {
-            Cursor cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, allColumns, PokeballsDbHelper.POKEBALL_NUMBER + "=" + i, null, PokeballsDbHelper.LEVEL, null, null);
+            Cursor cursor = mDbHelper.getReadableDatabase().query(mDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.POKEBALL_NUMBER, mDbHelper.POKEMON_NAME, mDbHelper.HP, mDbHelper.CP, mDbHelper.STARDUST, mDbHelper.FRESH_MEAT, mDbHelper.LEVEL, mDbHelper.POGOIV_ID}, mDbHelper.POKEBALL_NUMBER + "=" + i, null, mDbHelper.LEVEL, null, null);
             cursor.moveToFirst();
             Pokemon tempPokemon;
             if (cursor.getCount() == 0) {
                 break;
             } else if (cursor.getCount() == 1) {
-                tempPokemon = new Pokemon(cursor.getString(3), cursor.getInt(8), cursor.getInt(9), cursor.getInt(10), (cursor.getInt(16) != 0), cursor.getInt(11));
-                tempPokemon.setUniqueID(cursor.getInt(1));
+                tempPokemon = new Pokemon(cursor.getString(1), cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), (cursor.getInt(5) != 0), cursor.getInt(6));
+                tempPokemon.setUniqueID(cursor.getInt(7));
                 pokeballs.set(i, tempPokemon);
             } else if (cursor.getCount() > 1) {
-                tempPokemon = new Pokemon(cursor.getString(3), cursor.getInt(8), cursor.getInt(9), cursor.getInt(10), (cursor.getInt(16) != 0), -1);
-                tempPokemon.setUniqueID(cursor.getInt(1));
+                tempPokemon = new Pokemon(cursor.getString(1), cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), (cursor.getInt(5) != 0), -1);
+                tempPokemon.setUniqueID(cursor.getInt(7));
                 pokeballs.set(i, tempPokemon);
             }
             cursor.close();
@@ -101,12 +101,24 @@ public class PokeballsDataSource {
             if (a.get(i) != null)
                 count += 1;
         }
+        Log.d(TAG, "compareAllPokeballs: ");
+        Cursor cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.POKEMON_FAMILY}, null, null, mDbHelper.POKEMON_FAMILY, null, null);
+        Log.d(TAG, "compareAllPokeballs: "+cursor.getCount());
+        if (cursor.getCount() > 1) {
+            cursor.close();
+            return "You are trying to compare Pokemon from different families, please delete some.";
+        }
+        cursor.close();
+
 
         StringBuilder sb = new StringBuilder();
-        Cursor cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.STA_IV, mDbHelper.ATK_IV, mDbHelper.DEF_IV, mDbHelper.POGOIV_ID, mDbHelper.PERCENT_PERFECT}, null, null, mDbHelper.STA_IV + "," + mDbHelper.ATK_IV + "," + mDbHelper.DEF_IV, "count(distinct " + mDbHelper.POGOIV_ID + ")=" + count, mDbHelper.PERCENT_PERFECT);
+        cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.STA_IV, mDbHelper.ATK_IV, mDbHelper.DEF_IV, mDbHelper.POGOIV_ID, mDbHelper.PERCENT_PERFECT}, null, null, mDbHelper.STA_IV + "," + mDbHelper.ATK_IV + "," + mDbHelper.DEF_IV, "count(distinct " + mDbHelper.POGOIV_ID + ")=" + count, mDbHelper.PERCENT_PERFECT);
+        if (cursor.getCount() == 0)
+            return "There are no overlapping combinations found, are these the same pokemon?";
+
         cursor.moveToFirst();
         double averagePercent = 0;
-        double lowest=cursor.getDouble(4);
+        double lowest = cursor.getDouble(4);
 
         while (!cursor.isAfterLast()) {
             sb.append(cursor.getPosition() + " : " + cursor.getInt(0) + "/" + cursor.getInt(1) + "/" + cursor.getInt(2) + "   " + String.format(Locale.US, "%.1f", cursor.getDouble(4)) + "%\n");
@@ -120,7 +132,7 @@ public class PokeballsDataSource {
         double highest = cursor.getDouble(4);
         cursor.close();
 
-        return "There are " + cursor.getCount() + " overlapping combinations found, with an average power of " + String.format(Locale.US, "%.1f", averagePercent) + "%, and a range of "+String.format(Locale.US, "%.1f", lowest) + "% to " +String.format(Locale.US, "%.1f", highest) + "%.\n\nSta/Atk/Def\n" + sb.toString();
+        return "There are " + cursor.getCount() + " overlapping combinations found, with an average power of " + String.format(Locale.US, "%.1f", averagePercent) + "%, and a range of " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%.\n\nSta/Atk/Def\n" + sb.toString();
     }
 
     public void deletePokeball(int i) {

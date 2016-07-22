@@ -186,7 +186,7 @@ public class Pokemon implements Serializable {
     }
 
     public boolean customEquals(Pokemon pokemon) {
-        boolean temp = (pokemon.mHP==this.mHP&&pokemon.mCP==this.mCP&&pokemon.mStardust==this.mStardust);
+        boolean temp = (pokemon.mPokemonName==mPokemonName&&pokemon.mHP==this.mHP&&pokemon.mCP==this.mCP&&pokemon.mStardust==this.mStardust);
 
         return temp;
     }

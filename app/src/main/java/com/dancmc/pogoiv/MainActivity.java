@@ -3,8 +3,10 @@ package com.dancmc.pogoiv;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -70,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
         mDataSource = new PokeballsDataSource(this);
         mPokeballs = mDataSource.getAllPokeballs();
         for (int i = 1; i < mPokeballs.size() - 1; i++) {
-            if (mPokeballs.get(i) != null)
-                buildPokeball(i);
+
+            if (mPokeballs.get(i) != null){
+                Log.d(TAG, "onCreate: "+mPokeballs.get(i).toString());
+                buildPokeball(i);}
         }
 
             //calculate button setup
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             //Add button setup
-            mAddButton = (ImageButton) findViewById(R.id.add_pokemon_fab);
+            mAddButton = (ImageButton) findViewById(R.id.fab);
             mAddButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(final DialogInterface dialog, int which) {
+                                    //check whether pokemon has been added to any of the 6 pokeballs already
                                     for (int i = 1; i <= mPokeballs.size() - 1; i++) {
                                         if (mPokeballs.get(i) != null && mPokeballs.get(i).customEquals(mPokemon)) {
                                             Toast.makeText(MainActivity.this, "You have already added this Pokemon!", Toast.LENGTH_LONG)
@@ -119,6 +124,14 @@ public class MainActivity extends AppCompatActivity {
                                             return;
                                         }
                                     }
+
+                                    //reject adding pokemon with no combinations
+                                    if (mPokemon.getNumberOfResults()==0){
+                                        Toast.makeText(MainActivity.this, "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_LONG)
+                                                .show();
+                                        return;
+                                    }
+
                                     for (int i = 1; i <= mPokeballs.size() - 1; i++) {
                                         if (i == 7) {
                                             Toast.makeText(MainActivity.this, "You have no more space", Toast.LENGTH_LONG)
@@ -147,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
                     dialog.show();
                 }
             });
-
 
             //compare button setup
             mCompareButton = (Button) findViewById(R.id.compare_button);
@@ -188,18 +200,19 @@ public class MainActivity extends AppCompatActivity {
 
     //returns the integer in an number EditText, or if blank, returns 0
     private int parseIntInput(int editTextID) {
-        int number;
+        int number=0;
         String input = ((EditText) findViewById(editTextID)).getText().toString();
         if (input.equals("")) {
             switch (editTextID) {
                 case (R.id.enter_cp):
                     throw new IllegalArgumentException("You must enter a CP value.");
-                case (R.id.enter_hp):
-                    mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n");
                 case (R.id.enter_stardust):
-                    mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n");
+                    mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n\n");
+                    return -1;
+                case (R.id.enter_hp):
+                    mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n\n");
+                    return -1;
             }
-            return -1;
         } else {
             try {
                 number = Integer.parseInt(input);
