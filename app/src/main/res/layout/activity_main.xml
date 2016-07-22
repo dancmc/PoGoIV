@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -50,15 +51,31 @@
                 android:selectAllOnFocus="true"
                 android:textSize="12dp" />
 
-
-            <EditText
-                android:id="@+id/enter_stardust"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Stardust needed for powerup"
-                android:inputType="number"
-                android:selectAllOnFocus="true"
-                android:textSize="12dp" />
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/enter_stardust"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:hint="Enter Stardust"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:textSize="12dp" />
+
+                <EditText
+                    android:id="@+id/enter_known_level"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:hint="Enter Level If Known"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,35 +108,84 @@
                 android:layout_height="wrap_content"
                 android:text="Compare!" />
 
-            <LinearLayout
+            <com.example.daniel.material.RatioLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                app:ratio="0.166667">
 
-                <Button
-                    android:id="@+id/first_pokemon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="1st : None"
-                    android:textSize="12dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/second_pokemon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:text="2nd : None"
-                    android:textSize="12dp" />
-            </LinearLayout>
 
+                    <ImageButton
+                        android:id="@+id/pokeball_1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:background="@drawable/pokeball"
+                        android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/pokeball_2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:background="@drawable/pokeball"
+                        android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/pokeball_3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:background="@drawable/pokeball"
+                        android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/pokeball_4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:background="@drawable/pokeball"
+                        android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/pokeball_5"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:background="@drawable/pokeball"
+                        android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/pokeball_6"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:background="@drawable/pokeball"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </com.example.daniel.material.RatioLayout>
 
             <TextView
                 android:id="@+id/output"
+                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
     </ScrollView>
 
+    <ImageButton
+        android:id="@+id/add_pokemon_fab"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/fab"
+        android:elevation="8dp"
+        android:src="@drawable/ic_add_white_24px" />
 
-</LinearLayout>
+</RelativeLayout>

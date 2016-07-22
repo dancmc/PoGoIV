@@ -2,13 +2,16 @@ package com.dancmc.pogoiv;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.UUID;
 
 /**
  * Created by Daniel on 19/07/2016.
  */
-public class Pokemon {
+public class Pokemon implements Serializable {
     private static final String TAG = "PokemonClass";
 
     public static final String[] POKEDEX = {"nil", "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "NidoranF", "Nidorina", "Nidoqueen", "NidoranM", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew"};
@@ -25,14 +28,16 @@ public class Pokemon {
     //Owned pokemon visible stats (Entered)
     private int mPokemonNumber;
     private String mPokemonName;
+    private String mPokemonFamily;
     private int mHP;
     private int mCP;
     private int mStardust;
-    private int mKnownLevel;
+    private boolean mFreshMeat;
 
     private boolean hasHP;
     private boolean hasStardust;
-
+    private int mUniqueID;
+    private String mNickname;
 
     //possible levels of pokemon based on stardust & whether powered up
     private ArrayList<Integer> mLevelRange;
@@ -42,6 +47,7 @@ public class Pokemon {
     private int mSumAllStats;
     int mNumberOfResults;
     private ArrayList<Double> mIVPercentRange;
+    private String mStringOutput;
 
     //PoGo recalculated base stats (direct from table)
     private int mGoBaseStamina;
@@ -49,7 +55,7 @@ public class Pokemon {
     private int mGoBaseDef;
 
 
-    public Pokemon(String pokemonName, int hp, int cp, int stardust, boolean freshMeat) {
+    public Pokemon(String pokemonName, int hp, int cp, int stardust, boolean freshMeat, int knownLevel) {
 
         if ((hp >= 0 && hp < 10) || (cp >= 0 && cp < 10))
             throw new IllegalArgumentException("HP and CP cannot be less than 10.");
@@ -59,14 +65,17 @@ public class Pokemon {
         hasStardust = (stardust >= 0);
         Log.d(TAG, "HasHP=" + hasHP + ", HasStardust=" + hasStardust);
 
+        mUniqueID = UUID.randomUUID().hashCode();
         mHP = hp;
         mCP = cp;
         mStardust = stardust;
         mPokemonName = pokemonName;
         mPokemonNumber = getPokemonNumberFromName(pokemonName);
+        mFreshMeat = freshMeat;
         if (mPokemonNumber == 0) {
             throw new IllegalArgumentException("Your Pokemon name is not valid.");
         }
+        mPokemonFamily = getPokemonFamilyFromNumber(mPokemonNumber);
 
         mGoBaseStamina = STAMINAS[mPokemonNumber];
         mGoBaseAtk = ATKS[mPokemonNumber];
@@ -75,7 +84,10 @@ public class Pokemon {
         mLevelRange = new ArrayList<Integer>();
         mIVCombinationsArray = new ArrayList<double[]>();
         mIVPercentRange = new ArrayList<Double>();
-        getLevelsFromStardust(mStardust, freshMeat);
+        if (knownLevel > 0)
+            mLevelRange.add(knownLevel);
+        else
+            getLevelsFromStardust(mStardust, freshMeat);
 
         generateIV();
     }
@@ -105,7 +117,7 @@ public class Pokemon {
                                 mSumAllStats += (staIV + atkIV + defIV);
                                 mNumberOfResults += 1;
                                 mIVPercentRange.add(percent);
-                                double[] ivArrayTemp = {level, staIV, atkIV, defIV, percent};
+                                double[] ivArrayTemp = {level, staIV, atkIV, defIV, percent, cpMHolding};
                                 mIVCombinationsArray.add(ivArrayTemp);
 
                             } else if (cpHolding > mCP)
@@ -119,19 +131,24 @@ public class Pokemon {
             }
         }
         Collections.sort(mIVPercentRange);
-    }
+        StringBuilder sb = new StringBuilder();
 
+        sb.append("Pokemon Name is " + mPokemonName + ", Pokedex Number " + mPokemonNumber + "\n");
+        sb.append("Possible Level Range is " + mLevelRange.get(0) + " to " + mLevelRange.get(mLevelRange.size() - 1) + "\n");
+        sb.append("Listed as Stamina/Attack/Defence\n\n");
+        if (mNumberOfResults != 0) {
+            sb.append("Estimated average power " + String.format(Locale.US, "%.1f", getAveragePower()) + "%, range is " + String.format(Locale.US, "%.1f", mIVPercentRange.get(0)) + "% to " + String.format(Locale.US, "%.1f", mIVPercentRange.get(mIVPercentRange.size() - 1)) + "%, " + mNumberOfResults + " possible combinations.\n\n");
 
-    public int getPokemonNumberFromName(String pokemonName) {
-        int pokemonNumber = 0;
-        for (int i = 0; i < POKEDEX.length; i++) {
-            if (pokemonName.equals(POKEDEX[i])) {
-                pokemonNumber = i;
-                break;
+            for (int i = 0; i < mIVCombinationsArray.size(); i++) {
+                double[] tempArray = mIVCombinationsArray.get(i);
+                sb.append("Level " + (int) tempArray[0] + " : " + (int) tempArray[1] + "/" + (int) tempArray[2] + "/" + (int) tempArray[3] + "    " + String.format(Locale.US, "%.1f", tempArray[4]) + "%\n");
             }
+        } else {
+            sb.append("There were no combinations found.");
         }
-        return pokemonNumber;
+        mStringOutput = sb.toString();
     }
+
 
     //consider using a switch instead if slow
     private void getLevelsFromStardust(int stardust, boolean freshMeat) {
@@ -168,6 +185,27 @@ public class Pokemon {
         }
     }
 
+    public boolean customEquals(Pokemon pokemon) {
+        boolean temp = (pokemon.mHP==this.mHP&&pokemon.mCP==this.mCP&&pokemon.mStardust==this.mStardust);
+
+        return temp;
+    }
+
+    private int getPokemonNumberFromName(String pokemonName) {
+        int pokemonNumber = 0;
+        for (int i = 0; i < POKEDEX.length; i++) {
+            if (pokemonName.equals(POKEDEX[i])) {
+                pokemonNumber = i;
+                break;
+            }
+        }
+        return pokemonNumber;
+    }
+
+    private String getPokemonFamilyFromNumber(int pokemonNumber) {
+        return POKEMON_FAMILIES[pokemonNumber];
+    }
+
     private int calculateHPFromStamina(int baseStamina, int staminaIV, double totalCPMultiplier) {
         int hp = Math.max(((int) Math.floor((baseStamina + staminaIV) * totalCPMultiplier)), 10);
         return hp;
@@ -183,12 +221,24 @@ public class Pokemon {
         return mSumAllStats / mNumberOfResults / 45f * 100f;
     }
 
+    public int getUniqueID() {
+        return mUniqueID;
+    }
+
+    public void setUniqueID(int a) {
+        mUniqueID = a;
+    }
+
     public int getCP() {
         return mCP;
     }
 
     public int getHP() {
         return mHP;
+    }
+
+    public boolean getFreshMeat(){
+        return mFreshMeat;
     }
 
     public int getStardust() {
@@ -203,11 +253,13 @@ public class Pokemon {
         return mPokemonNumber;
     }
 
+    public String getPokemonFamily() { return mPokemonFamily;}
+
     public ArrayList<Double> getIVPercentRange() {
         return mIVPercentRange;
     }
 
-    public int getSumAllStats() {
+    public int getSumAllPossibleStats() {
         return mSumAllStats;
     }
 
@@ -223,4 +275,27 @@ public class Pokemon {
         return mLevelRange;
     }
 
+    public int getEvolvesTo(){
+        return EVOLUTIONS[mPokemonNumber];
+    }
+
+    public String getStringOutput() {
+        return mStringOutput;
+    }
+
+    public int getBaseSta() {
+        return mGoBaseStamina;
+    }
+
+    public int getBaseAtk() {
+        return mGoBaseAtk;
+    }
+
+    public int getBaseDef(){
+        return mGoBaseDef;
+    }
+
+    public String getNickname() {
+        return mNickname;
+    }
 }
