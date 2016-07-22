@@ -16,11 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private String mPokemonName;
-    private int mHP;
-    private int mCP;
-    private int mStardust;
-    private boolean mFreshMeat;
+
 
     private AutoCompleteTextView mPokemonNameInput;
     private Button mCalculateButton;
@@ -29,9 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mSecondPokemon;
     private TextView mOutputView;
     private Pokemon mPokemon;
-    private ArrayList<String> mFirstOutput;
-    private ArrayList<String> mSecondOutput;
-
+    private StringBuilder mStringBuilder;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -49,26 +43,25 @@ public class MainActivity extends AppCompatActivity {
         mCalculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mStringBuilder = new StringBuilder();
 
                 //hides keyboard
                 InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                createPokemonFromInput();
                 try {
-                mPokemon = new Pokemon(mPokemonName, mHP, mCP, mStardust, mFreshMeat);}
-                catch (IllegalArgumentException e) {
+                    createPokemonFromInput();
+                } catch (Exception e) {
                     mOutputView.setText(e.toString());
                     return;
                 }
 
-                StringBuilder stringBuilder = new StringBuilder();
-                //delete this mFirstOutput = mPokemon.ivCombos();
-                for (int i = 0; i < mFirstOutput.size(); i++) {
-                    stringBuilder.append(mFirstOutput.get(i) + "\n");
-                }
 
-                mOutputView.setText(stringBuilder.toString());
+
+                mStringBuilder.append("S");
+//mResult.add("Level " + mLevelHolding + " : " + mStaHolding + "/" + mAtkHolding + "/" + mDefHolding + "   " + String.format(Locale.US,"%.1f", percent)+ "%");
+                //*delete*mResult.add(3, "Estimated average power " +String.format(Locale.US,"%.1f", average)+ "%, range is "+String.format(Locale.US,"%.1f", mIVComboRanking.get(0)) + "% to " +String.format(Locale.US,"%.1f", mIVComboRanking.get(mIVComboRanking.size()-1)) + "%, "+ mNumberOfResults+ " possible combinations.\n");
+
                 mFirstPokemon.setText("1st : " + mPokemonName);
                 mSecondPokemon.setText("2nd : None");
 
@@ -85,25 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 buttonPressedSetup();
                 mPokemon = new Pokemon(mPokemonName, mHP, mCP, mStardust, false);
 
-                StringBuilder stringBuilder = new StringBuilder();
-                mSecondOutput = mPokemon.ivCombos();
 
-                if (mFirstOutput.get(0).equals(mSecondOutput.get(0))) {
-                    stringBuilder.append(mFirstOutput.get(0) + "\n\n");
-                    stringBuilder.append("First Pokemon " + mFirstOutput.get(1) + "\n");
-                    stringBuilder.append("Second Pokemon " + mSecondOutput.get(1) + "\n\nComparison Matches :\n");
-                    for (int i = 4; i < mFirstOutput.size(); i++) {
-                        Log.d(TAG, "onClick: " + i);
-                        for (int j = 4; j < mSecondOutput.size(); j++) {
-                            if (mFirstOutput.get(i).substring(9).equals(mSecondOutput.get(j).substring(9))) {
-                                stringBuilder.append(mFirstOutput.get(i).substring(0, 8).trim() + " | " + mSecondOutput.get(j)+"\n");
-                            }
-                        }
-                    }
-                } else mOutputView.setText("You are comparing different Pokemon!");
 
-                mOutputView.setText(stringBuilder.toString());
-                mSecondPokemon.setText("2nd : " +mPokemonName);
 
                 //hides keyboard
                 InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -113,27 +89,44 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //reads the input from the EditText views and calls Pokemon constructor
     private void createPokemonFromInput() {
-        mHP = parseInput((EditText) findViewById(R.id.enter_hp));
-        mCP = parseInput((EditText) findViewById(R.id.enter_cp));
-        mStardust = parseInput((EditText) findViewById(R.id.enter_stardust));
-        mFreshMeat = ((CheckBox) findViewById(R.id.checkbox_powerup)).isChecked();
+        String pokemonName = "" + mPokemonNameInput.getText().toString();
+        int cp = parseIntInput(R.id.enter_cp);
+        int hp = parseIntInput(R.id.enter_hp);
+        int stardust = parseIntInput(R.id.enter_stardust);
+        boolean freshMeat = ((CheckBox) findViewById(R.id.checkbox_powerup)).isChecked();
 
-        if (mPokemonNameInput.getText() == null || mHP == 0 || mCP == 0 || mStardust == 0) {
-            mOutputView.setText("You did not fill in a field.");
-            return;
+        //throws exception if invalid/blank pokemon name, or invalid stardust
+        //if HP/CP/Stardust blank, is ok, passes in a -1
+        try {
+            mPokemon = new Pokemon(pokemonName, hp, cp, stardust, freshMeat);
+        } catch (IllegalArgumentException e) {
+            throw e;
         }
 
-        mPokemonName = mPokemonNameInput.getText().toString();
     }
 
-    private int parseInput(EditText editText) {
-        int number = 0;
-        if (editText.getText().toString().equals("")) {
-            mOutputView.setText("You did not enter a field.");
-            return number;
+    //returns the integer in an number EditText, or if blank, returns 0
+    private int parseIntInput(int editTextID) {
+        int number;
+        String input = ((EditText)findViewById(editTextID)).getText().toString();
+        if (input.equals("")) {
+            switch(editTextID){
+                case (R.id.enter_cp) : throw new IllegalArgumentException("You must enter a CP value.");
+                case (R.id.enter_hp) : mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n");
+                case (R.id.enter_stardust) : mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n");
+            }
+            return -1;
         } else {
-            number = Integer.parseInt(editText.getText().toString());
+            try {
+                number = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("You have to enter whole numbers.");
+            }
+            if(number<0)
+                throw new NumberFormatException("You have to enter positive numbers.");
+
         }
         return number;
     }

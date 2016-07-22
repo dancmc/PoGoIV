@@ -20,8 +20,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "pokeball INTEGER, " +
                 "pokemon_number INTEGER," +
-                "pokemon_name TEXT," +
-                "");
+                "pokemon_name TEXT,");
     }
 
     @Override
