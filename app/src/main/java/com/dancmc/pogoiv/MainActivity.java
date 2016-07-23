@@ -73,14 +73,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, Pokemon.POKEDEX);
         mPokemonNameInput = (AutoCompleteTextView) findViewById(R.id.enter_pokemon_name);
         mPokemonNameInput.setAdapter(adapter);
-        asyncAddPokemon = new AsyncTask<Integer, Void, Void>() {
-            @Override
-            protected Void doInBackground(Integer... params) {
-                mDataSource.setPokeballData(mPokeballs.get(params[0]), params[0]);
-                return null;
-            }
-        };
-
 
         /*restore saved instance & pokeballs setup
         if (savedInstanceState != null) {
@@ -173,7 +165,14 @@ public class MainActivity extends AppCompatActivity {
 
                                         mPokeballs.set(i, mPokemon);
                                         //!!the setData should only happen when you press add, putting it in buildPokeball adds a duplicate everytime i restart the app and repopulate
-                                        asyncAddPokemon.execute(i);
+                                        asyncAddPokemon = new AsyncTask<Integer, Void, Void>() {
+                                            @Override
+                                            protected Void doInBackground(Integer... params) {
+                                                mDataSource.setPokeballData(mPokeballs.get(params[0]), params[0]);
+                                                return null;
+                                            }
+                                        };
+                                        ((AsyncTask<Integer, Void, Void>)asyncAddPokemon).execute(i);
                                         buildPokeball(i);
                                         return;
                                     }
