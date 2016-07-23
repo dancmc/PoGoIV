@@ -71,7 +71,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
-                    android:hint="Enter Level If Known"
+                    android:hint="Enter Pokemon Level If Known"
                     android:inputType="number"
                     android:selectAllOnFocus="true"
                     android:textSize="12sp" />

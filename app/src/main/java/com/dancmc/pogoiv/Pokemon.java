@@ -89,7 +89,11 @@ public class Pokemon implements Serializable {
         else
             getLevelsFromStardust(mStardust, freshMeat);
 
+        Log.d(TAG, "Pokemon: "+mPokemonName + " "+ calculateCP(0,0,0,CP_MULTIPLIERS[79]));
+        Log.d(TAG, "Pokemon: "+mPokemonName + " "+ calculateCP(15,15,15,CP_MULTIPLIERS[79]));
         generateIV();
+
+
     }
 
 
