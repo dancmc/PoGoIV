@@ -91,7 +91,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="HAS been powered up (blank if unsure)"
+                    android:text="HAS been powered up (tick if unsure)"
                     android:textStyle="bold" />
 
             </LinearLayout>
