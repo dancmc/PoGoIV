@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         int hp = parseIntInput(R.id.enter_hp);
         int stardust = parseIntInput(R.id.enter_stardust);
         int level = parseIntInput(R.id.enter_known_level);
-        boolean freshMeat = ((CheckBox) findViewById(R.id.checkbox_powerup)).isChecked();
+        boolean freshMeat = !((CheckBox) findViewById(R.id.checkbox_powerup)).isChecked();
 
         //throws exception if invalid/blank pokemon name, or invalid stardust
         //if HP/CP/Stardust blank, is ok, passes in a -1
