@@ -20,7 +20,7 @@ public class Pokemon implements Serializable {
     public static final int[][] MAX_EVOLUTION = {{0},{3},{3},{0},{6},{6},{0},{9},{9},{0},{12},{12},{0},{15},{15},{0},{18},{18},{0},{20},{0},{22},{0},{24},{0},{26},{0},{28},{0},{31},{32},{33},{34},{34},{0},{36},{0},{38},{0},{40},{0},{42},{0},{45},{45},{0},{47},{0},{49},{0},{51},{0},{53},{0},{55},{0},{57},{0},{59},{0},{62},{62},{0},{65},{65},{0},{68},{68},{0},{71},{71},{0},{73},{0},{76},{76},{0},{78},{0},{80},{0},{82},{0},{0},{85},{0},{87},{0},{89},{0},{91},{0},{94},{94},{0},{0},{97},{0},{99},{0},{101},{0},{103},{0},{105},{0},{0},{0},{0},{110},{0},{112},{0},{0},{0},{0},{117},{0},{119},{0},{121},{0},{0},{0},{0},{0},{0},{0},{0},{130},{0},{0},{0},{134,135,136},{0},{0},{0},{0},{139},{0},{141},{0},{0},{0},{0},{0},{0},{149},{149},{0},{0},{0}};
     public static final int[] MAX_CPS = {0,1071,1632,2580,955,1557,2602,1008,1582,2542,443,477,1454,449,485,1439,679,1223,2091,581,1444,686,1746,824,1767,887,2028,798,1810,876,1404,2485,843,1372,2475,1200,2397,831,2188,917,2177,642,1921,1148,1689,2492,916,1747,1029,1890,456,1168,756,1631,1109,2386,878,1864,1335,2983,795,1340,2505,600,1131,1813,1089,1760,2594,1117,1723,2530,905,2220,849,1433,2303,1516,2199,1218,2597,890,1879,1263,855,1836,1107,2145,1284,2602,822,2052,804,1380,2078,857,1075,2184,792,1823,839,1646,1099,2955,1006,1656,1492,1516,1626,1151,2250,1182,2243,675,1739,2043,794,1713,965,2043,937,2182,1494,2073,1716,2119,2265,2121,1844,262,2688,2980,919,1077,2816,2140,2643,1691,1119,2233,1104,2130,2165,3112,2978,3114,3240,983,1747,3500,4144,3299};
     public static final int[] MIN_CPS = {0,838,1341,2212,733,1273,2231,781,1296,2175,298,324,1182,303,332,1169,498,975,1762,412,1171,503,1445,619,1463,673,1698,600,1504,668,1137,2125,638,1108,2114,954,2044,626,1850,682,1824,466,1606,905,1393,2129,698,1445,802,1577,279,915,563,1342,872,2033,667,1552,1071,2585,597,1079,2143,423,886,1502,854,1459,2225,871,1419,2162,690,1880,643,1161,1956,1232,1856,966,2229,664,1558,1009,645,1525,870,1811,1027,2233,614,1713,595,1107,1743,641,841,1846,588,1511,634,1353,864,2557,780,1361,1212,1231,1335,905,1903,935,1900,432,1439,1714,590,1412,744,1718,711,1839,1204,1745,1417,1783,1915,1787,1535,152,2314,2582,706,844,2427,1803,2261,1396,872,1890,853,1791,1830,2698,2581,2707,2824,759,1445,3067,3670,2882};
-
+    public static final int[] CPS_DIFFERENCE = {0,233,291,368,222,284,371,227,286,367,145,153,272,146,153,270,181,248,329,169,273,183,301,205,304,214,330,198,306,208,267,360,205,264,361,246,353,205,338,235,353,176,315,243,296,363,218,302,227,313,177,253,193,289,237,353,211,312,264,398,198,261,362,177,245,311,235,301,369,246,304,368,215,340,206,272,347,284,343,252,368,226,321,254,210,311,237,334,257,369,208,339,209,273,335,216,234,338,204,312,205,293,235,398,226,295,280,285,291,246,347,247,343,243,300,329,204,301,221,325,226,343,290,328,299,336,350,334,309,110,374,398,213,233,389,337,382,295,247,343,251,339,335,414,397,407,416,224,302,433,474,417};
 
     //arrays of all pokemon stamina/atk/def, stardust, CP multipliers at each level
     private static final int[] STAMINAS = {0, 90, 120, 160, 78, 116, 156, 88, 118, 158, 90, 100, 120, 80, 90, 130, 80, 126, 166, 60, 110, 80, 130, 70, 120, 70, 120, 100, 150, 110, 140, 180, 92, 122, 162, 140, 190, 76, 146, 230, 280, 80, 150, 90, 120, 150, 70, 120, 120, 140, 20, 70, 80, 130, 100, 160, 80, 130, 110, 180, 80, 130, 180, 50, 80, 110, 140, 160, 180, 100, 130, 160, 80, 160, 80, 110, 160, 100, 130, 180, 190, 50, 100, 104, 70, 120, 130, 180, 160, 210, 60, 100, 60, 90, 120, 70, 120, 170, 60, 110, 80, 120, 120, 190, 100, 120, 100, 100, 180, 80, 130, 160, 210, 500, 130, 210, 60, 110, 90, 160, 60, 120, 80, 140, 130, 130, 130, 130, 150, 40, 190, 260, 96, 110, 260, 130, 130, 130, 70, 140, 60, 120, 160, 320, 180, 180, 180, 82, 122, 182, 212, 200};
@@ -125,10 +125,10 @@ public class Pokemon implements Serializable {
 
                         for (int defIV = 0; defIV <= 15; defIV++) {
                             int cpHolding = calculateCP(staIV, atkIV, defIV, cpMHolding);
-                            Log.d(TAG, "generateIV: "+cpHolding + " sta "+ staIV + " atk " + atkIV+ " def " + defIV);
+
 
                             if (cpHolding == mCP) {
-
+                                int maxCPForLevel = calculateCP(15,15,15, cpMHolding);
                                 mNumberOfResults += 1;
 
                                 double ivPercent = (double)(staIV + atkIV + defIV) / 45 * 100;
@@ -139,7 +139,7 @@ public class Pokemon implements Serializable {
 
                                 //testing purposes
 
-                                Log.d(TAG, "ivCombo " + i + ": level " + level + " CPM " + cpMHolding + " Sta " + staIV + " Atk " + atkIV + " Def " + defIV + " IV percent " + ivPercent);
+                                Log.d(TAG, "ivCombo " + i + ": level " + level + " CPM " + cpMHolding + " Sta " + staIV + " Atk " + atkIV + " Def " + defIV + " IV percent " + ivPercent + " CP percent 0IVs " + ((float)calculateCP(0,0,0, cpMHolding)/maxCPForLevel)*100);
 
                             } else if (cpHolding > mCP)
                                 break;
@@ -160,11 +160,11 @@ public class Pokemon implements Serializable {
         if (mNumberOfResults != 0) {
             sb.append("Estimated average IV% of max is " + String.format(Locale.US, "%.1f", getAverageIV()) + "%, (range " + String.format(Locale.US, "%.1f", mIVPercentRange.get(0)) + "% to " + String.format(Locale.US, "%.1f", mIVPercentRange.get(mIVPercentRange.size() - 1)) + "%), " + mNumberOfResults + " possible combinations.\n\n");
             String[] maxEvolved = getMaxEvolved();
-            /*for(int i=0; i<maxEvolved.length; i++) {
+            for(int i=0; i<maxEvolved.length; i++) {
                 int pokemonNumber = getPokemonNumberFromName(maxEvolved[i]);
                 double maxedCPPercent = calculateMaxLevelAverageCPPercent(mIVCombinationsArray,maxEvolved[i]);
-                sb.append("A max leveled "+ maxEvolved[i] + " with this average IV% would have a CP of ~" + String.format(Locale.US, "%.1f", (maxedCPPercent*(MAX_CPS[pokemonNumber]-MIN_CPS[pokemonNumber])/100.0+MIN_CPS[pokemonNumber])) + " (" +String.format(Locale.US, "%.1f", maxedCPPercent)+"), versus a max of " + MAX_CPS[pokemonNumber] +" and a min of " + MIN_CPS[pokemonNumber]+".\n");
-            }*/
+                sb.append("A max leveled "+ maxEvolved[i] + " with this average IV% would have a CP of ~" + String.format(Locale.US, "%.1f", (maxedCPPercent*(CPS_DIFFERENCE[pokemonNumber])/100.0+MIN_CPS[pokemonNumber])) + " (" +String.format(Locale.US, "%.1f", maxedCPPercent)+"), versus a max of " + MAX_CPS[pokemonNumber] +" and a min of " + MIN_CPS[pokemonNumber]+".\n");
+            }
             sb.append(" \n");
             sb.append("Listed as Stamina/Attack/Defence\n");
             for (int i = 0; i < mIVCombinationsArray.size(); i++) {
@@ -340,9 +340,9 @@ public class Pokemon implements Serializable {
         int pokemonNumber = getPokemonNumberFromName(pokemonName);
         ArrayList<Double> list = new ArrayList<Double>();
         double sum = 0.0;
-        for(double[] ivCombo:mIVCombinationsArray) {
+        for(double[] ivCombo:ivCombos) {
             double workingCP = Math.max(10.0, Math.floor((ATKS[pokemonNumber] + ivCombo[2]) * Math.pow((DEFS[pokemonNumber] + ivCombo[3]), 0.5) * Math.pow((STAMINAS[pokemonNumber] + ivCombo[1]), 0.5) * Math.pow(CP_MULTIPLIERS[79], 2) / 10));
-            double cpPercent = (workingCP-MIN_CPS[pokemonNumber])/(MAX_CPS[pokemonNumber]-MIN_CPS[pokemonNumber]);
+            double cpPercent = (workingCP-MIN_CPS[pokemonNumber])/(CPS_DIFFERENCE[pokemonNumber]);
             list.add(cpPercent);
         }
         for (double cpPercent:list){

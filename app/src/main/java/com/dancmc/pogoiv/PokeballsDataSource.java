@@ -34,6 +34,7 @@ public class PokeballsDataSource {
             PokeballsDbHelper.ATK_IV,
             PokeballsDbHelper.DEF_IV,
             PokeballsDbHelper.FRESH_MEAT,
+            PokeballsDbHelper.SUM_STATS,
             PokeballsDbHelper.PERCENT_PERFECT,
             PokeballsDbHelper.BASE_STA,
             PokeballsDbHelper.BASE_ATK,
