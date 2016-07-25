@@ -15,6 +15,7 @@ import java.util.Locale;
  * Created by Daniel on 22/07/2016.
  */
 public class PokeballsDataSource {
+
     private PokeballsDbHelper mDbHelper;
     private SQLiteDatabase mDatabase;
     private static final String TAG = "PokeballsDataSource";
@@ -25,17 +26,14 @@ public class PokeballsDataSource {
             PokeballsDbHelper.NICKNAME,
             PokeballsDbHelper.POKEMON_NUMBER,
             PokeballsDbHelper.POKEMON_FAMILY,
-            PokeballsDbHelper.EVOLVES_TO,
             PokeballsDbHelper.HP,
             PokeballsDbHelper.CP,
             PokeballsDbHelper.STARDUST,
             PokeballsDbHelper.LEVEL,
-            PokeballsDbHelper.CP_MULTIPLIER,
             PokeballsDbHelper.STA_IV,
             PokeballsDbHelper.ATK_IV,
             PokeballsDbHelper.DEF_IV,
             PokeballsDbHelper.FRESH_MEAT,
-            PokeballsDbHelper.SUM_STATS,
             PokeballsDbHelper.PERCENT_PERFECT,
             PokeballsDbHelper.BASE_STA,
             PokeballsDbHelper.BASE_ATK,
@@ -54,17 +52,14 @@ public class PokeballsDataSource {
             values.put(PokeballsDbHelper.POKEMON_NAME, pokemon.getPokemonName());
             values.put(PokeballsDbHelper.POKEMON_NUMBER, pokemon.getPokemonNumber());
             values.put(PokeballsDbHelper.POKEMON_FAMILY, pokemon.getPokemonFamily());
-            values.put(PokeballsDbHelper.EVOLVES_TO, pokemon.getEvolvesTo());
             values.put(PokeballsDbHelper.HP, pokemon.getHP());
             values.put(PokeballsDbHelper.CP, pokemon.getCP());
             values.put(PokeballsDbHelper.STARDUST, pokemon.getStardust());
             values.put(PokeballsDbHelper.LEVEL, (int) pokemon.getIVCombinationsArray().get(i)[0]);
-            values.put(PokeballsDbHelper.CP_MULTIPLIER, pokemon.getIVCombinationsArray().get(i)[5]);
             values.put(PokeballsDbHelper.STA_IV, pokemon.getIVCombinationsArray().get(i)[1]);
             values.put(PokeballsDbHelper.ATK_IV, pokemon.getIVCombinationsArray().get(i)[2]);
             values.put(PokeballsDbHelper.DEF_IV, pokemon.getIVCombinationsArray().get(i)[3]);
             values.put(PokeballsDbHelper.FRESH_MEAT, pokemon.getFreshMeat());
-            values.put(PokeballsDbHelper.SUM_STATS, pokemon.getSumAllPossibleStats());
             values.put(PokeballsDbHelper.PERCENT_PERFECT, pokemon.getIVCombinationsArray().get(i)[4]);
             values.put(PokeballsDbHelper.BASE_STA, pokemon.getBaseSta());
             values.put(PokeballsDbHelper.BASE_ATK, pokemon.getBaseAtk());
@@ -79,9 +74,9 @@ public class PokeballsDataSource {
             Cursor cursor = mDbHelper.getReadableDatabase().query(mDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.POKEBALL_NUMBER, mDbHelper.POKEMON_NAME, mDbHelper.HP, mDbHelper.CP, mDbHelper.STARDUST, mDbHelper.FRESH_MEAT, mDbHelper.LEVEL, mDbHelper.POGOIV_ID}, mDbHelper.POKEBALL_NUMBER + "=" + i, null, mDbHelper.LEVEL, null, null);
             cursor.moveToFirst();
             Pokemon tempPokemon;
-            if (cursor.getCount() == 0) {
-                break;
-            } else if (cursor.getCount() == 1) {
+
+            //if the pokeball exists,
+            if (cursor.getCount() == 1) {
                 tempPokemon = new Pokemon(cursor.getString(1), cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), (cursor.getInt(5) != 0), cursor.getInt(6));
                 tempPokemon.setUniqueID(cursor.getInt(7));
                 pokeballs.set(i, tempPokemon);
@@ -101,9 +96,10 @@ public class PokeballsDataSource {
             if (a.get(i) != null)
                 count += 1;
         }
-        Log.d(TAG, "compareAllPokeballs: ");
+
+        //DO a check
         Cursor cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.POKEMON_FAMILY}, null, null, mDbHelper.POKEMON_FAMILY, null, null);
-        Log.d(TAG, "compareAllPokeballs: "+cursor.getCount());
+        Log.d(TAG, "compareAllPokeballs: number of Pokemon families " + cursor.getCount());
         if (cursor.getCount() > 1) {
             cursor.close();
             return "You are trying to compare Pokemon from different families, please delete some.";

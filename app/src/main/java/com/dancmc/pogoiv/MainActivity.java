@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //Check if asyncAddTask is running
-                if (asyncAddPokemon.getStatus() == AsyncTask.Status.PENDING || asyncAddPokemon.getStatus() == AsyncTask.Status.RUNNING) {
+                if (asyncAddPokemon!=null &&(asyncAddPokemon.getStatus() == AsyncTask.Status.PENDING || asyncAddPokemon.getStatus() == AsyncTask.Status.RUNNING)) {
                     mOutputView.setText("Sorry, still adding previous Pokemon, try again in a couple of seconds.");
                     return;
                 }
