@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         mOutputView = (TextView) findViewById(R.id.output);
 
         //Autocomplete textview setup
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, Pokemon.POKEDEX);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
         mPokemonNameInput = (AutoCompleteTextView) findViewById(R.id.enter_pokemon_name);
         mPokemonNameInput.setAdapter(adapter);
 

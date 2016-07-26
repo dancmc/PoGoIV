@@ -32,6 +32,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
     public static final String NICKNAME = "nickname";
     public static final String POKEMON_NUMBER = "pokemon_number";
     public static final String POKEMON_FAMILY = "pokemon_family";
+    public static final String EVOLUTION_TIER = "evolution_tier";
     public static final String HP = "hp";
     public static final String CP = "cp";
     public static final String STARDUST = "stardust";
@@ -40,7 +41,6 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
     public static final String ATK_IV = "atk_iv";
     public static final String DEF_IV = "def_iv";
     public static final String FRESH_MEAT = "fresh_meat";
-    public static final String SUM_STATS = "sum_stats";
     public static final String PERCENT_PERFECT = "percent_perfect";
     public static final String BASE_STA = "base_sta";
     public static final String BASE_ATK = "base_atk";
@@ -59,6 +59,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
                 +NICKNAME+" TEXT, "
                 +POKEMON_NUMBER+" INTEGER, "
                 +POKEMON_FAMILY+" TEXT, "
+                +EVOLUTION_TIER+" INTEGER "
                 +HP+" INTEGER, "
                 +CP+" INTEGER, "
                 +STARDUST+" INTEGER, "
@@ -67,7 +68,6 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
                 +ATK_IV+" INTEGER, "
                 +DEF_IV+" INTEGER, "
                 +FRESH_MEAT+" BOOLEAN, "
-                +SUM_STATS+" INTEGER, "
                 +PERCENT_PERFECT+" DOUBLE, "
                 +BASE_STA+" INTEGER, "
                 +BASE_ATK+" INTEGER, "

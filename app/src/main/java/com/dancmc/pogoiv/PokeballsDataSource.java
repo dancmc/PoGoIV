@@ -34,7 +34,6 @@ public class PokeballsDataSource {
             PokeballsDbHelper.ATK_IV,
             PokeballsDbHelper.DEF_IV,
             PokeballsDbHelper.FRESH_MEAT,
-            PokeballsDbHelper.SUM_STATS,
             PokeballsDbHelper.PERCENT_PERFECT,
             PokeballsDbHelper.BASE_STA,
             PokeballsDbHelper.BASE_ATK,
@@ -109,27 +108,47 @@ public class PokeballsDataSource {
 
 
         StringBuilder sb = new StringBuilder();
-        cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.STA_IV, mDbHelper.ATK_IV, mDbHelper.DEF_IV, mDbHelper.POGOIV_ID, mDbHelper.PERCENT_PERFECT}, null, null, mDbHelper.STA_IV + "," + mDbHelper.ATK_IV + "," + mDbHelper.DEF_IV, "count(distinct " + mDbHelper.POGOIV_ID + ")=" + count, mDbHelper.PERCENT_PERFECT);
+        cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.STA_IV, mDbHelper.ATK_IV, mDbHelper.DEF_IV, mDbHelper.POGOIV_ID, mDbHelper.PERCENT_PERFECT, mDbHelper.POKEMON_NUMBER}, null, null, mDbHelper.STA_IV + "," + mDbHelper.ATK_IV + "," + mDbHelper.DEF_IV, "count(distinct " + mDbHelper.POGOIV_ID + ")=" + count, mDbHelper.PERCENT_PERFECT);
         if (cursor.getCount() == 0)
             return "There are no overlapping combinations found, are these the same pokemon?";
 
         cursor.moveToFirst();
+        ArrayList<double[]> ivCombos = new ArrayList<>();
+        int pokemonNumber = cursor.getInt(5);
         double averagePercent = 0;
         double lowest = cursor.getDouble(4);
+
 
         while (!cursor.isAfterLast()) {
             sb.append(cursor.getPosition() + " : " + cursor.getInt(0) + "/" + cursor.getInt(1) + "/" + cursor.getInt(2) + "   " + String.format(Locale.US, "%.1f", cursor.getDouble(4)) + "%\n");
             averagePercent += cursor.getDouble(4);
+            double[] ivCombo = {0, cursor.getDouble(0), cursor.getDouble(1), cursor.getDouble(2), 0};
+            ivCombos.add(ivCombo);
             cursor.moveToNext();
         }
-        if (cursor.getCount() != 0) {
-            averagePercent = averagePercent / cursor.getCount();
-        }
+
+        //calculating average percent
+        averagePercent = averagePercent / cursor.getCount();
+
         cursor.moveToLast();
         double highest = cursor.getDouble(4);
         cursor.close();
 
-        return "There are " + cursor.getCount() + " overlapping combinations found, with an average power of " + String.format(Locale.US, "%.1f", averagePercent) + "%, and a range of " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%.\n\nSta/Atk/Def\n" + sb.toString();
+        StringBuilder sb2 = new StringBuilder();
+
+
+        sb2.append("There are " + cursor.getCount() + " overlapping combinations found, with an average power of " + String.format(Locale.US, "%.1f", averagePercent) + "%, and a range of " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%.\n\nSta/Atk/Def\n");
+
+        //get the max evolution of the pokemons to be compared, calculate the maxmimum CP with 15 IVs at lvl 79, get the average CP of current pokemon at lvl 79
+        String[] maxEvolved = Pokemon.getMaxEvolved(pokemonNumber);
+        for(int i=0; i<maxEvolved.length; i++) {
+            int pokeNumber = Pokemon.getPokemonNumberFromName(maxEvolved[i]);
+            double maxedCPPercent = Pokemon.calculateMaxLevelAverageCPPercent(ivCombos,pokeNumber);
+            Log.d(TAG, "compareAllPokeballs: " + maxedCPPercent);
+            sb2.append("A max leveled "+ maxEvolved[i] + " with this average IV% would have a CP of ~" + String.format(Locale.US, "%.0f", (maxedCPPercent*(Pokemon.getCPDifference(pokeNumber))/100.0+Pokemon.getMinCP(pokeNumber))) + " (" +String.format(Locale.US, "%.1f", maxedCPPercent)+"%), versus a max of " + Pokemon.getMaxCP(pokeNumber) +" and a min of " + Pokemon.getMinCP(pokeNumber)+".\n");
+        }
+        sb2.append(" \n");
+        return sb2.toString()+sb.toString();
     }
 
     public void deletePokeball(int i) {

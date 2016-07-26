@@ -14,13 +14,13 @@ import java.util.UUID;
 public class Pokemon implements Serializable {
     private static final String TAG = "PokemonClass";
 
-    public static final String[] POKEDEX = {"nil", "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "NidoranF", "Nidorina", "Nidoqueen", "NidoranM", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew"};
-    public static final String[] POKEMON_FAMILIES = {"nil", "FAMILY_BULBASAUR", "FAMILY_BULBASAUR", "FAMILY_BULBASAUR", "FAMILY_CHARMANDER", "FAMILY_CHARMANDER", "FAMILY_CHARMANDER", "FAMILY_SQUIRTLE", "FAMILY_SQUIRTLE", "FAMILY_SQUIRTLE", "FAMILY_CATERPIE", "FAMILY_CATERPIE", "FAMILY_CATERPIE", "FAMILY_WEEDLE", "FAMILY_WEEDLE", "FAMILY_WEEDLE", "FAMILY_PIDGEY", "FAMILY_PIDGEY", "FAMILY_PIDGEY", "FAMILY_RATTATA", "FAMILY_RATTATA", "FAMILY_SPEAROW", "FAMILY_SPEAROW", "FAMILY_EKANS", "FAMILY_EKANS", "FAMILY_PIKACHU", "FAMILY_PIKACHU", "FAMILY_SANDSHREW", "FAMILY_SANDSHREW", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_CLEFAIRY", "FAMILY_CLEFAIRY", "FAMILY_VULPIX", "FAMILY_VULPIX", "FAMILY_JIGGLYPUFF", "FAMILY_JIGGLYPUFF", "FAMILY_ZUBAT", "FAMILY_ZUBAT", "FAMILY_ODDISH", "FAMILY_ODDISH", "FAMILY_ODDISH", "FAMILY_PARAS", "FAMILY_PARAS", "FAMILY_VENONAT", "FAMILY_VENONAT", "FAMILY_DIGLETT", "FAMILY_DIGLETT", "FAMILY_MEOWTH", "FAMILY_MEOWTH", "FAMILY_PSYDUCK", "FAMILY_PSYDUCK", "FAMILY_MANKEY", "FAMILY_MANKEY", "FAMILY_GROWLITHE", "FAMILY_GROWLITHE", "FAMILY_POLIWAG", "FAMILY_POLIWAG", "FAMILY_POLIWAG", "FAMILY_ABRA", "FAMILY_ABRA", "FAMILY_ABRA", "FAMILY_MACHOP", "FAMILY_MACHOP", "FAMILY_MACHOP", "FAMILY_BELLSPROUT", "FAMILY_BELLSPROUT", "FAMILY_BELLSPROUT", "FAMILY_TENTACOOL", "FAMILY_TENTACOOL", "FAMILY_GEODUDE", "FAMILY_GEODUDE", "FAMILY_GEODUDE", "FAMILY_PONYTA", "FAMILY_PONYTA", "FAMILY_SLOWPOKE", "FAMILY_SLOWPOKE", "FAMILY_MAGNEMITE", "FAMILY_MAGNEMITE", "FAMILY_FARFETCHD", "FAMILY_DODUO", "FAMILY_DODUO", "FAMILY_SEEL", "FAMILY_SEEL", "FAMILY_GRIMER", "FAMILY_GRIMER", "FAMILY_SHELLDER", "FAMILY_SHELLDER", "FAMILY_GASTLY", "FAMILY_GASTLY", "FAMILY_GASTLY", "FAMILY_ONIX", "FAMILY_DROWZEE", "FAMILY_DROWZEE", "FAMILY_KRABBY", "FAMILY_KRABBY", "FAMILY_VOLTORB", "FAMILY_VOLTORB", "FAMILY_EXEGGCUTE", "FAMILY_EXEGGCUTE", "FAMILY_CUBONE", "FAMILY_CUBONE", "FAMILY_HITMONLEE", "FAMILY_HITMONCHAN", "FAMILY_LICKITUNG", "FAMILY_KOFFING", "FAMILY_KOFFING", "FAMILY_RHYHORN", "FAMILY_RHYHORN", "FAMILY_CHANSEY", "FAMILY_TANGELA", "FAMILY_KANGASKHAN", "FAMILY_HORSEA", "FAMILY_HORSEA", "FAMILY_GOLDEEN", "FAMILY_GOLDEEN", "FAMILY_STARYU", "FAMILY_STARYU", "FAMILY_MR_MIME", "FAMILY_SCYTHER", "FAMILY_JYNX", "FAMILY_ELECTABUZZ", "FAMILY_MAGMAR", "FAMILY_PINSIR", "FAMILY_TAUROS", "FAMILY_MAGIKARP", "FAMILY_MAGIKARP", "FAMILY_LAPRAS", "FAMILY_DITTO", "FAMILY_EEVEE", "FAMILY_EEVEE", "FAMILY_EEVEE", "FAMILY_EEVEE", "FAMILY_PORYGON", "FAMILY_OMANYTE", "FAMILY_OMANYTE", "FAMILY_KABUTO", "FAMILY_KABUTO", "FAMILY_AERODACTYL", "FAMILY_SNORLAX", "FAMILY_ARTICUNO", "FAMILY_ZAPDOS", "FAMILY_MOLTRES", "FAMILY_DRATINI", "FAMILY_DRATINI", "FAMILY_DRATINI", "FAMILY_MEWTWO", "FAMILY_MEW"};
-    public static final int[] EVOLVES_FROM = {0,0,1,1,0,4,4,0,7,7,0,10,10,0,13,13,0,16,16,0,19,0,21,0,23,0,25,0,27,0,29,29,30,31,32,0,35,0,37,0,39,0,41,0,43,43,0,46,0,48,0,50,0,52,0,54,0,56,0,58,0,60,60,0,63,63,0,66,66,0,69,69,0,72,0,74,74,0,77,0,79,0,81,0,0,84,0,86,0,88,0,90,0,92,92,0,0,96,0,98,0,100,0,102,0,104,0,0,0,0,109,0,111,0,0,0,0,116,0,118,0,120,0,0,0,0,0,0,0,0,129,0,0,0,133,133,133,0,0,138,0,140,0,0,0,0,0,0,147,147,0,0};
-    public static final int[][] MAX_EVOLUTION = {{0},{3},{3},{0},{6},{6},{0},{9},{9},{0},{12},{12},{0},{15},{15},{0},{18},{18},{0},{20},{0},{22},{0},{24},{0},{26},{0},{28},{0},{31},{32},{33},{34},{34},{0},{36},{0},{38},{0},{40},{0},{42},{0},{45},{45},{0},{47},{0},{49},{0},{51},{0},{53},{0},{55},{0},{57},{0},{59},{0},{62},{62},{0},{65},{65},{0},{68},{68},{0},{71},{71},{0},{73},{0},{76},{76},{0},{78},{0},{80},{0},{82},{0},{0},{85},{0},{87},{0},{89},{0},{91},{0},{94},{94},{0},{0},{97},{0},{99},{0},{101},{0},{103},{0},{105},{0},{0},{0},{0},{110},{0},{112},{0},{0},{0},{0},{117},{0},{119},{0},{121},{0},{0},{0},{0},{0},{0},{0},{0},{130},{0},{0},{0},{134,135,136},{0},{0},{0},{0},{139},{0},{141},{0},{0},{0},{0},{0},{0},{149},{149},{0},{0},{0}};
-    public static final int[] MAX_CPS = {0,1071,1632,2580,955,1557,2602,1008,1582,2542,443,477,1454,449,485,1439,679,1223,2091,581,1444,686,1746,824,1767,887,2028,798,1810,876,1404,2485,843,1372,2475,1200,2397,831,2188,917,2177,642,1921,1148,1689,2492,916,1747,1029,1890,456,1168,756,1631,1109,2386,878,1864,1335,2983,795,1340,2505,600,1131,1813,1089,1760,2594,1117,1723,2530,905,2220,849,1433,2303,1516,2199,1218,2597,890,1879,1263,855,1836,1107,2145,1284,2602,822,2052,804,1380,2078,857,1075,2184,792,1823,839,1646,1099,2955,1006,1656,1492,1516,1626,1151,2250,1182,2243,675,1739,2043,794,1713,965,2043,937,2182,1494,2073,1716,2119,2265,2121,1844,262,2688,2980,919,1077,2816,2140,2643,1691,1119,2233,1104,2130,2165,3112,2978,3114,3240,983,1747,3500,4144,3299};
-    public static final int[] MIN_CPS = {0,838,1341,2212,733,1273,2231,781,1296,2175,298,324,1182,303,332,1169,498,975,1762,412,1171,503,1445,619,1463,673,1698,600,1504,668,1137,2125,638,1108,2114,954,2044,626,1850,682,1824,466,1606,905,1393,2129,698,1445,802,1577,279,915,563,1342,872,2033,667,1552,1071,2585,597,1079,2143,423,886,1502,854,1459,2225,871,1419,2162,690,1880,643,1161,1956,1232,1856,966,2229,664,1558,1009,645,1525,870,1811,1027,2233,614,1713,595,1107,1743,641,841,1846,588,1511,634,1353,864,2557,780,1361,1212,1231,1335,905,1903,935,1900,432,1439,1714,590,1412,744,1718,711,1839,1204,1745,1417,1783,1915,1787,1535,152,2314,2582,706,844,2427,1803,2261,1396,872,1890,853,1791,1830,2698,2581,2707,2824,759,1445,3067,3670,2882};
-    public static final int[] CPS_DIFFERENCE = {0,233,291,368,222,284,371,227,286,367,145,153,272,146,153,270,181,248,329,169,273,183,301,205,304,214,330,198,306,208,267,360,205,264,361,246,353,205,338,235,353,176,315,243,296,363,218,302,227,313,177,253,193,289,237,353,211,312,264,398,198,261,362,177,245,311,235,301,369,246,304,368,215,340,206,272,347,284,343,252,368,226,321,254,210,311,237,334,257,369,208,339,209,273,335,216,234,338,204,312,205,293,235,398,226,295,280,285,291,246,347,247,343,243,300,329,204,301,221,325,226,343,290,328,299,336,350,334,309,110,374,398,213,233,389,337,382,295,247,343,251,339,335,414,397,407,416,224,302,433,474,417};
+    private static final String[] POKEDEX = {"nil", "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "NidoranF", "Nidorina", "Nidoqueen", "NidoranM", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew"};
+    private static final String[] POKEMON_FAMILIES = {"nil", "FAMILY_BULBASAUR", "FAMILY_BULBASAUR", "FAMILY_BULBASAUR", "FAMILY_CHARMANDER", "FAMILY_CHARMANDER", "FAMILY_CHARMANDER", "FAMILY_SQUIRTLE", "FAMILY_SQUIRTLE", "FAMILY_SQUIRTLE", "FAMILY_CATERPIE", "FAMILY_CATERPIE", "FAMILY_CATERPIE", "FAMILY_WEEDLE", "FAMILY_WEEDLE", "FAMILY_WEEDLE", "FAMILY_PIDGEY", "FAMILY_PIDGEY", "FAMILY_PIDGEY", "FAMILY_RATTATA", "FAMILY_RATTATA", "FAMILY_SPEAROW", "FAMILY_SPEAROW", "FAMILY_EKANS", "FAMILY_EKANS", "FAMILY_PIKACHU", "FAMILY_PIKACHU", "FAMILY_SANDSHREW", "FAMILY_SANDSHREW", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_NIDORAN", "FAMILY_CLEFAIRY", "FAMILY_CLEFAIRY", "FAMILY_VULPIX", "FAMILY_VULPIX", "FAMILY_JIGGLYPUFF", "FAMILY_JIGGLYPUFF", "FAMILY_ZUBAT", "FAMILY_ZUBAT", "FAMILY_ODDISH", "FAMILY_ODDISH", "FAMILY_ODDISH", "FAMILY_PARAS", "FAMILY_PARAS", "FAMILY_VENONAT", "FAMILY_VENONAT", "FAMILY_DIGLETT", "FAMILY_DIGLETT", "FAMILY_MEOWTH", "FAMILY_MEOWTH", "FAMILY_PSYDUCK", "FAMILY_PSYDUCK", "FAMILY_MANKEY", "FAMILY_MANKEY", "FAMILY_GROWLITHE", "FAMILY_GROWLITHE", "FAMILY_POLIWAG", "FAMILY_POLIWAG", "FAMILY_POLIWAG", "FAMILY_ABRA", "FAMILY_ABRA", "FAMILY_ABRA", "FAMILY_MACHOP", "FAMILY_MACHOP", "FAMILY_MACHOP", "FAMILY_BELLSPROUT", "FAMILY_BELLSPROUT", "FAMILY_BELLSPROUT", "FAMILY_TENTACOOL", "FAMILY_TENTACOOL", "FAMILY_GEODUDE", "FAMILY_GEODUDE", "FAMILY_GEODUDE", "FAMILY_PONYTA", "FAMILY_PONYTA", "FAMILY_SLOWPOKE", "FAMILY_SLOWPOKE", "FAMILY_MAGNEMITE", "FAMILY_MAGNEMITE", "FAMILY_FARFETCHD", "FAMILY_DODUO", "FAMILY_DODUO", "FAMILY_SEEL", "FAMILY_SEEL", "FAMILY_GRIMER", "FAMILY_GRIMER", "FAMILY_SHELLDER", "FAMILY_SHELLDER", "FAMILY_GASTLY", "FAMILY_GASTLY", "FAMILY_GASTLY", "FAMILY_ONIX", "FAMILY_DROWZEE", "FAMILY_DROWZEE", "FAMILY_KRABBY", "FAMILY_KRABBY", "FAMILY_VOLTORB", "FAMILY_VOLTORB", "FAMILY_EXEGGCUTE", "FAMILY_EXEGGCUTE", "FAMILY_CUBONE", "FAMILY_CUBONE", "FAMILY_HITMONLEE", "FAMILY_HITMONCHAN", "FAMILY_LICKITUNG", "FAMILY_KOFFING", "FAMILY_KOFFING", "FAMILY_RHYHORN", "FAMILY_RHYHORN", "FAMILY_CHANSEY", "FAMILY_TANGELA", "FAMILY_KANGASKHAN", "FAMILY_HORSEA", "FAMILY_HORSEA", "FAMILY_GOLDEEN", "FAMILY_GOLDEEN", "FAMILY_STARYU", "FAMILY_STARYU", "FAMILY_MR_MIME", "FAMILY_SCYTHER", "FAMILY_JYNX", "FAMILY_ELECTABUZZ", "FAMILY_MAGMAR", "FAMILY_PINSIR", "FAMILY_TAUROS", "FAMILY_MAGIKARP", "FAMILY_MAGIKARP", "FAMILY_LAPRAS", "FAMILY_DITTO", "FAMILY_EEVEE", "FAMILY_EEVEE", "FAMILY_EEVEE", "FAMILY_EEVEE", "FAMILY_PORYGON", "FAMILY_OMANYTE", "FAMILY_OMANYTE", "FAMILY_KABUTO", "FAMILY_KABUTO", "FAMILY_AERODACTYL", "FAMILY_SNORLAX", "FAMILY_ARTICUNO", "FAMILY_ZAPDOS", "FAMILY_MOLTRES", "FAMILY_DRATINI", "FAMILY_DRATINI", "FAMILY_DRATINI", "FAMILY_MEWTWO", "FAMILY_MEW"};
+    private static final int[][] MAX_EVOLUTION = {{0},{3},{3},{3},{6},{6},{6},{9},{9},{9},{12},{12},{12},{15},{15},{15},{18},{18},{18},{20},{20},{22},{22},{24},{24},{26},{26},{28},{28},{31},{32},{33},{34},{34},{34},{36},{36},{38},{38},{40},{40},{42},{42},{45},{45},{45},{47},{47},{49},{49},{51},{51},{53},{53},{55},{55},{57},{57},{59},{59},{62},{62},{62},{65},{65},{65},{68},{68},{68},{71},{71},{71},{73},{73},{76},{76},{76},{78},{78},{80},{80},{82},{82},{83},{85},{85},{87},{87},{89},{89},{91},{91},{94},{94},{94},{95},{97},{97},{99},{99},{101},{101},{103},{103},{105},{105},{106},{107},{108},{110},{110},{112},{112},{113},{114},{115},{117},{117},{119},{119},{121},{121},{122},{123},{124},{125},{126},{127},{128},{130},{130},{131},{132},{134,135,136},{134},{135},{136},{137},{139},{139},{141},{141},{142},{143},{144},{145},{146},{149},{149},{149},{150},{151}};
+    private static final int[] MAX_CPS = {0,1071,1632,2580,955,1557,2602,1008,1582,2542,443,477,1454,449,485,1439,679,1223,2091,581,1444,686,1746,824,1767,887,2028,798,1810,876,1404,2485,843,1372,2475,1200,2397,831,2188,917,2177,642,1921,1148,1689,2492,916,1747,1029,1890,456,1168,756,1631,1109,2386,878,1864,1335,2983,795,1340,2505,600,1131,1813,1089,1760,2594,1117,1723,2530,905,2220,849,1433,2303,1516,2199,1218,2597,890,1879,1263,855,1836,1107,2145,1284,2602,822,2052,804,1380,2078,857,1075,2184,792,1823,839,1646,1099,2955,1006,1656,1492,1516,1626,1151,2250,1182,2243,675,1739,2043,794,1713,965,2043,937,2182,1494,2073,1716,2119,2265,2121,1844,262,2688,2980,919,1077,2816,2140,2643,1691,1119,2233,1104,2130,2165,3112,2978,3114,3240,983,1747,3500,4144,3299};
+    private static final int[] MIN_CPS = {0,838,1341,2212,733,1273,2231,781,1296,2175,298,324,1182,303,332,1169,498,975,1762,412,1171,503,1445,619,1463,673,1698,600,1504,668,1137,2125,638,1108,2114,954,2044,626,1850,682,1824,466,1606,905,1393,2129,698,1445,802,1577,279,915,563,1342,872,2033,667,1552,1071,2585,597,1079,2143,423,886,1502,854,1459,2225,871,1419,2162,690,1880,643,1161,1956,1232,1856,966,2229,664,1558,1009,645,1525,870,1811,1027,2233,614,1713,595,1107,1743,641,841,1846,588,1511,634,1353,864,2557,780,1361,1212,1231,1335,905,1903,935,1900,432,1439,1714,590,1412,744,1718,711,1839,1204,1745,1417,1783,1915,1787,1535,152,2314,2582,706,844,2427,1803,2261,1396,872,1890,853,1791,1830,2698,2581,2707,2824,759,1445,3067,3670,2882};
+    private static final int[] CPS_DIFFERENCE = {0,233,291,368,222,284,371,227,286,367,145,153,272,146,153,270,181,248,329,169,273,183,301,205,304,214,330,198,306,208,267,360,205,264,361,246,353,205,338,235,353,176,315,243,296,363,218,302,227,313,177,253,193,289,237,353,211,312,264,398,198,261,362,177,245,311,235,301,369,246,304,368,215,340,206,272,347,284,343,252,368,226,321,254,210,311,237,334,257,369,208,339,209,273,335,216,234,338,204,312,205,293,235,398,226,295,280,285,291,246,347,247,343,243,300,329,204,301,221,325,226,343,290,328,299,336,350,334,309,110,374,398,213,233,389,337,382,295,247,343,251,339,335,414,397,407,416,224,302,433,474,417};
+    private static final int[] EVOLUTION_TIER = {0,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,1,2,1,2,1,2,1,2,1,2,3,1,2,1,2,1,2,1,2,1,2,3,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,1,2,3,1,2,3,1,2,3,1,2,1,2,3,1,2,1,2,1,2,1,1,2,1,2,1,2,1,2,1,2,3,1,1,2,1,2,1,2,1,2,1,2,1,1,1,1,2,1,2,1,1,1,1,2,1,2,1,2,1,1,1,1,1,1,1,1,2,1,1,1,2,2,2,1,1,2,1,2,1,1,1,1,1,1,2,3,1,1};
 
     //arrays of all pokemon stamina/atk/def, stardust, CP multipliers at each level
     private static final int[] STAMINAS = {0, 90, 120, 160, 78, 116, 156, 88, 118, 158, 90, 100, 120, 80, 90, 130, 80, 126, 166, 60, 110, 80, 130, 70, 120, 70, 120, 100, 150, 110, 140, 180, 92, 122, 162, 140, 190, 76, 146, 230, 280, 80, 150, 90, 120, 150, 70, 120, 120, 140, 20, 70, 80, 130, 100, 160, 80, 130, 110, 180, 80, 130, 180, 50, 80, 110, 140, 160, 180, 100, 130, 160, 80, 160, 80, 110, 160, 100, 130, 180, 190, 50, 100, 104, 70, 120, 130, 180, 160, 210, 60, 100, 60, 90, 120, 70, 120, 170, 60, 110, 80, 120, 120, 190, 100, 120, 100, 100, 180, 80, 130, 160, 210, 500, 130, 210, 60, 110, 90, 160, 60, 120, 80, 140, 130, 130, 130, 130, 150, 40, 190, 260, 96, 110, 260, 130, 130, 130, 70, 140, 60, 120, 160, 320, 180, 180, 180, 82, 122, 182, 212, 200};
@@ -103,8 +103,7 @@ public class Pokemon implements Serializable {
             getLevelsFromStardust(mStardust, false);
             generateIV();
         }
-        Log.d(TAG, "Pokemon: "+mPokemonName + " min CP "+ calculateCP(0,0,0,CP_MULTIPLIERS[40]));
-        Log.d(TAG, "Pokemon: "+mPokemonName + " max CP "+ calculateCP(15,15,15,CP_MULTIPLIERS[40]));
+
     }
 
 
@@ -137,9 +136,7 @@ public class Pokemon implements Serializable {
                                 double[] ivArrayTemp = {level, staIV, atkIV, defIV, ivPercent};
                                 mIVCombinationsArray.add(ivArrayTemp);
 
-                                //testing purposes
-
-                                Log.d(TAG, "ivCombo " + i + ": level " + level + " CPM " + cpMHolding + " Sta " + staIV + " Atk " + atkIV + " Def " + defIV + " IV percent " + ivPercent + " CP percent 0IVs " + ((float)calculateCP(0,0,0, cpMHolding)/maxCPForLevel)*100);
+                                //Log.d(TAG, "ivCombo " + i + ": level " + level + " CPM " + cpMHolding + " Sta " + staIV + " Atk " + atkIV + " Def " + defIV + " IV percent " + ivPercent + " CP percent 0IVs " + ((float)calculateCP(0,0,0, cpMHolding)/maxCPForLevel)*100);
 
                             } else if (cpHolding > mCP)
                                 break;
@@ -159,11 +156,10 @@ public class Pokemon implements Serializable {
 
         if (mNumberOfResults != 0) {
             sb.append("Estimated average IV% of max is " + String.format(Locale.US, "%.1f", getAverageIV()) + "%, (range " + String.format(Locale.US, "%.1f", mIVPercentRange.get(0)) + "% to " + String.format(Locale.US, "%.1f", mIVPercentRange.get(mIVPercentRange.size() - 1)) + "%), " + mNumberOfResults + " possible combinations.\n\n");
-            String[] maxEvolved = getMaxEvolved();
+            int[] maxEvolved = MAX_EVOLUTION[mPokemonNumber];
             for(int i=0; i<maxEvolved.length; i++) {
-                int pokemonNumber = getPokemonNumberFromName(maxEvolved[i]);
                 double maxedCPPercent = calculateMaxLevelAverageCPPercent(mIVCombinationsArray,maxEvolved[i]);
-                sb.append("A max leveled "+ maxEvolved[i] + " with this average IV% would have a CP of ~" + String.format(Locale.US, "%.1f", (maxedCPPercent*(CPS_DIFFERENCE[pokemonNumber])/100.0+MIN_CPS[pokemonNumber])) + " (" +String.format(Locale.US, "%.1f", maxedCPPercent)+"), versus a max of " + MAX_CPS[pokemonNumber] +" and a min of " + MIN_CPS[pokemonNumber]+".\n");
+                sb.append("A max leveled "+ POKEDEX[maxEvolved[i]] + " with this average IV% would have a CP of ~" + (int)(maxedCPPercent*(CPS_DIFFERENCE[maxEvolved[i]])/100.0+MIN_CPS[maxEvolved[i]]) + " (" +String.format(Locale.US, "%.1f", maxedCPPercent)+"%), versus a max of " + MAX_CPS[maxEvolved[i]] +" and a min of " + MIN_CPS[maxEvolved[i]]+".\n");
             }
             sb.append(" \n");
             sb.append("Listed as Stamina/Attack/Defence\n");
@@ -219,7 +215,7 @@ public class Pokemon implements Serializable {
         return temp;
     }
 
-    private int getPokemonNumberFromName(String pokemonName) {
+    public static int getPokemonNumberFromName(String pokemonName) {
         int pokemonNumber = 0;
         for (int i = 0; i < POKEDEX.length; i++) {
             if (pokemonName.equals(POKEDEX[i])) {
@@ -305,39 +301,37 @@ public class Pokemon implements Serializable {
         return mLevelRange;
     }
 
-    public String[] getMaxEvolved(){
-        String[] evolution = new String[MAX_EVOLUTION[mPokemonNumber].length];
-        for (int i = 0; i <MAX_EVOLUTION[mPokemonNumber].length; i++) {
-            evolution[i] = POKEDEX[MAX_EVOLUTION[mPokemonNumber][i]];
+    public static String[] getMaxEvolved(int pokemonNumber){
+        String[] evolution = new String[MAX_EVOLUTION[pokemonNumber].length];
+        for (int i = 0; i <MAX_EVOLUTION[pokemonNumber].length; i++) {
+            evolution[i] = POKEDEX[MAX_EVOLUTION[pokemonNumber][i]];
         }
         return evolution;
     }
 
     public boolean isMaxEvolved(){
-        if(MAX_EVOLUTION[mPokemonNumber][0]==0) {
+        if(MAX_EVOLUTION[mPokemonNumber][0]==mPokemonNumber) {
             return true;
         }
         return false;
     }
 
-    public String getEvolvesFrom() {
-        return POKEDEX[EVOLVES_FROM[mPokemonNumber]];
-    }
 
     //returns the max/min CP of the highest level of fully evolved form of pokemon
-    public int getMaxCP(String pokemonName) {
-        int pokemonNumber = getPokemonNumberFromName(pokemonName);
+    public static int getMaxCP(int pokemonNumber) {
         return MAX_CPS[pokemonNumber];
     }
 
-    public int getMinCP(String pokemonName) {
-        int pokemonNumber = getPokemonNumberFromName(pokemonName);
+    public static int getMinCP(int pokemonNumber) {
         return MIN_CPS[pokemonNumber];
     }
 
+    public static int getCPDifference(int pokemonNumber) {
+        return CPS_DIFFERENCE[pokemonNumber];
+    }
+
     //returns the average CP %tage at max level and evolution for the given IV combinations
-    public double calculateMaxLevelAverageCPPercent(ArrayList<double[]> ivCombos, String pokemonName){
-        int pokemonNumber = getPokemonNumberFromName(pokemonName);
+    public static double calculateMaxLevelAverageCPPercent(ArrayList<double[]> ivCombos, int pokemonNumber){
         ArrayList<Double> list = new ArrayList<Double>();
         double sum = 0.0;
         for(double[] ivCombo:ivCombos) {
@@ -373,5 +367,9 @@ public class Pokemon implements Serializable {
 
     public String getPngFileName(){
         return PNG_FILENAME[mPokemonNumber];
+    }
+
+    public static String[] getPokedex(){
+        return POKEDEX;
     }
 }
