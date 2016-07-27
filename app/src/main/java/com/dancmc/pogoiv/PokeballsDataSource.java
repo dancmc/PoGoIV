@@ -22,6 +22,7 @@ public class PokeballsDataSource {
     private String[] allColumns = {PokeballsDbHelper.COLUMN_ID,
             PokeballsDbHelper.POGOIV_ID,
             PokeballsDbHelper.POKEBALL_NUMBER,
+            PokeballsDbHelper.POKEBALL_LIST_NUMBER,
             PokeballsDbHelper.POKEMON_NAME,
             PokeballsDbHelper.NICKNAME,
             PokeballsDbHelper.POKEMON_NUMBER,
@@ -43,7 +44,7 @@ public class PokeballsDataSource {
         mDbHelper = PokeballsDbHelper.getInstance(context);
     }
 
-    public void setPokeballData(Pokemon pokemon, int pokeballNumber) {
+    public void setPokemonData(Pokemon pokemon, int pokeballNumber, int pokeballListNumber) {
         for (int i = 0; i < pokemon.getNumberOfResults(); i++) {
 
             ContentValues values = new ContentValues();
@@ -52,6 +53,7 @@ public class PokeballsDataSource {
             values.put(PokeballsDbHelper.POKEMON_NAME, pokemon.getPokemonName());
             values.put(PokeballsDbHelper.POKEMON_NUMBER, pokemon.getPokemonNumber());
             values.put(PokeballsDbHelper.POKEMON_FAMILY, pokemon.getPokemonFamily());
+            values.put(PokeballsDbHelper.POKEBALL_LIST_NUMBER, pokeballListNumber);
             values.put(PokeballsDbHelper.HP, pokemon.getHP());
             values.put(PokeballsDbHelper.CP, pokemon.getCP());
             values.put(PokeballsDbHelper.STARDUST, pokemon.getStardust());
@@ -68,10 +70,15 @@ public class PokeballsDataSource {
         }
     }
 
-    public ArrayList<Pokemon> getAllPokeballs() {
-        ArrayList<Pokemon> pokeballs = new ArrayList<Pokemon>(Arrays.asList(new Pokemon[]{null, null, null, null, null, null, null, null}));
+    public void replacePokemonData(){
+        //TODO  - should take parameters indicating which Pokeball and which position in the list, and the new Pokemon object to replace with
+    }
+
+    public Pokeballs getAllPokeballs() {
+        Pokeballs pokeballs = new Pokeballs();
+        Cursor cursor = mDbHelper.getReadableDatabase().query(mDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.POKEBALL_NUMBER, mDbHelper.POKEMON_NAME, mDbHelper.HP, mDbHelper.CP, mDbHelper.STARDUST, mDbHelper.FRESH_MEAT, mDbHelper.LEVEL, mDbHelper.POGOIV_ID}, mDbHelper.POKEBALL_NUMBER + "=" + i, null, mDbHelper.LEVEL, null, null);
         for (int i = 1; i < 7; i++) {
-            Cursor cursor = mDbHelper.getReadableDatabase().query(mDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.POKEBALL_NUMBER, mDbHelper.POKEMON_NAME, mDbHelper.HP, mDbHelper.CP, mDbHelper.STARDUST, mDbHelper.FRESH_MEAT, mDbHelper.LEVEL, mDbHelper.POGOIV_ID}, mDbHelper.POKEBALL_NUMBER + "=" + i, null, mDbHelper.LEVEL, null, null);
+
             cursor.moveToFirst();
             Pokemon tempPokemon;
 
@@ -151,7 +158,7 @@ public class PokeballsDataSource {
         return sb2.toString()+sb.toString();
     }
 
-    public void deletePokeball(int i) {
-        mDbHelper.getWritableDatabase().delete(mDbHelper.POKEBALLS_TABLE, mDbHelper.POKEBALL_NUMBER + "=" + i, null);
+    public void deletePokeball(int pokeballNumber, int pokeballListNumber) {
+        mDbHelper.getWritableDatabase().delete(mDbHelper.POKEBALLS_TABLE, mDbHelper.POKEBALL_NUMBER + "=" + pokeballNumber+ " AND " + mDbHelper.POKEBALL_LIST_NUMBER+"="+pokeballListNumber, null);
     }
 }

@@ -28,6 +28,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String POGOIV_ID = "pogoiv_id";
     public static final String POKEBALL_NUMBER = "pokeball_number";
+    public static final String POKEBALL_LIST_NUMBER = "pokeball_list_number";
     public static final String POKEMON_NAME = "pokemon_name";
     public static final String NICKNAME = "nickname";
     public static final String POKEMON_NUMBER = "pokemon_number";
@@ -55,6 +56,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
                 +COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +POGOIV_ID+" INTEGER, "
                 +POKEBALL_NUMBER+" INTEGER,"
+                +POKEBALL_LIST_NUMBER+" INTEGER "
                 +POKEMON_NAME+" TEXT, "
                 +NICKNAME+" TEXT, "
                 +POKEMON_NUMBER+" INTEGER, "
