@@ -5,18 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.dancmc.pogoiv.MainActivity">
-<TabHost
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"></TabHost>
+    tools:context=".MainActivity">
+
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:fillViewport="true"
+        android:padding="16dp"
         android:scrollbars="vertical">
 
         <LinearLayout
@@ -113,20 +109,36 @@
 
             <TextView
                 android:id="@+id/output"
-                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp" />
         </LinearLayout>
     </ScrollView>
 
+
     <ImageButton
-        android:id="@+id/fab"
+        android:id="@+id/add_button"
         android:layout_width="@dimen/fab_size"
         android:layout_height="@dimen/fab_size"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
         android:background="@drawable/fab"
         android:elevation="8dp"
         android:src="@drawable/ic_add_white_24px" />
+
+    <Button
+        android:layout_width="108dp"
+        android:layout_height="48dp"
+        android:text="PokeBox"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="90dp"
+        android:textColor="@android:color/white"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        android:background="@drawable/shape_rectangle"/>
 
 </RelativeLayout>

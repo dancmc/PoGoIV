@@ -32,7 +32,7 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
 
         RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.pokeball_grid);
 
-        mAdapter = new PokeboxViewAdapter(getActivity(), Pokeballs.getPokeballsInstance());
+        mAdapter = new PokeboxViewAdapter(getActivity());
         mAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

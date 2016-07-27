@@ -16,7 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 
-public class IVCalculatorFragment extends Fragment {
+public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.Contract>{
 
     //Views and utility stuff
     private AutoCompleteTextView mPokemonNameInput;
@@ -78,7 +78,7 @@ public class IVCalculatorFragment extends Fragment {
                     mStringBuilder.append(mPokemon.getStringOutput());
                 }
                 mOutputView.setText(mStringBuilder.toString());
-
+                mFreshMeatInput.setChecked(false);
             }
         });
 
@@ -128,6 +128,12 @@ public class IVCalculatorFragment extends Fragment {
 
         }
         return number;
+    }
+
+    public interface Contract {
+        public void addButtonPressed(Pokemon pokemon);
+
+        public void pokeboxButtonPressed();
     }
 
 }

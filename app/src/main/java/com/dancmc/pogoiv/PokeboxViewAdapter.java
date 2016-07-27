@@ -37,22 +37,22 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
         }
     }
 
-    private ArrayList<Pokeball> mPokeballs;
     private Context context;
     private AdapterView.OnItemClickListener mOnItemClickListener;
 
-    public PokeboxViewAdapter(Context context, ArrayList<Pokeball> pokeballs) {
-        this.mPokeballs=pokeballs;
+    public PokeboxViewAdapter(Context context) {
         this.context = context;
     }
 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Pokeball pokeball = mPokeballs.get(position);
+        Pokeball pokeball = Pokeballs.getPokeballsInstance().get(position);
         //sets the cardview layout of this adapter to the pokeball nickname and picture of highest evolved pokemon inside pokeball
         holder.pokeballNickname.setText(pokeball.getNickname());
         holder.pokeballPicture.setImageResource(context.getResources().getIdentifier(Pokemon.getPngFileName(pokeball.getHighestEvolvedPokemonNumber()), "drawable", context.getPackageName()));
+        holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        holder.pokeballPicture.setBackgroundResource(R.drawable.circle_background);
     }
 
     @Override
@@ -69,6 +69,6 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
 
     @Override
     public int getItemCount() {
-        return mPokeballs.size();
+        return Pokeballs.getPokeballsInstance().size();
     }
 }

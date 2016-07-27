@@ -38,6 +38,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
     public static final String CP = "cp";
     public static final String STARDUST = "stardust";
     public static final String LEVEL = "level";
+    public static final String KNOWN_LEVEL = "known_level";
     public static final String STA_IV = "sta_iv";
     public static final String ATK_IV = "atk_iv";
     public static final String DEF_IV = "def_iv";
@@ -66,6 +67,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
                 +CP+" INTEGER, "
                 +STARDUST+" INTEGER, "
                 +LEVEL+" INTEGER, "
+                +KNOWN_LEVEL+" INTEGER "
                 +STA_IV+" INTEGER, "
                 +ATK_IV+" INTEGER, "
                 +DEF_IV+" INTEGER, "
