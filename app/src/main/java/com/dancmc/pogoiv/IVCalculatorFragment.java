@@ -103,16 +103,19 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPokemon.getNumberOfResults() == 0) {
-                    Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_LONG)
-                            .show();
-                    return;
-                }
+
                 if (mPokemon == null) {
                     Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_LONG)
                             .show();
                     return;
                 }
+
+                if (mPokemon.getNumberOfResults() == 0) {
+                    Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_LONG)
+                            .show();
+                    return;
+                }
+
                 getContract().addButtonPressed(mPokemon);
             }
         });

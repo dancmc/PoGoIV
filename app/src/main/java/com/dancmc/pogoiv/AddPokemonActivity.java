@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
-public class AddPokemonActivity extends AppCompatActivity implements PokeboxFragment.Contract {
+public class AddPokemonActivity extends AppCompatActivity implements PokeboxFragment.Contract, ViewPokeballFragment.Contract {
 
     public static final String EXTRA = "APA_Pokemon";
     private static final String TAG = "AddPokemonActivity";
@@ -26,8 +26,6 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
     private TextView mAddCardIV;
     private ImageButton mAddCardCancelButton;
     private TextView mTextPrompt;
-
-    private FloatingActionButton mFAB;
 
     private Pokemon mPokemonToAdd;
     private PokeballsDataSource mDataSource;
@@ -41,6 +39,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
         setContentView(R.layout.activity_add_pokemon);
 
         mPokemonToAdd = (Pokemon) getIntent().getSerializableExtra(EXTRA);
+        //adding a temporary empty pokeball with an AddBall flag to trick PokeboxFragment into showing an add new "button"
         Pokeball tempPokeball = new Pokeball();
         tempPokeball.setCustomAddBall(true);
         Pokeballs.getPokeballsInstance().add(tempPokeball);
@@ -54,17 +53,9 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
         mAddCardIV = (TextView) findViewById(R.id.add_pokemon_card_IV);
         mAddCardCancelButton = (ImageButton) findViewById(R.id.add_pokemon_card_cancel);
         mTextPrompt = (TextView) findViewById(R.id.add_activity_text_prompt);
-        mFAB = (FloatingActionButton) findViewById(R.id.add_activity_fab);
-
-        mFAB.setVisibility(View.INVISIBLE);
-        mFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
 
+        //setting up persistent Add Card at the top of screen
         mAddCardImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemonToAdd.getPokemonNumber()), "drawable", getPackageName()));
         if (mPokemonToAdd.getCP() > 0) {
             mAddCardCP.setText("" + mPokemonToAdd.getCP());
@@ -72,7 +63,6 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
             mAddCardCP.setText("nil");
         }
         if (mPokemonToAdd.getHP() > 0) {
-            Log.d(TAG, "onCreate: gothere" + mPokemonToAdd.getCP());
             mAddCardHP.setText("" + mPokemonToAdd.getHP());
         } else {
             mAddCardHP.setText("nil");
@@ -96,6 +86,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
             }
         });
 
+        //and then start the ball rolling with the PokeboxFragment
         if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) == null) {
             mPokeboxFragment = new PokeboxFragment();
 
@@ -112,7 +103,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
         if (Pokeballs.getPokeballsInstance().get(position).isCustomAddBall()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Add Pokemon")
-                    .setMessage("Do you want to add the current Pokemon to a new Pokeball?")
+                    .setMessage("Do you want to add the Pokemon to a new Pokeball?")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(final DialogInterface dialog, int which) {
@@ -150,14 +141,102 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                     .replace(R.id.add_activity_fragment_container, mViewPokeballFragment)
                     .commit();
             mTextPrompt.setText("Press the + button to add to this Pokeball.");
-            mFAB.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onBackPressed() {
+        if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof ViewPokeballFragment) {
+            if (mPokeboxFragment == null) {
+                mPokeboxFragment = new PokeboxFragment();
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.add_activity_fragment_container, mPokeboxFragment)
+                    .commit();
+        }
         //TODO : are you sure you want to exit
         Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
         super.onBackPressed();
+    }
+
+    @Override
+    public void onViewSummaryClick(String s) {
+
+    }
+
+
+    //the position is the number of the pokeball in the singleton
+    @Override
+    public void onAddFabClick(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add Pokemon")
+                .setMessage("Do you want to add the Pokemon to this existing Pokeball?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        Pokeball pokeball = Pokeballs.getPokeballsInstance().get(position);
+
+                        //null & no combis already handled in calc fragment
+                        //handle scenario when already added pokemon
+                        for (int i = 0; i < pokeball.size(); i++) {
+                            if (pokeball.get(i).customEquals(mPokemonToAdd)) {
+                                Toast.makeText(AddPokemonActivity.this, "You have added the same Pokemon before!", Toast.LENGTH_LONG)
+                                        .show();
+                                return;
+                            }
+                        }
+
+                        //handle scenario when different family
+                        for (int i = 0; i < pokeball.size(); i++) {
+                            if(pokeball.get(i).getPokemonFamily()!=mPokemonToAdd.getPokemonFamily()){
+                                Toast.makeText(AddPokemonActivity.this, "These Pokemon are from different families!", Toast.LENGTH_LONG)
+                                        .show();
+                                return;
+                            }
+                        }
+
+                        //handle scenario when different evolution paths (need to change code later on to handle Wurmple)
+                        for (int i = 0; i < pokeball.size(); i++) {
+                            if((pokeball.get(i).getEvolutionTier()==mPokemonToAdd.getEvolutionTier()&&(pokeball.get(i).getPokemonNumber()!=mPokemonToAdd.getPokemonNumber()))){
+                                Toast.makeText(AddPokemonActivity.this, "These Pokemon are from different evolution paths!", Toast.LENGTH_LONG)
+                                        .show();
+                                return;
+                            }
+                        }
+
+
+                        mPokemonToAdd.setNickname(pokeball.getNickname());
+                        Pokeballs.getPokeballsInstance().get(position).add(mPokemonToAdd);
+
+                        int highestTier = 0;
+                        int highestEvolved = 0;
+                        for (int i = 0; i < Pokeballs.getPokeballsInstance().get(position).size(); i++) {
+                            int tier = Pokeballs.getPokeballsInstance().get(position).get(i).getEvolutionTier();
+                            if (tier > highestTier) {
+                                highestTier = tier;
+                                highestEvolved = i;
+                            }
+                        }
+                        Pokeballs.getPokeballsInstance().get(position).setHighestEvolvedPokemonNumber(Pokeballs.getPokeballsInstance().get(position).get(highestEvolved).getPokemonNumber());
+
+
+                        new AsyncTask<Integer, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Integer... params) {
+                                mDataSource.setPokemonData(mPokemonToAdd, position, Pokeballs.getPokeballsInstance().get(position).size()-1);
+                                return null;
+                            }
+                        }.execute();
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

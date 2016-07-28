@@ -159,7 +159,8 @@ public class PokeballsDataSource {
         double lowest = cursor.getDouble(4);
 
         StringBuilder ivCompareList = new StringBuilder();
-        ivCompareList.append("Sta/Atk/Def\n");
+
+        ivCompareList.append("\nSta/Atk/Def\n");
         while (!cursor.isAfterLast()) {
             ivCompareList.append(cursor.getPosition() + " : " + cursor.getInt(0) + "/" + cursor.getInt(1) + "/" + cursor.getInt(2) + "   " + String.format(Locale.US, "%.1f", cursor.getDouble(4)) + "%\n");
             averagePercent += cursor.getDouble(4);
@@ -183,18 +184,24 @@ public class PokeballsDataSource {
             int pokeNumber = Pokemon.getPokemonNumberFromName(maxEvolved[i]);
             double maxedCPPercent = Pokemon.calculateMaxLevelAverageCPPercent(ivCombos, pokeNumber);
             stringResult3+=(int)maxedCPPercent+ " ";
-            summary.append("A max leveled " + maxEvolved[i] + " with this average IV% would have a CP of ~" + String.format(Locale.US, "%.0f", (maxedCPPercent * (Pokemon.getCPDifference(pokeNumber)) / 100.0 + Pokemon.getMinCP(pokeNumber))) + " (" + String.format(Locale.US, "%.1f", maxedCPPercent) + "%), versus a max of " + Pokemon.getMaxCP(pokeNumber) + " and a min of " + Pokemon.getMinCP(pokeNumber) + ".\n");
+            summary.append("A max leveled " + maxEvolved[i] + " with this average IV% would have a CP of ~" + String.format(Locale.US, "%.0f", (maxedCPPercent * (Pokemon.getCPDifference(pokeNumber)) / 100.0 + Pokemon.getMinCP(pokeNumber))) + " (" + String.format(Locale.US, "%.1f", maxedCPPercent) + "%), versus a perfect max of " + Pokemon.getMaxCP(pokeNumber) + " and a min of " + Pokemon.getMinCP(pokeNumber) + ".\n");
         }
         summary.append(" \n");
         if(Pokeballs.getPokeballsInstance().get(position).size()==1){
-            summary.append("No comparison done, there is only one dataset for this Pokemon, with " + cursor.getCount() + " IV combinations found, average IV% is " + String.format(Locale.US, "%.1f", averagePercent) + "% (range " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%).\n\n");
+            summary.append("No comparison done as only one dataset for this Pokemon. " + cursor.getCount() + " IV combinations found, average IV% " + String.format(Locale.US, "%.1f", averagePercent) + "% (range " + String.format(Locale.US, "%.1f", lowest) + " - " + String.format(Locale.US, "%.1f", highest) + "%).\n\n");
         }else {
-            summary.append("There are " + cursor.getCount() + " overlapping combinations found, with an average power of " + String.format(Locale.US, "%.1f", averagePercent) + "% (range of " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%).\n\n");
+            summary.append("There are " + cursor.getCount() + " overlapping combinations found, average IV% " + String.format(Locale.US, "%.1f", averagePercent) + "% (range " + String.format(Locale.US, "%.1f", lowest) + " - " + String.format(Locale.US, "%.1f", highest) + "%).\n\n");
         }
+        summary.append("(CLICK FOR COMPARISON LIST)");
         result[2] = ""+(int)averagePercent;
         result[3] = stringResult3.trim();
         result[4] = summary.toString();
-        result[5] = ivCompareList.toString();
+        if(Pokeballs.getPokeballsInstance().get(position).size() == 1) {
+            result[5] = "No comparison done, only 1 dataset.";
+
+        } else{
+            result[5] = ivCompareList.toString();
+        }
 
         return result;
     }

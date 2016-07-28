@@ -19,6 +19,7 @@
             card_view:ratio="1">
         <ImageView
             android:id="@+id/pokeball_image"
+            android:padding="4dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@android:drawable/ic_input_add"

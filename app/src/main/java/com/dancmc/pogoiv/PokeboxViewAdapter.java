@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private final ImageView pokeballPicture;
         private final TextView pokeballNickname;
 
@@ -26,6 +26,7 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
             pokeballPicture = (ImageView) v.findViewById(R.id.pokeball_image);
             pokeballNickname = (TextView) v.findViewById(R.id.pokeball_nickname);
             v.setOnClickListener(this);
+            v.setOnLongClickListener(this);
         }
 
         @Override
@@ -35,10 +36,19 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
                 mOnItemClickListener.onItemClick(null, v, getLayoutPosition(), 0);
             }
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (mOnItemLongClickListener != null) {
+                mOnItemLongClickListener.onItemLongClick(null, v, getLayoutPosition(), 0);
+            }
+            return true;
+        }
     }
 
     private Context context;
     private AdapterView.OnItemClickListener mOnItemClickListener;
+    private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
 
     public PokeboxViewAdapter(Context context) {
         this.context = context;
@@ -57,7 +67,7 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
             holder.pokeballNickname.setText(pokeball.getNickname());
             holder.pokeballPicture.setImageResource(context.getResources().getIdentifier(Pokemon.getPngFileName(pokeball.getHighestEvolvedPokemonNumber()), "drawable", context.getPackageName()));
             holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            holder.pokeballPicture.setBackgroundResource(R.drawable.circle_background);
+            holder.pokeballPicture.setBackgroundResource(R.drawable.inset_circle_background);
         }
     }
 
@@ -71,6 +81,10 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
     //OnItemClickListener object takes the concrete object that you defined in MainActivity
     public void setOnItemClickListener(AdapterView.OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
+    }
+
+    public void setOnItemLongClickListener(AdapterView.OnItemLongClickListener mOnItemLongClickListener) {
+        this.mOnItemLongClickListener = mOnItemLongClickListener;
     }
 
     @Override

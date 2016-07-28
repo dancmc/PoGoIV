@@ -7,12 +7,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract {
+public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract, ViewPokeballFragment.Contract {
 
     private static final String TAG = "MainActivity";
     private IVCalculatorFragment mCalcFragment;
     private PokeboxFragment mPokeboxFragment;
     private ViewPokeballFragment mViewPokeballFragment;
+    private CompareSummaryFragment mCompareSummaryFragment;
 
     private Toast mToast;
     private long mLastPressed;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
         mDataSource = new PokeballsDataSource(this);
 
-        new AsyncTask<Void,Void,Void>() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 Pokeballs.getPokeballsInstance().addAll(mDataSource.getAllPokeballs());
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         startActivity(i);
     }
 
+    //null & no combinations handled in calculator fragment
     @Override
     public void pokeboxButtonPressed() {
         if (mPokeboxFragment == null) {
@@ -87,6 +89,20 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mViewPokeballFragment)
                 .commit();
+    }
+
+    @Override
+    public void onViewSummaryClick(String s) {
+        mCompareSummaryFragment = new CompareSummaryFragment();
+        mCompareSummaryFragment.setText(s);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mCompareSummaryFragment)
+                .commit();
+    }
+
+    @Override
+    public void onAddFabClick(int position) {
+        //TODO : go to editpokemonfragment
     }
 
     /**
@@ -115,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment_container, mPokeboxFragment)
+                    .commit();
+        } else if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof CompareSummaryFragment) {
+            if (mViewPokeballFragment == null) {
+                mViewPokeballFragment = new ViewPokeballFragment();
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_fragment_container, mViewPokeballFragment)
                     .commit();
         } else if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof IVCalculatorFragment) {
             long currentTime = System.currentTimeMillis();

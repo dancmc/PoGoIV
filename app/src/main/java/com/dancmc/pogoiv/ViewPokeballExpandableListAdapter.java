@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,11 +19,13 @@ public class ViewPokeballExpandableListAdapter extends BaseExpandableListAdapter
     private Context mContext;
     private ArrayList<String> mListHeaders;
     private ArrayList<String> mListBodies;
+    private ArrayList<Integer> mListImages;
 
-    public ViewPokeballExpandableListAdapter(Context context, ArrayList<String> listHeaders, ArrayList<String> listBodies) {
+    public ViewPokeballExpandableListAdapter(Context context, ArrayList<String> listHeaders, ArrayList<String> listBodies, ArrayList<Integer> listImages) {
         mContext = context;
         mListHeaders = listHeaders;
         mListBodies = listBodies;
+        mListImages = listImages;
     }
 
     @Override
@@ -68,16 +71,23 @@ public class ViewPokeballExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String header = (String)getGroup(groupPosition);
+        int imageResource = mListImages.get(groupPosition);
+
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.pokeball_view_elv_header, null);
         }
-        TextView elvHeader = (TextView) convertView.findViewById(R.id.pokeball_view_elv_header);
-        elvHeader.setTypeface(null, Typeface.BOLD);
-        elvHeader.setText(header);
+
+        ImageView elvHeaderImage = (ImageView) convertView.findViewById(R.id.elv_header_image);
+        TextView elvHeaderText = (TextView) convertView.findViewById(R.id.elv_header_text);
+        elvHeaderText.setTypeface(null, Typeface.BOLD);
+        elvHeaderText.setText(header);
+        elvHeaderImage.setImageResource(imageResource);
         return convertView;
     }
+
+
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {

@@ -1,13 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="8dp"
     tools:context=".MainActivity">
 
 
     <LinearLayout
+        android:id="@+id/pokeball_view_toppart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -38,16 +40,60 @@
                         android:scaleType="centerCrop" />
                 </com.example.daniel.material.RatioLayout>
 
-                <TextView
-                    android:id="@+id/pokeball_view_nickname"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/photo"
-                    android:gravity="center"
-                    android:text="test"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="18sp" />
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"><TextView
+                        android:id="@+id/pokeball_view_nickname"
+                        android:layout_weight="8"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/shape_rectangle_clear"
+
+                        android:gravity="center"
+                        android:text="test"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="18sp" /> <ImageButton
+                        android:id="@+id/pokeball_view_edit_nickname_button"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_create_black_24px"
+                        android:background="@drawable/shape_rectangle_clear"
+                        android:layout_height="match_parent" /></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"><EditText
+                        android:id="@+id/pokeball_view_nickname_edittext"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="8"
+                        android:background="@drawable/shape_rectangle_clear"
+                        android:gravity="center"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="18sp" />
+
+
+
+                        <ImageButton
+                            android:id="@+id/pokeball_view_save_nickname_button"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_done_black_24px"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/shape_rectangle_clear"
+                            /></LinearLayout>
+
+
+
+
+
+                </RelativeLayout>
             </LinearLayout>
         </com.example.daniel.material.RatioLayout>
 
@@ -130,30 +176,29 @@
         </com.example.daniel.material.RatioLayout>
     </LinearLayout>
 
+
     <TextView
         android:id="@+id/pokeball_view_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/pokeball_view_toppart"
         android:minHeight="40dp" />
 
-    <ScrollView
+    <ExpandableListView
+        android:id="@+id/pokeball_view_expandableLV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pokeball_view_summary"
+        android:headerDividersEnabled="false"
+        android:indicatorLeft="300dp"
+        android:indicatorRight="420dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ExpandableListView
-                android:id="@+id/pokeball_view_expandableLV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></ExpandableListView>
-
-            <TextView
-                android:id="@+id/iv_compare_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_activity_fab"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white_24px" />
+</RelativeLayout>

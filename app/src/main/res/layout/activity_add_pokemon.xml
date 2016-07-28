@@ -205,13 +205,4 @@
     </FrameLayout>
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_activity_fab"
-        android:layout_width="@dimen/fab_size"
-        android:layout_height="@dimen/fab_size"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_white_24px"/>
-
 </RelativeLayout>

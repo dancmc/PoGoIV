@@ -155,8 +155,8 @@ public class Pokemon implements Serializable {
         }
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Pokemon Name is " + mPokemonName + ", Pokedex Number " + mPokemonNumber + "\n");
-        sb.append("CP : "+mCP+", ");
+        sb.append("#"+mPokemonNumber+ " "+mPokemonName+"\n\n");
+        /*sb.append("CP : "+mCP+", ");
         if (mHP > 0) {
             sb.append("HP : " + mHP + ", ");
         } else {
@@ -171,18 +171,18 @@ public class Pokemon implements Serializable {
             sb.append("has not been powered up.\n\n");
         } else {
             sb.append("has been powered up.\n\n");
-        }
+        }*/
 
-        sb.append("Possible Level Range is " + mLevelRange.get(0) + " to " + mLevelRange.get(mLevelRange.size() - 1) + "\n");
+        sb.append("Level Range " + mLevelRange.get(0) + " to " + mLevelRange.get(mLevelRange.size() - 1) + "\n");
 
 
         if (mNumberOfResults != 0) {
             mAverageIVPercent = calculateAverageIV();
-            sb.append("Estimated average IV% of max is " + String.format(Locale.US, "%.1f", mAverageIVPercent) + "%, (range " + String.format(Locale.US, "%.1f", Collections.min(mIVPercentRange)) + "% to " + String.format(Locale.US, "%.1f", Collections.max(mIVPercentRange)) + "%), " + mNumberOfResults + " possible combinations.\n\n");
+            sb.append("Average IV% is " + String.format(Locale.US, "%.1f", mAverageIVPercent) + "%, (range " + String.format(Locale.US, "%.1f", Collections.min(mIVPercentRange)) + " - " + String.format(Locale.US, "%.1f", Collections.max(mIVPercentRange)) + "%), " + mNumberOfResults + " possible combinations.\n\n");
             int[] maxEvolved = MAX_EVOLUTION[mPokemonNumber];
             for (int i = 0; i < maxEvolved.length; i++) {
                 double maxedCPPercent = calculateMaxLevelAverageCPPercent(mIVCombinationsArray, maxEvolved[i]);
-                sb.append("A max leveled " + POKEDEX[maxEvolved[i]] + " with this average IV% would have a CP of ~" + (int) (maxedCPPercent * (CPS_DIFFERENCE[maxEvolved[i]]) / 100.0 + MIN_CPS[maxEvolved[i]]) + " (" + String.format(Locale.US, "%.1f", maxedCPPercent) + "%), versus a max of " + MAX_CPS[maxEvolved[i]] + " and a min of " + MIN_CPS[maxEvolved[i]] + ".\n");
+                sb.append("A max level " + POKEDEX[maxEvolved[i]] + " with this average IV% would have a CP of ~" + (int) (maxedCPPercent * (CPS_DIFFERENCE[maxEvolved[i]]) / 100.0 + MIN_CPS[maxEvolved[i]]) + " (" + String.format(Locale.US, "%.1f", maxedCPPercent) + "%), versus a max of " + MAX_CPS[maxEvolved[i]] + " and a min of " + MIN_CPS[maxEvolved[i]] + ".\n");
             }
             sb.append(" \n");
             sb.append("Listed as Stamina/Attack/Defence\n");
@@ -371,7 +371,9 @@ public class Pokemon implements Serializable {
         for (double cpPercent : list) {
             sum += cpPercent;
         }
-        return sum / (double) list.size() * 100.0;
+
+        Log.d(TAG, "calculateMaxLevelAverageCPPercent: "+sum);
+        return sum / (double) list.size()*100.0;
     }
 
     public static double calculateAverageCPPercentAtLevel(ArrayList<double[]> ivCombos, int pokemonNumber, int level) {
