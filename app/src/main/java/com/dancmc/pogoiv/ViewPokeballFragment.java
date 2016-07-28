@@ -55,6 +55,7 @@ public class ViewPokeballFragment extends Fragment {
         mELV = (ExpandableListView) v.findViewById(R.id.pokeball_view_expandableLV);
         mDataSource = new PokeballsDataSource(getActivity());
 
+        /*
         int highestTier = 0;
         int highestEvolved = 0;
         for (int i = 0; i < mPokeball.size(); i++) {
@@ -63,13 +64,13 @@ public class ViewPokeballFragment extends Fragment {
                 highestTier = tier;
                 highestEvolved = i;
             }
-        }
+        }*/
 
-        mPokemonImage.setImageResource(getResources().getIdentifier(mPokeball.get(highestEvolved).getPngFileName(), "drawable", getActivity().getPackageName()));
+        mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.getHighestEvolvedPokemonNumber()), "drawable", getActivity().getPackageName()));
         mPokemonImage.setBackgroundResource(R.drawable.circle_background);
         mNickname.setText(mPokeball.get(0).getNickname());
 
-        String[] result = mDataSource.compareAllPokeballs(mPokeball, mPosition);
+        String[] result = mDataSource.compareAllPokemon(mPosition);
         if (Integer.parseInt(result[0]) == 0) {
             mSummary.setText(result[1]);
         } else {
@@ -93,10 +94,16 @@ public class ViewPokeballFragment extends Fragment {
                 sb.append("HP : nil  ");
             }
             if (mPokeball.get(i).getStardust() > 0) {
-                sb.append("Stardust : " + mPokeball.get(i).getStardust() + "");
+                sb.append("Stardust : " + mPokeball.get(i).getStardust() + " ");
             } else {
-                sb.append("Stardust : nil");
+                sb.append("Stardust : nil  ");
             }
+            if (mPokeball.get(i).getFreshMeat()) {
+                sb.append("Powered up : Yes");
+            } else {
+                sb.append("Powered up : No");
+            }
+
             listHeaders.add(sb.toString());
         }
 

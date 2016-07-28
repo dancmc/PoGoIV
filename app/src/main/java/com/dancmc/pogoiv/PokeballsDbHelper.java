@@ -22,7 +22,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
     }
 
     private static final String DATABASE_NAME = "pokeballtracker.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String POKEBALLS_TABLE = "pokeballs";
     public static final String COLUMN_ID = "_id";
@@ -57,17 +57,17 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
                 +COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +POGOIV_ID+" INTEGER, "
                 +POKEBALL_NUMBER+" INTEGER,"
-                +POKEBALL_LIST_NUMBER+" INTEGER "
+                +POKEBALL_LIST_NUMBER+" INTEGER, "
                 +POKEMON_NAME+" TEXT, "
                 +NICKNAME+" TEXT, "
                 +POKEMON_NUMBER+" INTEGER, "
                 +POKEMON_FAMILY+" TEXT, "
-                +EVOLUTION_TIER+" INTEGER "
+                +EVOLUTION_TIER+" INTEGER, "
                 +HP+" INTEGER, "
                 +CP+" INTEGER, "
                 +STARDUST+" INTEGER, "
                 +LEVEL+" INTEGER, "
-                +KNOWN_LEVEL+" INTEGER "
+                +KNOWN_LEVEL+" INTEGER, "
                 +STA_IV+" INTEGER, "
                 +ATK_IV+" INTEGER, "
                 +DEF_IV+" INTEGER, "
@@ -82,6 +82,9 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+            db.execSQL("DROP TABLE IF EXISTS " + POKEBALLS_TABLE);
+            onCreate(db);
 
     }
 }

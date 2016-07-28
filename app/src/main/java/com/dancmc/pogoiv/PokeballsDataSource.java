@@ -57,6 +57,7 @@ public class PokeballsDataSource {
             values.put(PokeballsDbHelper.POKEBALL_NUMBER, pokeballNumber);
             values.put(PokeballsDbHelper.POKEBALL_LIST_NUMBER, pokeballListNumber);
             values.put(PokeballsDbHelper.POKEMON_NAME, pokemon.getPokemonName());
+            values.put(PokeballsDbHelper.NICKNAME, pokemon.getNickname());
             values.put(PokeballsDbHelper.POKEMON_NUMBER, pokemon.getPokemonNumber());
             values.put(PokeballsDbHelper.POKEMON_FAMILY, pokemon.getPokemonFamily());
             values.put(PokeballsDbHelper.HP, pokemon.getHP());
@@ -110,10 +111,26 @@ public class PokeballsDataSource {
             }
             cursor.close();
         }
+        //need to set the pokeball fields for the previous pokeball
+        for (int i = 0; i <pokeballs.size(); i++) {
+            Pokeball pokeball = pokeballs.get(i);
+            int highestTier = 0;
+            int highestEvolved = 0;
+            for (int j = 0; j < pokeball.size(); j++) {
+                int tier = pokeball.get(j).getEvolutionTier();
+                if (tier > highestTier) {
+                    highestTier = tier;
+                    highestEvolved = j;
+                }
+            }
+            pokeballs.get(i).setHighestEvolvedPokemonNumber(pokeball.get(highestEvolved).getPokemonNumber());
+            pokeballs.get(i).setNickname(pokeball.get(0).getNickname());
+        }
+
         return pokeballs;
     }
 
-    public String[] compareAllPokeballs(Pokeball a, int position) {
+    public String[] compareAllPokemon(int position) {
 
 
         /*Shouldn't be able to add different families
@@ -127,7 +144,7 @@ public class PokeballsDataSource {
         */
 
         String[] result = new String[6];
-        Cursor cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.STA_IV, mDbHelper.ATK_IV, mDbHelper.DEF_IV, mDbHelper.POGOIV_ID, mDbHelper.PERCENT_PERFECT, mDbHelper.POKEMON_NUMBER}, mDbHelper.POKEBALL_NUMBER+"="+position, null, mDbHelper.STA_IV + "," + mDbHelper.ATK_IV + "," + mDbHelper.DEF_IV, "count(distinct " + mDbHelper.POGOIV_ID + ")=" + a.size(), mDbHelper.PERCENT_PERFECT);
+        Cursor cursor = mDbHelper.getReadableDatabase().query(PokeballsDbHelper.POKEBALLS_TABLE, new String[]{mDbHelper.STA_IV, mDbHelper.ATK_IV, mDbHelper.DEF_IV, mDbHelper.POGOIV_ID, mDbHelper.PERCENT_PERFECT, mDbHelper.POKEMON_NUMBER}, mDbHelper.POKEBALL_NUMBER+"="+position, null, mDbHelper.STA_IV + "," + mDbHelper.ATK_IV + "," + mDbHelper.DEF_IV, "count(distinct " + mDbHelper.POGOIV_ID + ")=" + Pokeballs.getPokeballsInstance().get(position).size(), mDbHelper.PERCENT_PERFECT);
         int count = cursor.getCount();
         result[0] = ""+count;
         if (cursor.getCount() == 0) {
@@ -169,8 +186,11 @@ public class PokeballsDataSource {
             summary.append("A max leveled " + maxEvolved[i] + " with this average IV% would have a CP of ~" + String.format(Locale.US, "%.0f", (maxedCPPercent * (Pokemon.getCPDifference(pokeNumber)) / 100.0 + Pokemon.getMinCP(pokeNumber))) + " (" + String.format(Locale.US, "%.1f", maxedCPPercent) + "%), versus a max of " + Pokemon.getMaxCP(pokeNumber) + " and a min of " + Pokemon.getMinCP(pokeNumber) + ".\n");
         }
         summary.append(" \n");
-        summary.append("There are " + cursor.getCount() + " overlapping combinations found, with an average power of " + String.format(Locale.US, "%.1f", averagePercent) + "%, and a range of " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%.\n\n");
-
+        if(Pokeballs.getPokeballsInstance().get(position).size()==1){
+            summary.append("No comparison done, there is only one dataset for this Pokemon, with " + cursor.getCount() + " IV combinations found, average IV% is " + String.format(Locale.US, "%.1f", averagePercent) + "% (range " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%).\n\n");
+        }else {
+            summary.append("There are " + cursor.getCount() + " overlapping combinations found, with an average power of " + String.format(Locale.US, "%.1f", averagePercent) + "% (range of " + String.format(Locale.US, "%.1f", lowest) + "% to " + String.format(Locale.US, "%.1f", highest) + "%).\n\n");
+        }
         result[2] = ""+(int)averagePercent;
         result[3] = stringResult3.trim();
         result[4] = summary.toString();
@@ -199,4 +219,6 @@ public class PokeballsDataSource {
         }
 
     }
+
+
 }

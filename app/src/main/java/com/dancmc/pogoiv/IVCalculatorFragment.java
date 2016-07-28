@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.Contract>{
@@ -31,7 +33,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
 
     //Buttons
     private Button mCalculateButton;
-    private Button mCompareButton;
+    private Button mPokeboxButton;
     private ImageButton mAddButton;
 
     private PokeballsDataSource mDataSource;
@@ -54,6 +56,11 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mLevelInput = (EditText) v.findViewById(R.id.enter_known_level);
         mFreshMeatInput = (CheckBox) v.findViewById(R.id.checkbox_powerup);
         mOutputView = (TextView) v.findViewById(R.id.output);
+
+        //Autocomplete textview setup
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
+        mPokemonNameInput = (AutoCompleteTextView) v.findViewById(R.id.enter_pokemon_name);
+        mPokemonNameInput.setAdapter(adapter);
 
         //calculate button setup
         mCalculateButton = (Button) v.findViewById(R.id.calculate_button);
@@ -79,6 +86,34 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 }
                 mOutputView.setText(mStringBuilder.toString());
                 mFreshMeatInput.setChecked(false);
+            }
+        });
+
+        //pokebox button setup
+        mPokeboxButton = (Button) v.findViewById(R.id.calc_to_pokebox_button);
+        mPokeboxButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContract().pokeboxButtonPressed();
+            }
+        });
+
+        //Add Pokemon button setup
+        mAddButton = (ImageButton)v.findViewById(R.id.add_button);
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPokemon.getNumberOfResults() == 0) {
+                    Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_LONG)
+                            .show();
+                    return;
+                }
+                if (mPokemon == null) {
+                    Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_LONG)
+                            .show();
+                    return;
+                }
+                getContract().addButtonPressed(mPokemon);
             }
         });
 

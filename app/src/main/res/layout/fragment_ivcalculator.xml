@@ -16,6 +16,7 @@
         android:scrollbars="vertical">
 
         <LinearLayout
+            android:id="@+id/calculator_main_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -100,13 +101,6 @@
                 android:layout_height="wrap_content"
                 android:text="Calculate!" />
 
-            <Button
-                android:id="@+id/compare_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Compare!" />
-
-
             <TextView
                 android:id="@+id/output"
                 android:layout_width="match_parent"
@@ -128,6 +122,7 @@
         android:src="@drawable/ic_add_white_24px" />
 
     <Button
+        android:id="@+id/calc_to_pokebox_button"
         android:layout_width="108dp"
         android:layout_height="48dp"
         android:text="PokeBox"

@@ -1,12 +1,217 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.dancmc.pogoiv.AddPokemonActivity">
+    android:orientation="vertical"
+    tools:context="com.dancmc.pogoiv.MainActivity">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/add_activity_cardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="Adding...."
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <com.example.daniel.material.RatioLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ratio="0.166667">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:id="@+id/add_pokemon_card_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/circle_background" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/add_pokemon_card_cp"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="4dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/shape_rectangle_clear"
+                            android:gravity="center"
+                            android:text="test"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.2"
+                            android:gravity="top|center_horizontal"
+                            android:text="CP"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/add_pokemon_card_hp"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="4dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/shape_rectangle_clear"
+                            android:gravity="center"
+                            android:text="test"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.2"
+                            android:gravity="top|center_horizontal"
+                            android:text="HP"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/add_pokemon_card_stardust"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="4dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/shape_rectangle_clear"
+                            android:gravity="center"
+                            android:text="test"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.2"
+                            android:gravity="top|center_horizontal"
+                            android:text="Dust"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/add_pokemon_card_IV"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="4dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/shape_rectangle_clear"
+                            android:gravity="center"
+                            android:text="test"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.2"
+                            android:gravity="top|center_horizontal"
+                            android:text="IV%"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <ImageButton
+                            android:id="@+id/add_pokemon_card_cancel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/inset_circle_background_gray"
+                            android:padding="10dp"
+                            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.example.daniel.material.RatioLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/add_activity_text_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_activity_cardview"
+        android:layout_marginLeft="8dp"
+        android:text="Add to an existing Pokeball or create a new one.\n"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:id="@+id/add_activity_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/add_activity_text_prompt">
+
+    </FrameLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_activity_fab"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white_24px"/>
 
 </RelativeLayout>

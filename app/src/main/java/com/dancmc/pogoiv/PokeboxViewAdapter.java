@@ -17,14 +17,14 @@ import java.util.List;
  */
 public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView pokeballPicture;
         private final TextView pokeballNickname;
 
         ViewHolder(View v) {
             super(v);
-            pokeballPicture = (ImageView)v.findViewById(R.id.pokeball_image);
-            pokeballNickname = (TextView)v.findViewById(R.id.pokeball_nickname);
+            pokeballPicture = (ImageView) v.findViewById(R.id.pokeball_image);
+            pokeballNickname = (TextView) v.findViewById(R.id.pokeball_nickname);
             v.setOnClickListener(this);
         }
 
@@ -49,10 +49,16 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         Pokeball pokeball = Pokeballs.getPokeballsInstance().get(position);
         //sets the cardview layout of this adapter to the pokeball nickname and picture of highest evolved pokemon inside pokeball
-        holder.pokeballNickname.setText(pokeball.getNickname());
-        holder.pokeballPicture.setImageResource(context.getResources().getIdentifier(Pokemon.getPngFileName(pokeball.getHighestEvolvedPokemonNumber()), "drawable", context.getPackageName()));
-        holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        holder.pokeballPicture.setBackgroundResource(R.drawable.circle_background);
+        if (pokeball.isCustomAddBall()) {
+            holder.pokeballNickname.setText("Add New");
+            holder.pokeballPicture.setImageResource(R.drawable.pokeball);
+            holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            holder.pokeballNickname.setText(pokeball.getNickname());
+            holder.pokeballPicture.setImageResource(context.getResources().getIdentifier(Pokemon.getPngFileName(pokeball.getHighestEvolvedPokemonNumber()), "drawable", context.getPackageName()));
+            holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            holder.pokeballPicture.setBackgroundResource(R.drawable.circle_background);
+        }
     }
 
     @Override

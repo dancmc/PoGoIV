@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Pokeball extends ArrayList<Pokemon> {
     private int mHighestEvolvedPokemonNumber;
     private String mNickname;
-
+    private boolean customAddBall = false;
 
     public int getHighestEvolvedPokemonNumber(){
         return mHighestEvolvedPokemonNumber;
@@ -21,5 +21,16 @@ public class Pokeball extends ArrayList<Pokemon> {
         return mNickname;
     }
 
+    public void setNickname(String name){
+        mNickname = name;
+    }
+
+    public boolean isCustomAddBall(){
+        return customAddBall;
+    }
+
+    public void setCustomAddBall(boolean boo){
+        customAddBall = boo;
+    }
 
 }
