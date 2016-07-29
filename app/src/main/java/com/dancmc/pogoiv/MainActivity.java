@@ -1,11 +1,19 @@
 package com.dancmc.pogoiv;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract, ViewPokeballFragment.Contract {
 
@@ -29,10 +37,13 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                Pokeballs.getPokeballsInstance().addAll(mDataSource.getAllPokeballs());
+                if(Pokeballs.getPokeballsInstance().size()==0){
+                Pokeballs.getPokeballsInstance().addAll(mDataSource.getAllPokeballs());}
                 return null;
             }
         }.execute();
+
+        Log.d(TAG, "onCreate: "+Pokemon.calculateCPPercentAtLevel(7,5,14,9,79)+ " "+Pokemon.calculateCPPercentAtLevel(7,5,1,9,79));
 
         //normal flow without adding : calculateIV -> pokebox -> viewpokemon
         if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
@@ -42,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                     .add(R.id.main_fragment_container, mCalcFragment, "calcFragment")
                     .commit();
         }
-
 
     }
 
@@ -75,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     public void pokeboxButtonPressed() {
         if (mPokeboxFragment == null) {
             mPokeboxFragment = new PokeboxFragment();
-            Log.d(TAG, "pokeboxButtonPressed: making new pokeBoxFragment");
+
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mPokeboxFragment)
@@ -92,9 +102,24 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     }
 
     @Override
-    public void onViewSummaryClick(String s) {
+    public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos, boolean hasLevels) {
         mCompareSummaryFragment = new CompareSummaryFragment();
-        mCompareSummaryFragment.setText(s);
+        mCompareSummaryFragment.setPokemon(pokemon);
+        mCompareSummaryFragment.setIVCombos(ivCombos);
+        mCompareSummaryFragment.setHasLevels(hasLevels);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mCompareSummaryFragment)
+                .commit();
+    }
+
+    @Override
+    public void moreInfoButtonPressed(Pokemon pokemon) {
+        mCompareSummaryFragment = new CompareSummaryFragment();
+        mCompareSummaryFragment.setPokemon(pokemon);
+        mCompareSummaryFragment.setIVCombos(pokemon.getIVCombinationsArray());
+        mCompareSummaryFragment.setHasLevels(true);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mCompareSummaryFragment)
                 .commit();
@@ -132,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment_container, mPokeboxFragment)
                     .commit();
-        } else if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof CompareSummaryFragment) {
+        } else if ((getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof CompareSummaryFragment)&&) {
             if (mViewPokeballFragment == null) {
                 mViewPokeballFragment = new ViewPokeballFragment();
             }
@@ -158,6 +183,36 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     protected void onStop() {
         super.onStop();
         //TODO : save IVcalculator's typed state here as key pairs
+    }
+
+    //make EditTexts lose focus on click out
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public void onDeleteLastPokemon() {
+        if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
+            if (mPokeboxFragment == null) {
+                mPokeboxFragment = new PokeboxFragment();
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_fragment_container, mPokeboxFragment)
+                    .commit();
+        }
     }
 
     //TODO :setting nicknames - need to update database

@@ -76,7 +76,7 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
                         });
                 AlertDialog dialog2 = builder2.create();
                 dialog2.show();
-                return false;
+                return true;
             }
         });
 

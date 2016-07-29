@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:padding="16dp"
         android:scrollbars="vertical">
 
         <LinearLayout
@@ -21,91 +20,211 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <AutoCompleteTextView
-                android:id="@+id/enter_pokemon_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:completionThreshold="1"
-                android:hint="Enter Pokemon Name"
-                android:imeOptions="actionNext"
-                android:inputType="textAutoComplete"
-                android:selectAllOnFocus="true"
-                android:textSize="12dp" />
 
-            <EditText
-                android:id="@+id/enter_cp"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter CP"
-                android:inputType="number"
-                android:selectAllOnFocus="true"
-                android:textSize="12dp" />
+                android:layout_height="240dp"
+                android:layout_alignParentTop="true"
+                android:background="@android:color/holo_blue_light"
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/enter_hp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter HP"
-                android:inputType="number"
-                android:selectAllOnFocus="true"
-                android:textSize="12dp" />
+                <com.example.daniel.material.RatioLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    app:ratio="1"
+                    android:id="@+id/view">
+
+                    <ImageView
+                        android:id="@+id/iv_calc_pokemon_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/circle_background_white" />
+                </com.example.daniel.material.RatioLayout>
+
+
+
+                <TextView
+                    android:id="@+id/iv_calc_ivpercent_text"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="70dp"
+                    android:layout_marginLeft="70dp"
+                    android:text="test"
+                    android:gravity="center"
+                    android:textSize="22dp"
+                    android:background="@drawable/circle_background_white" />
+                <TextView
+                    android:id="@+id/iv_calc_ivpercent_text_desc"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="range"
+                    android:gravity="center"
+                    android:layout_marginBottom="50dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignLeft="@+id/iv_calc_ivpercent_text"
+                    android:layout_alignStart="@+id/iv_calc_ivpercent_text" />
+
+                <TextView
+                    android:id="@+id/iv_calc_cppercent_text"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="70dp"
+                    android:layout_marginRight="70dp"
+                    android:text="test"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:background="@drawable/circle_background_white" />
+
+                <TextView
+                    android:id="@+id/iv_calc_cppercent_text_desc"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="range"
+                    android:gravity="center"
+                    android:layout_marginBottom="50dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignLeft="@+id/iv_calc_cppercent_text"
+                    android:layout_alignStart="@+id/iv_calc_cppercent_text" />
+
+                <TextView
+
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="IV%"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    android:layout_alignTop="@+id/iv_calc_ivpercent_text"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="CP%"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:layout_alignTop="@+id/iv_calc_cppercent_text"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+                <Button
+                    android:id="@+id/iv_calc_more_info_button"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:text="More Info"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignLeft="@+id/view"
+                    android:layout_alignStart="@+id/view" />
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/enter_pokemon_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:hint="Enter Pokemon Name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textAutoComplete"
+                    android:selectAllOnFocus="true"
+                    android:textSize="12dp" />
 
                 <EditText
-                    android:id="@+id/enter_stardust"
-                    android:layout_width="0dp"
+                    android:id="@+id/enter_cp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:hint="Enter Stardust"
+                    android:hint="Enter CP"
                     android:inputType="number"
                     android:selectAllOnFocus="true"
                     android:textSize="12dp" />
 
                 <EditText
-                    android:id="@+id/enter_known_level"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:hint="Enter Pokemon Level If Known"
-                    android:inputType="number"
-                    android:selectAllOnFocus="true"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/checkbox_powerup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
+                    android:id="@+id/enter_hp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Has not been powered up (blank if unsure)"
-                    android:textStyle="bold" />
+                    android:hint="Enter HP"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:textSize="12dp" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/enter_stardust"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:hint="Enter Stardust"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true"
+                        android:textSize="12dp" />
+
+                    <EditText
+                        android:id="@+id/enter_known_level"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:hint="Enter Pokemon Level If Known"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/checkbox_powerup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Has not been powered up (blank if unsure)"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/calculate_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Calculate!" />
+
+                <TextView
+                    android:id="@+id/output"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/calculate_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Calculate!" />
-
-            <TextView
-                android:id="@+id/output"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp" />
         </LinearLayout>
     </ScrollView>
 
@@ -125,15 +244,15 @@
         android:id="@+id/calc_to_pokebox_button"
         android:layout_width="108dp"
         android:layout_height="48dp"
-        android:text="PokeBox"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="90dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="90dp"
+        android:background="@drawable/shape_rectangle"
+        android:fontFamily="sans-serif"
+        android:text="PokeBox"
         android:textColor="@android:color/white"
         android:textSize="16dp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif"
-        android:background="@drawable/shape_rectangle"/>
+        android:textStyle="bold" />
 
 </RelativeLayout>

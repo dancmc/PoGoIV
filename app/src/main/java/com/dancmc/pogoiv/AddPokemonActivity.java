@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 public class AddPokemonActivity extends AppCompatActivity implements PokeboxFragment.Contract, ViewPokeballFragment.Contract {
 
     public static final String EXTRA = "APA_Pokemon";
@@ -108,6 +110,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                         @Override
                         public void onClick(final DialogInterface dialog, int which) {
 
+                            //remove temp pokeball first
                             Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
                             Pokeball newPokeball = new Pokeball();
                             newPokeball.add(mPokemonToAdd);
@@ -153,18 +156,20 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.add_activity_fragment_container, mPokeboxFragment)
                     .commit();
+        }else if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof PokeboxFragment) {
+            Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
+            finish();
         }
         //TODO : are you sure you want to exit
-        Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
-        super.onBackPressed();
+
     }
 
     @Override
-    public void onViewSummaryClick(String s) {
+    public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos, boolean hasLevels) {
 
     }
 
-
+    //remember to delete the temp pokeball
     //the position is the number of the pokeball in the singleton
     @Override
     public void onAddFabClick(final int position) {
@@ -188,7 +193,8 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
 
                         //handle scenario when different family
                         for (int i = 0; i < pokeball.size(); i++) {
-                            if(pokeball.get(i).getPokemonFamily()!=mPokemonToAdd.getPokemonFamily()){
+                            if(!(pokeball.get(i).getPokemonFamily().equals(mPokemonToAdd.getPokemonFamily()))){
+                                Log.d(TAG, "onClick: "+ pokeball.get(i).getPokemonFamily()+ " "+mPokemonToAdd.getPokemonFamily());
                                 Toast.makeText(AddPokemonActivity.this, "These Pokemon are from different families!", Toast.LENGTH_LONG)
                                         .show();
                                 return;
@@ -218,7 +224,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                             }
                         }
                         Pokeballs.getPokeballsInstance().get(position).setHighestEvolvedPokemonNumber(Pokeballs.getPokeballsInstance().get(position).get(highestEvolved).getPokemonNumber());
-
+                        Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
 
                         new AsyncTask<Integer, Void, Void>() {
                             @Override
@@ -238,5 +244,17 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onDeleteLastPokemon() {
+        if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof ViewPokeballFragment) {
+            if (mPokeboxFragment == null) {
+                mPokeboxFragment = new PokeboxFragment();
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.add_activity_fragment_container, mPokeboxFragment)
+                    .commit();
+        }
     }
 }
