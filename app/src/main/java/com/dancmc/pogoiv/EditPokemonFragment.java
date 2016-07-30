@@ -66,13 +66,18 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         // Required empty public constructor
     }
 
-    public static EditPokemonFragment newInstance(int pokeballNumber, int pokeballListNumber, Pokemon pokemon) {
+    public static EditPokemonFragment newInstance(int pokeballNumber, int pokeballListNumber) {
         EditPokemonFragment myFragment = new EditPokemonFragment();
 
         Bundle args = new Bundle();
         args.putInt("pokeballNumber", pokeballNumber);
         args.putInt("pokeballListNumber", pokeballListNumber);
-        args.putSerializable("pokemon", pokemon);
+        if(pokeballListNumber==-1){
+            args.putSerializable("pokemon", null);
+        } else{
+            args.putSerializable("pokemon", Pokeballs.getPokeballsInstance().get(pokeballNumber).get(pokeballListNumber));
+        }
+
         myFragment.setArguments(args);
 
         return myFragment;

@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     //Moving to EditFragment to ADD pokemon
     @Override
-    public void onAddFabClick(int position) {
+    public void onAddFabClick(int pokeballNumber) {
 
-        mEditPokemonFragment = EditPokemonFragment.newInstance(position,-1, null);
+        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber,-1);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mEditPokemonFragment)
@@ -205,5 +205,14 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         }
     }
 
-    //TODO :setting nicknames - need to update database
+    @Override
+    public void editPokemon(int pokeballNumber, int pokeballListNumber) {
+        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber,pokeballListNumber);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mEditPokemonFragment)
+                .commit();
+        getSupportFragmentManager().executePendingTransactions();
+    }
+
 }

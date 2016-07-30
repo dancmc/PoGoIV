@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +19,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +39,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         // Required empty public constructor
     }
 
-    private int mPosition;
+    private int mPokeballNumber;
     private Pokeball mPokeball;
     private ImageView mPokemonImage;
     private TextView mNickname;
@@ -55,12 +51,12 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     private TextView mCPPercentDesc;
     private TextView mSummary;
     private Button mComparison;
-    private ExpandableListView mELV;
+    private RecyclerView mRecyclerView;
     private FloatingActionButton mFAB;
     private static final String TAG = "ViewPokeballFragment";
 
     private PokeballsDataSource mDataSource;
-    private ViewPokeballExpandableListAdapter mAdapter;
+    private ViewPokeballRecyclerViewAdapter mAdapter;
 
 
     @Override
@@ -69,7 +65,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_view_pokeball, container, false);
 
-        mPokeball = Pokeballs.getPokeballsInstance().get(mPosition);
+        mPokeball = Pokeballs.getPokeballsInstance().get(mPokeballNumber);
 
         mPokemonImage = (ImageView) v.findViewById(R.id.pokeball_view_image);
         mNickname = (TextView) v.findViewById(R.id.pokeball_view_nickname);
@@ -83,7 +79,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mComparison = (Button) v.findViewById(R.id.pokeball_view_comparison);
         mFAB = (FloatingActionButton) v.findViewById(R.id.add_activity_fab);
 
-        mELV = (ExpandableListView) v.findViewById(R.id.pokeball_view_expandableLV);
+        mRecyclerView = (RecyclerView)v.findViewById(R.id.view_pokeball_recyclerview);
         mDataSource = new PokeballsDataSource(getActivity());
 
         if(getActivity().getClass().getSimpleName()!="AddPokemonActivity") {
@@ -129,15 +125,15 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
                     mNickname.setVisibility(View.VISIBLE);
                     final String nickname = mEditNickname.getText().toString();
                     mNickname.setText(nickname);
-                    Pokeballs.getPokeballsInstance().get(mPosition).setNickname(nickname);
-                    for (int i = 0; i < Pokeballs.getPokeballsInstance().get(mPosition).size(); i++) {
-                        Pokeballs.getPokeballsInstance().get(mPosition).get(i).setNickname(nickname);
+                    Pokeballs.getPokeballsInstance().get(mPokeballNumber).setNickname(nickname);
+                    for (int i = 0; i < Pokeballs.getPokeballsInstance().get(mPokeballNumber).size(); i++) {
+                        Pokeballs.getPokeballsInstance().get(mPokeballNumber).get(i).setNickname(nickname);
                     }
 
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         protected Void doInBackground(Void... params) {
-                            mDataSource.setNickname(nickname, mPosition);
+                            mDataSource.setNickname(nickname, mPokeballNumber);
                             return null;
                         }
                     }.execute();
@@ -149,7 +145,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         });
 
         //use database to do comparison, initialise holder for percents
-        final ArrayList<double[]> result = mDataSource.compareAllPokemon(mPosition);
+        final ArrayList<double[]> result = mDataSource.compareAllPokemon(mPokeballNumber);
         ArrayList<Double> percentRange = new ArrayList<>();
 
 
@@ -169,7 +165,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
             mIVPercent.setText("--%");
             mCPPercent.setText("--%");
         } else {
-            int pokeNumber = Pokeballs.getPokeballsInstance().get(mPosition).getHighestEvolvedPokemonNumber();
+            int pokeNumber = Pokeballs.getPokeballsInstance().get(mPokeballNumber).getHighestEvolvedPokemonNumber();
             ArrayList<Double> CPRange= Pokemon.getCpPercentRangeFromIVS(result, pokeNumber);
             double maxedAverageCPPercent = Pokemon.calculateMaxLevelAverageCPPercent(result, pokeNumber);
 
@@ -177,7 +173,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
             mIVPercentDesc.setText("IV%\n"+"("+String.format(Locale.US, "%.1f", lowest)+ " - " + String.format(Locale.US, "%.1f", highest) + "%)");
             mCPPercent.setText((int)maxedAverageCPPercent+"%");
             mCPPercentDesc.setText("CP%\n"+"("+String.format(Locale.US, "%.1f", Collections.min(CPRange))+ " - " + String.format(Locale.US, "%.1f", Collections.max(CPRange)) + "%)");
-            if(Pokeballs.getPokeballsInstance().get(mPosition).size()==1){
+            if(Pokeballs.getPokeballsInstance().get(mPokeballNumber).size()==1){
              mSummary.setText("No comparison done as only one dataset for this Pokemon. " + result.size() + " IV combinations found.\n");
             }else {
                 mSummary.setText(result.size() + " overlapping combinations found.\n");
@@ -187,14 +183,14 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mComparison.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContract().onViewSummaryClick(Pokeballs.getPokeballsInstance().get(mPosition).get(0), result);
+                getContract().onViewSummaryClick(Pokeballs.getPokeballsInstance().get(mPokeballNumber).get(0), result);
             }
         });
 
 
-        mAdapter = new ViewPokeballExpandableListAdapter(getActivity(), mPosition);
-        mELV.setAdapter(mAdapter);
-        mELV.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mAdapter = new ViewPokeballRecyclerViewAdapter(getActivity(), mPokeballNumber);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 int itemType = ExpandableListView.getPackedPositionType(id);
@@ -216,15 +212,15 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
                                     new AsyncTask<Void, Void, Void>(){
                                         @Override
                                         protected Void doInBackground(Void... params) {
-                                            mDataSource.deletePokemon(mPosition,groupPosition);
+                                            mDataSource.deletePokemon(mPokeballNumber,groupPosition);
                                             return null;
                                         }
                                     }.execute();
 
                                     //delete from singleton
-                                    Pokeballs.getPokeballsInstance().get(mPosition).remove(groupPosition);
-                                    if(Pokeballs.getPokeballsInstance().get(mPosition).size()==0){
-                                        Pokeballs.getPokeballsInstance().remove(mPosition);
+                                    Pokeballs.getPokeballsInstance().get(mPokeballNumber).remove(groupPosition);
+                                    if(Pokeballs.getPokeballsInstance().get(mPokeballNumber).size()==0){
+                                        Pokeballs.getPokeballsInstance().remove(mPokeballNumber);
                                         getContract().onDeleteLastPokemon();
                                     }
 
@@ -251,10 +247,17 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
             }
         });
 
+        mAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                getContract().editPokemon(mPokeballNumber, position);
+            }
+        });
+
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContract().onAddFabClick(mPosition);
+                getContract().onAddFabClick(mPokeballNumber);
             }
         });
 
@@ -262,19 +265,18 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     }
 
     //the position is the number of the pokeball in the singleton
-
     public void setPosition(int position) {
-        mPosition = position;
+        mPokeballNumber = position;
     }
 
     public interface Contract {
         public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos);
 
-        public void onAddFabClick(int position);
-
-        public void onEditClicked
+        public void onAddFabClick(int pokeballPosition);
 
         public void onDeleteLastPokemon();
+
+        public void editPokemon(int pokeballPosition, int pokeballListPosition);
 
     }
 }

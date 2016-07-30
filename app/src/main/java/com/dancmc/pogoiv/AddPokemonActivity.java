@@ -34,6 +34,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
 
     private PokeboxFragment mPokeboxFragment;
     private ViewPokeballFragment mViewPokeballFragment;
+    private EditPokemonFragment mEditPokemonFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,4 +258,15 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                     .commit();
         }
     }
+
+    @Override
+    public void editPokemon(int pokeballNumber, int pokeballListNumber) {
+        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber,pokeballListNumber);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.add_activity_fragment_container, mEditPokemonFragment)
+                .commit();
+        getSupportFragmentManager().executePendingTransactions();
+    }
+
 }

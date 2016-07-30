@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    card_view:cardCornerRadius="8dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <com.example.daniel.material.RatioLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ratio="1">
+
+                <ImageView
+                    android:id="@+id/view_pokemon_recycler_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.example.daniel.material.RatioLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4.5">
+
+            <TextView
+                android:id="@+id/view_pokemon_recycler_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center_vertical"
+                android:text="test"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

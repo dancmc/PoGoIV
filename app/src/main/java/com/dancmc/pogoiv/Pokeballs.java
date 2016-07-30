@@ -9,7 +9,7 @@ import java.util.ArrayList;
 //This is a singleton class to hold Pokeballs which are displayed in the Pokebox fragment
 
 public class Pokeballs extends ArrayList<Pokeball> {
-        public static Pokeballs sPokeballsInstance = null;
+        private static Pokeballs sPokeballsInstance = null;
 
     public static Pokeballs getPokeballsInstance(){
         if (sPokeballsInstance==null){

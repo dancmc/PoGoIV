@@ -186,13 +186,10 @@
                 android:text="COMBINATION DETAILS"
                 android:textSize="12sp" />
 
-            <ExpandableListView
-                android:id="@+id/pokeball_view_expandableLV"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/view_pokeball_recyclerview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:headerDividersEnabled="false"
-                android:indicatorLeft="300dp"
-                android:indicatorRight="420dp" />
+                android:layout_height="match_parent"/>
         </LinearLayout>
     </LinearLayout>
 
