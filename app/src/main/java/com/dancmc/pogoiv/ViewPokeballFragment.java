@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,17 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         // Required empty public constructor
     }
 
+    public static ViewPokeballFragment newInstance(int pokeballNumber) {
+        ViewPokeballFragment myFragment = new ViewPokeballFragment();
+
+        Bundle args = new Bundle();
+        args.putInt("pokeballNumber", pokeballNumber);
+
+        myFragment.setArguments(args);
+
+        return myFragment;
+    }
+
     private int mPokeballNumber;
     private Pokeball mPokeball;
     private ImageView mPokemonImage;
@@ -55,6 +68,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     private FloatingActionButton mFAB;
     private static final String TAG = "ViewPokeballFragment";
 
+    Toolbar mToolbar;
     private PokeballsDataSource mDataSource;
     private ViewPokeballRecyclerViewAdapter mAdapter;
 
@@ -64,6 +78,8 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_view_pokeball, container, false);
+
+        mPokeballNumber=getArguments().getInt("pokeballNumber");
 
         mPokeball = Pokeballs.getPokeballsInstance().get(mPokeballNumber);
 
@@ -83,8 +99,8 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mDataSource = new PokeballsDataSource(getActivity());
 
         if(getActivity().getClass().getSimpleName()!="AddPokemonActivity") {
-            Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_view_pokeball_toolbar);
-            toolbar.setTitle("View Storage");
+            mToolbar = (Toolbar) v.findViewById(R.id.fragment_view_pokeball_toolbar);
+            mToolbar.setTitle("View Storage");
         }
 
         mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.getHighestEvolvedPokemonNumber()), "drawable", getActivity().getPackageName()));
@@ -148,23 +164,27 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         final ArrayList<double[]> result = mDataSource.compareAllPokemon(mPokeballNumber);
         ArrayList<Double> percentRange = new ArrayList<>();
 
+        Log.d(TAG, "onCreateView: POkeball Number " + mPokeballNumber);
+        Log.d(TAG, "onCreateView: result "+result.size());
 
-        //calculating average IV%
-        double averagePercent = 0;
-        for (int i = 0; i <result.size(); i++) {
-            averagePercent+=result.get(i)[4];
-            percentRange.add(result.get(i)[4]);
-        }
-        averagePercent=averagePercent/result.size();
-
-        double lowest = Collections.min(percentRange);
-        double highest = Collections.max(percentRange);
 
         if (result.size() == 0) {
             mSummary.setText("There were no overlapping combinations found, are these the same pokemon? (You can try editing all Pokemon to 'powered up'.)");
             mIVPercent.setText("--%");
             mCPPercent.setText("--%");
         } else {
+            //calculating average IV%
+            double averagePercent = 0;
+            for (int i = 0; i <result.size(); i++) {
+                averagePercent+=result.get(i)[4];
+                percentRange.add(result.get(i)[4]);
+            }
+            averagePercent=averagePercent/result.size();
+
+            double lowest = Collections.min(percentRange);
+            double highest = Collections.max(percentRange);
+
+
             int pokeNumber = Pokeballs.getPokeballsInstance().get(mPokeballNumber).getHighestEvolvedPokemonNumber();
             ArrayList<Double> CPRange= Pokemon.getCpPercentRangeFromIVS(result, pokeNumber);
             double maxedAverageCPPercent = Pokemon.calculateMaxLevelAverageCPPercent(result, pokeNumber);
@@ -189,6 +209,8 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
 
         mAdapter = new ViewPokeballRecyclerViewAdapter(getActivity(), mPokeballNumber);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -250,6 +272,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "onItemClick: "+position);
                 getContract().editPokemon(mPokeballNumber, position);
             }
         });
@@ -264,10 +287,6 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         return v;
     }
 
-    //the position is the number of the pokeball in the singleton
-    public void setPosition(int position) {
-        mPokeballNumber = position;
-    }
 
     public interface Contract {
         public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos);

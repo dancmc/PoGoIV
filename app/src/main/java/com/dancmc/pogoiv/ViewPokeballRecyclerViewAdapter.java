@@ -3,6 +3,7 @@ package com.dancmc.pogoiv;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +17,19 @@ import java.util.ArrayList;
  * Created by Daniel on 30/07/2016.
  */
 public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPokeballRecyclerViewAdapter.ViewHolder> {
-
+    private static final String TAG = "ViewHolder";
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
 
         private ImageView mImageView;
         private TextView mTextView;
+
 
         public ViewHolder(View v){
             super(v);
             mImageView = (ImageView) v.findViewById(R.id.view_pokemon_recycler_image);
             mTextView = (TextView) v.findViewById(R.id.view_pokemon_recycler_text);
             v.setOnLongClickListener(this);
+            v.setOnClickListener(this);
         }
 
 
@@ -86,7 +89,7 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
         for (int i = 0; i < mPokeball.size(); i++) {
             mListImages.add(mContext.getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.get(i).getPokemonNumber()), "drawable", mContext.getPackageName()));
         }
-
+        Log.d(TAG, "updateAdapter: "+mPokeballPosition);
         mListText = new ArrayList<>();
         for (int i = 0; i < mPokeball.size(); i++) {
             StringBuilder sb = new StringBuilder();

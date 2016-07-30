@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     public void selectedPokeball(int position) {
-        mViewPokeballFragment = new ViewPokeballFragment();
-        mViewPokeballFragment.setPosition(position);
+        mViewPokeballFragment = ViewPokeballFragment.newInstance(position);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mViewPokeballFragment).addToBackStack(null)
                 .commit();
@@ -105,10 +105,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos) {
-        mCompareSummaryFragment = new CompareSummaryFragment();
-        mCompareSummaryFragment.setPokemon(pokemon);
-        mCompareSummaryFragment.setIVCombos(ivCombos);
-        mCompareSummaryFragment.isSinglePokemon(false);
+        mCompareSummaryFragment = CompareSummaryFragment.newInstance(pokemon, ivCombos, false);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mCompareSummaryFragment).addToBackStack(null)
@@ -118,15 +115,12 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     @Override
     public void moreInfoButtonPressed(Pokemon pokemon) {
 
-        mCompareSummaryFragment = new CompareSummaryFragment();
-        mCompareSummaryFragment.setPokemon(pokemon);
-        mCompareSummaryFragment.setIVCombos(pokemon.getIVCombinationsArray());
-        mCompareSummaryFragment.isSinglePokemon(true);
+        mCompareSummaryFragment = CompareSummaryFragment.newInstance(pokemon, pokemon.getIVCombinationsArray(),true);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mCompareSummaryFragment).addToBackStack(null)
                 .commit();
-        getSupportFragmentManager().executePendingTransactions();
+
     }
 
     //Moving to EditFragment to ADD pokemon
@@ -136,9 +130,8 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber,-1);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, mEditPokemonFragment)
+                .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
                 .commit();
-        getSupportFragmentManager().executePendingTransactions();
     }
 
     /**
@@ -195,14 +188,15 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     public void onDeleteLastPokemon() {
-        if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
+        /*if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
             if (mPokeboxFragment == null) {
                 mPokeboxFragment = new PokeboxFragment();
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment_container, mPokeboxFragment)
                     .commit();
-        }
+        }*/
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -210,9 +204,9 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber,pokeballListNumber);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, mEditPokemonFragment)
+                .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
                 .commit();
-        getSupportFragmentManager().executePendingTransactions();
+
     }
 
 }

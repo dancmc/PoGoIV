@@ -174,7 +174,7 @@ public class Pokemon implements Serializable {
         if (mNumberOfResults != 0) {
             mAverageIVPercent = calculateAverageIV();
             mAverageCPPercent = calculateAverageCPPercent();
-            sb.append("Level Range " + Collections.min(mResultLevelRange) + " to " + Collections.max(mResultLevelRange) + "\n");
+            /*sb.append("Level Range " + Collections.min(mResultLevelRange) + " to " + Collections.max(mResultLevelRange) + "\n");
             sb.append("Average IV% is " + String.format(Locale.US, "%.1f", mAverageIVPercent) + "%, (range " + String.format(Locale.US, "%.1f", Collections.min(mIVPercentRange)) + " - " + String.format(Locale.US, "%.1f", Collections.max(mIVPercentRange)) + "%), " + mNumberOfResults + " possible combinations.\n\n");
             int[] maxEvolved = MAX_EVOLUTION[mPokemonNumber];
             for (int i = 0; i < maxEvolved.length; i++) {
@@ -186,7 +186,7 @@ public class Pokemon implements Serializable {
             for (int i = 0; i < mIVCombinationsArray.size(); i++) {
                 double[] tempArray = mIVCombinationsArray.get(i);
                 sb.append("Level " + (int) tempArray[0] + " : " + (int) tempArray[1] + "/" + (int) tempArray[2] + "/" + (int) tempArray[3] + "    " + String.format(Locale.US, "%.1f", tempArray[4]) + "%\n");
-            }
+            }*/
         } else {
             sb.append("There were no combinations found.");
         }
@@ -230,8 +230,8 @@ public class Pokemon implements Serializable {
     }
 
     public boolean customEquals(Pokemon pokemon) {
-        boolean temp = (pokemon.mPokemonName == mPokemonName && pokemon.mHP == this.mHP && pokemon.mCP == this.mCP && pokemon.mStardust == this.mStardust);
-
+        boolean temp = ((pokemon.getPokemonName().equals(this.mPokemonName)) && (pokemon.getHP() == this.mHP) && (pokemon.getCP() == this.mCP) && (pokemon.getStardust() == this.mStardust));
+        Log.d(TAG, "customEquals: "+(pokemon.getPokemonName() == this.mPokemonName));
         return temp;
     }
 
@@ -370,7 +370,6 @@ public class Pokemon implements Serializable {
             sum += cpPercent;
         }
 
-        Log.d(TAG, "calculateMaxLevelAverageCPPercent: "+sum);
         return sum / (double) list.size();
     }
 

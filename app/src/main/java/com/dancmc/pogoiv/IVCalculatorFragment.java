@@ -132,7 +132,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     createPokemonFromInput();
                 } catch (Exception e) {
                     mOutputView.setText(e.getMessage());
-
+                    Toast.makeText(getActivity(), "Error calculating...check input", Toast.LENGTH_SHORT)
+                            .show();
                     return;
                 }
 
@@ -149,6 +150,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
                     mAverageCPPercentDesc.setText("CP%\n" +  "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
                 }
+                Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
+                        .show();
             }
         });
 

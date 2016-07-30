@@ -68,7 +68,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
 
     public static EditPokemonFragment newInstance(int pokeballNumber, int pokeballListNumber) {
         EditPokemonFragment myFragment = new EditPokemonFragment();
-
+        Log.d(TAG, "newInstance: "+pokeballListNumber);
         Bundle args = new Bundle();
         args.putInt("pokeballNumber", pokeballNumber);
         args.putInt("pokeballListNumber", pokeballListNumber);
@@ -89,11 +89,13 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_edit_pokemon, container, false);
 
+        mDataSource = new PokeballsDataSource(getActivity());
         //get arguments
         mPokeballNumber = getArguments().getInt("pokeballNumber");
         mPokeballListNumber = getArguments().getInt("pokeballListNumber");
         mPokemon = (Pokemon) getArguments().getSerializable("pokemon");
         mCalculateButtonPressed = 0;
+        Log.d(TAG, "onCreateView: "+mPokeballListNumber);
 
         //create toolbar
         if (getActivity().getClass().getSimpleName() != "AddPokemonActivity") {
@@ -126,10 +128,6 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             return true;
                         }
 
-                        if (mCalculateButtonPressed == 0) {
-                            Toast.makeText(getActivity(), "You need to press the calculate button first.", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
 
                         if (mPokemon.getNumberOfResults() == 0) {
                             Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_SHORT)
@@ -148,7 +146,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                         //handle scenario when different family
                         for (int i = 0; i < pokeball.size(); i++) {
                             if (!(pokeball.get(i).getPokemonFamily().equals(mPokemon.getPokemonFamily()))) {
-                                Toast.makeText(getActivity(), "These Pokemon are from different families!", Toast.LENGTH_LONG)
+                                Toast.makeText(getActivity(), "These Pokemon are from different families!", Toast.LENGTH_SHORT)
                                         .show();
                                 return true;
                             }
@@ -172,6 +170,12 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                                             .show();
                                     return true;
                                 }
+                            }
+
+                            if (mCalculateButtonPressed == 0) {
+                                Toast.makeText(getActivity(), "You need to press the calculate button first.", Toast.LENGTH_SHORT)
+                                        .show();
+                                return true;
                             }
 
                             mPokemon.setNickname(pokeball.getNickname());
@@ -208,7 +212,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
 
                             //handle scenario when already added pokemon
                             for (int i = 0; i < pokeball.size(); i++) {
-
+                                Log.d(TAG, "onMenuItemClick: "+mPokeballListNumber);
                                 if (i == mPokeballListNumber) {
                                 } else if (pokeball.get(i).customEquals(mPokemon)) {
                                     Toast.makeText(getActivity(), "You have added the same Pokemon before!", Toast.LENGTH_SHORT)
@@ -234,6 +238,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             new AsyncTask<Integer, Void, Void>() {
                                 @Override
                                 protected Void doInBackground(Integer... params) {
+                                    Log.d(TAG, "doInBackground: "+mPokeballListNumber);
                                     mDataSource.replacePokemon(mPokeballNumber,mPokeballListNumber,mPokemon);
                                     return null;
                                 }
@@ -250,6 +255,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                 }
             });
         }
+
 
 
         //finding views
@@ -280,7 +286,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                 mHPInput.setText(mPokemon.getHP() + "");
             }
             if (mPokemon.getStardust() > 0) {
-                mHPInput.setText(mPokemon.getStardust() + "");
+                mStarDustInput.setText(mPokemon.getStardust() + "");
             }
             if (mPokemon.getKnownLevel() > 0) {
                 mLevelInput.setText(mPokemon.getKnownLevel() + "");
@@ -297,7 +303,6 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
             mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
             mAverageCPPercentDesc.setText("CP%\n" + "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
 
-            mOutputView.setText(mStringBuilder.toString());
         }
 
         //calculate button setup
@@ -306,6 +311,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
             @Override
             public void onClick(View v) {
                 mStringBuilder = new StringBuilder();
+                mStringBuilder.append("");
 
                 //hides keyboard
                 InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -315,7 +321,8 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                     createPokemonFromInput();
                 } catch (Exception e) {
                     mOutputView.setText(e.getMessage());
-
+                    Toast.makeText(getActivity(), "Error calculating...check input", Toast.LENGTH_SHORT)
+                            .show();
                     return;
                 }
 
@@ -332,6 +339,8 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                     mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
                     mAverageCPPercentDesc.setText("CP%\n" + "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
                 }
+                Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
+                        .show();
                 mCalculateButtonPressed += 1;
             }
         });
@@ -409,6 +418,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
     public interface Contract {
 
         void moreInfoButtonPressed(Pokemon pokemon);
+
     }
 
     public void setPokemon(Pokemon pokemon) {

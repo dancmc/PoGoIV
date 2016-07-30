@@ -24,6 +24,7 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
     private PokeboxViewAdapter mAdapter;
     private GridLayoutManager mGridLayoutManager;
     private PokeballsDataSource mDataSource;
+    private Toolbar mToolbar;
 
     public PokeboxFragment() {
         // Required empty public constructor
@@ -36,68 +37,71 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_pokebox, container, false);
 
-        if(getActivity().getClass().getSimpleName()!="AddPokemonActivity") {
-            Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_pokebox_toolbar);
-            toolbar.setTitle("View Storage");
+
+        mToolbar = (Toolbar) v.findViewById(R.id.fragment_pokebox_toolbar);
+        mToolbar.setTitle("View Storage");
+
+        if (getActivity().getClass().getSimpleName() == "AddPokemonActivity") {
+
         }
 
-        mDataSource = new PokeballsDataSource(getActivity());
+            mDataSource = new PokeballsDataSource(getActivity());
 
-        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.pokeball_grid);
-        mAdapter = new PokeboxViewAdapter(getActivity());
+            RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.pokeball_grid);
+            mAdapter = new PokeboxViewAdapter(getActivity());
 
-        mAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getContract().selectedPokeball(position);
-            }
-        });
-        mAdapter.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
-                builder2.setTitle("Delete")
-                        .setMessage("Do you want to delete this Pokeball?")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new AsyncTask<Void, Void, Void>(){
-                                    @Override
-                                    protected Void doInBackground(Void... params) {
-                                        mDataSource.deletePokeball(position);
-                                        return null;
-                                    }
-                                }.execute();
-                                Pokeballs.getPokeballsInstance().remove(position);
-                                mAdapter.notifyDataSetChanged();
-                                Toast.makeText(getActivity(), "Pokeball deleted", Toast.LENGTH_LONG)
-                                        .show();
+            mAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    getContract().selectedPokeball(position);
+                }
+            });
+            mAdapter.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                    AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                    builder2.setTitle("Delete")
+                            .setMessage("Do you want to delete this Pokeball?")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new AsyncTask<Void, Void, Void>() {
+                                        @Override
+                                        protected Void doInBackground(Void... params) {
+                                            mDataSource.deletePokeball(position);
+                                            return null;
+                                        }
+                                    }.execute();
+                                    Pokeballs.getPokeballsInstance().remove(position);
+                                    mAdapter.notifyDataSetChanged();
+                                    Toast.makeText(getActivity(), "Pokeball deleted", Toast.LENGTH_LONG)
+                                            .show();
 
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                AlertDialog dialog2 = builder2.create();
-                dialog2.show();
-                return true;
-            }
-        });
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                    AlertDialog dialog2 = builder2.create();
+                    dialog2.show();
+                    return true;
+                }
+            });
 
-        mGridLayoutManager = new GridLayoutManager(getActivity(), 5);
-        recyclerView.setLayoutManager(mGridLayoutManager);
-        recyclerView.setAdapter(mAdapter);
+            mGridLayoutManager = new GridLayoutManager(getActivity(), 5);
+            recyclerView.setLayoutManager(mGridLayoutManager);
+            recyclerView.setAdapter(mAdapter);
 
-        return v;
+            return v;
+        }
+
+
+        public interface Contract {
+            public void selectedPokeball(int position);
+
+        }
+
+
     }
-
-
-    public interface Contract {
-        public void selectedPokeball(int position);
-
-    }
-
-
-}
