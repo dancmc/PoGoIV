@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,11 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_pokebox, container, false);
+
+        if(getActivity().getClass().getSimpleName()!="AddPokemonActivity") {
+            Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_pokebox_toolbar);
+            toolbar.setTitle("View Storage");
+        }
 
         mDataSource = new PokeballsDataSource(getActivity());
 

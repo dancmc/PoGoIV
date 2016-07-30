@@ -3,7 +3,8 @@ package com.dancmc.pogoiv;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 
 
-public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.Contract>{
+public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.Contract> {
 
     //Views and utility stuff
     private AutoCompleteTextView mPokemonNameInput;
@@ -40,14 +42,15 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
     private TextView mAverageIVPercent;
     private TextView mAverageCPPercent;
     private TextView mAverageIVPercentDesc;
-    private TextView mAverageCPPerentDesc;
+    private TextView mAverageCPPercentDesc;
 
-
+    private static final String TAG = "IVCalculatorFragment";
     //Buttons
     private Button mCalculateButton;
     private Button mPokeboxButton;
     private ImageButton mAddButton;
     private Button mMoreInfoButton;
+    private DecimalFormat mDF;
 
     private PokeballsDataSource mDataSource;
 
@@ -74,13 +77,45 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mAverageIVPercent = (TextView) v.findViewById(R.id.iv_calc_ivpercent_text);
         mAverageIVPercentDesc = (TextView) v.findViewById(R.id.iv_calc_ivpercent_text_desc);
         mAverageCPPercent = (TextView) v.findViewById(R.id.iv_calc_cppercent_text);
-        mAverageCPPerentDesc = (TextView) v.findViewById(R.id.iv_calc_cppercent_text_desc);
+        mAverageCPPercentDesc = (TextView) v.findViewById(R.id.iv_calc_cppercent_text_desc);
+        mDF = new DecimalFormat("0.0");
 
         //Autocomplete textview setup
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
         mPokemonNameInput = (AutoCompleteTextView) v.findViewById(R.id.enter_pokemon_name);
         mPokemonNameInput.setAdapter(adapter);
 
+        if(getActivity().getClass().getSimpleName()!="AddPokemonActivity") {
+            Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_iv_calc_toolbar);
+            toolbar.setTitle("IV Calculator");
+        }
+
+        if (mPokemon!=null) {
+            mPokemonNameInput.setText(mPokemon.getPokemonName());
+            mCPInput.setText(mPokemon.getCP()+"");
+            if(mPokemon.getHP()>0){
+                mHPInput.setText(mPokemon.getHP()+"");
+            }
+            if(mPokemon.getStardust()>0){
+                mHPInput.setText(mPokemon.getStardust()+"");
+            }
+            if(mPokemon.getKnownLevel()>0){
+                mLevelInput.setText(mPokemon.getKnownLevel()+"");
+            }
+            mFreshMeatInput.setChecked(mPokemon.getFreshMeat());
+
+            ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
+            //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
+            int lowestLevel = Collections.min(tempLevelRange);
+            int highestLevel = Collections.max(tempLevelRange);
+            mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
+            mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
+            mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
+            mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
+            mAverageCPPercentDesc.setText("CP%\n" +  "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+
+            mOutputView.setText(mStringBuilder.toString());
+        }
 
         //calculate button setup
         mCalculateButton = (Button) v.findViewById(R.id.calculate_button);
@@ -97,27 +132,23 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     createPokemonFromInput();
                 } catch (Exception e) {
                     mOutputView.setText(e.getMessage());
+
                     return;
                 }
 
-
-                if (mPokemon != null) {
-                    mStringBuilder.append(mPokemon.getStringOutput());
-                }
-
-
                 mOutputView.setText(mStringBuilder.toString());
-                mFreshMeatInput.setChecked(false);
-                mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
-                mAverageIVPercent.setText((int)mPokemon.getAverageIVPercent()+"%");
-                mAverageCPPercent.setText((int)mPokemon.calculateMaxLevelAverageCPPercent(mPokemon.getIVCombinationsArray(),mPokemon.getPokemonNumber())+"%");
-                mAverageIVPercentDesc.setText("IV%\n"+"("+String.format(Locale.US, "%.1f", Collections.min(mPokemon.getIVPercentRange()))+ " - " + String.format(Locale.US, "%.1f", Collections.max(mPokemon.getIVPercentRange())) + "%)");
-                ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
-                ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(),mPokemon.getPokemonNumber());
-                int lowestLevel = Collections.min(tempLevelRange);
-                int highestLevel = Collections.max(tempLevelRange);
-                mAverageCPPerentDesc.setText("CP%\n"+"Level "+lowestLevel+"-"+highestLevel+"\n"+"Worst CP "+(int)(Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(),lowestLevel))+ "-" + (int)(Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(),lowestLevel))+"\nPerfect CP "+(int)(Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(),highestLevel))+"-"+(int)(Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(),highestLevel)));
 
+                if (mPokemon != null && mPokemon.mNumberOfResults != 0) {
+                    ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
+                    //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
+                    int lowestLevel = Collections.min(tempLevelRange);
+                    int highestLevel = Collections.max(tempLevelRange);
+                    mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
+                    mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
+                    mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
+                    mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
+                    mAverageCPPercentDesc.setText("CP%\n" +  "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+                }
             }
         });
 
@@ -131,19 +162,19 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         });
 
         //Add Pokemon button setup
-        mAddButton = (ImageButton)v.findViewById(R.id.add_button);
+        mAddButton = (ImageButton) v.findViewById(R.id.add_button);
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (mPokemon == null) {
-                    Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
 
                 if (mPokemon.getNumberOfResults() == 0) {
-                    Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
@@ -153,11 +184,23 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         });
 
         //set up more info button
-        mMoreInfoButton = (Button)v.findViewById(R.id.iv_calc_more_info_button);
+        mMoreInfoButton = (Button) v.findViewById(R.id.iv_calc_more_info_button);
         mMoreInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContract().moreInfoButtonPressed(mPokemon);
+
+                if (mPokemon == null) {
+                    Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                } else if(mPokemon.mNumberOfResults==0) {
+                    Toast.makeText(getActivity(), "There are no combinations!", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                } else {
+                    getContract().moreInfoButtonPressed(mPokemon);
+                }
+
             }
         });
 

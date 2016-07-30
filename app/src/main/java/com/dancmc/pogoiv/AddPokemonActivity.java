@@ -165,7 +165,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
     }
 
     @Override
-    public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos, boolean hasLevels) {
+    public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos) {
 
     }
 

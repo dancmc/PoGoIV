@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -85,6 +86,10 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mELV = (ExpandableListView) v.findViewById(R.id.pokeball_view_expandableLV);
         mDataSource = new PokeballsDataSource(getActivity());
 
+        if(getActivity().getClass().getSimpleName()!="AddPokemonActivity") {
+            Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_view_pokeball_toolbar);
+            toolbar.setTitle("View Storage");
+        }
 
         mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.getHighestEvolvedPokemonNumber()), "drawable", getActivity().getPackageName()));
         mPokemonImage.setBackgroundResource(R.drawable.circle_background);
@@ -182,7 +187,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mComparison.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContract().onViewSummaryClick(Pokeballs.getPokeballsInstance().get(mPosition).get(0), result, false);
+                getContract().onViewSummaryClick(Pokeballs.getPokeballsInstance().get(mPosition).get(0), result);
             }
         });
 
@@ -263,9 +268,11 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     }
 
     public interface Contract {
-        public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos, boolean hasLevels);
+        public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos);
 
         public void onAddFabClick(int position);
+
+        public void onEditClicked
 
         public void onDeleteLastPokemon();
 

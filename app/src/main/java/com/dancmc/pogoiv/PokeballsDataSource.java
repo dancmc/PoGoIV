@@ -170,6 +170,12 @@ public class PokeballsDataSource {
 
     }
 
+    public void replacePokemon(int pokeballNumber, int pokeballListNumber, Pokemon pokemon){
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(mDbHelper.POKEBALLS_TABLE, mDbHelper.POKEBALL_NUMBER + "=" + pokeballNumber + " AND " + mDbHelper.POKEBALL_LIST_NUMBER + "=" + pokeballListNumber, null);
+        setPokemonData(pokemon,pokeballNumber,pokeballListNumber);
+    }
+
     public void setNickname(String nickname, int pokeball) {
         mDbHelper.getWritableDatabase().execSQL("update " + mDbHelper.POKEBALLS_TABLE + " set " + mDbHelper.NICKNAME + "='" + nickname + "' where " + mDbHelper.POKEBALL_NUMBER + "=" + pokeball);
     }

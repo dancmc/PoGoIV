@@ -15,13 +15,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract, ViewPokeballFragment.Contract {
+public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract, ViewPokeballFragment.Contract, EditPokemonFragment.Contract {
 
     private static final String TAG = "MainActivity";
     private IVCalculatorFragment mCalcFragment;
     private PokeboxFragment mPokeboxFragment;
     private ViewPokeballFragment mViewPokeballFragment;
     private CompareSummaryFragment mCompareSummaryFragment;
+    private EditPokemonFragment mEditPokemonFragment;
 
     private Toast mToast;
     private long mLastPressed;
@@ -37,13 +38,14 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                if(Pokeballs.getPokeballsInstance().size()==0){
-                Pokeballs.getPokeballsInstance().addAll(mDataSource.getAllPokeballs());}
+                if (Pokeballs.getPokeballsInstance().size() == 0) {
+                    Pokeballs.getPokeballsInstance().addAll(mDataSource.getAllPokeballs());
+                }
                 return null;
             }
         }.execute();
 
-        Log.d(TAG, "onCreate: "+Pokemon.calculateCPPercentAtLevel(7,5,14,9,79)+ " "+Pokemon.calculateCPPercentAtLevel(7,5,1,9,79));
+        Log.d(TAG, "onCreate: " + Pokemon.calculateCPPercentAtLevel(7, 5, 14, 9, 79) + " " + Pokemon.calculateCPPercentAtLevel(7, 5, 1, 9, 79));
 
         //normal flow without adding : calculateIV -> pokebox -> viewpokemon
         if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
         }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, mPokeboxFragment)
+                .replace(R.id.main_fragment_container, mPokeboxFragment).addToBackStack(null)
                 .commit();
     }
 
@@ -97,37 +99,46 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         mViewPokeballFragment = new ViewPokeballFragment();
         mViewPokeballFragment.setPosition(position);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, mViewPokeballFragment)
+                .replace(R.id.main_fragment_container, mViewPokeballFragment).addToBackStack(null)
                 .commit();
     }
 
     @Override
-    public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos, boolean hasLevels) {
+    public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos) {
         mCompareSummaryFragment = new CompareSummaryFragment();
         mCompareSummaryFragment.setPokemon(pokemon);
         mCompareSummaryFragment.setIVCombos(ivCombos);
-        mCompareSummaryFragment.setHasLevels(hasLevels);
+        mCompareSummaryFragment.isSinglePokemon(false);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, mCompareSummaryFragment)
+                .replace(R.id.main_fragment_container, mCompareSummaryFragment).addToBackStack(null)
                 .commit();
     }
 
     @Override
     public void moreInfoButtonPressed(Pokemon pokemon) {
+
         mCompareSummaryFragment = new CompareSummaryFragment();
         mCompareSummaryFragment.setPokemon(pokemon);
         mCompareSummaryFragment.setIVCombos(pokemon.getIVCombinationsArray());
-        mCompareSummaryFragment.setHasLevels(true);
+        mCompareSummaryFragment.isSinglePokemon(true);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, mCompareSummaryFragment)
+                .replace(R.id.main_fragment_container, mCompareSummaryFragment).addToBackStack(null)
                 .commit();
+        getSupportFragmentManager().executePendingTransactions();
     }
 
+    //Moving to EditFragment to ADD pokemon
     @Override
     public void onAddFabClick(int position) {
-        //TODO : go to editpokemonfragment
+
+        mEditPokemonFragment = EditPokemonFragment.newInstance(position,-1, null);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mEditPokemonFragment)
+                .commit();
+        getSupportFragmentManager().executePendingTransactions();
     }
 
     /**
@@ -143,28 +154,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     //TODO probably need an async loading bar for the initial boot where loading from database
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof PokeboxFragment) {
-            if (mCalcFragment == null) {
-                mCalcFragment = new IVCalculatorFragment();
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_fragment_container, mCalcFragment)
-                    .commit();
-        } else if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
-            if (mPokeboxFragment == null) {
-                mPokeboxFragment = new PokeboxFragment();
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_fragment_container, mPokeboxFragment)
-                    .commit();
-        } else if ((getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof CompareSummaryFragment)&&) {
-            if (mViewPokeballFragment == null) {
-                mViewPokeballFragment = new ViewPokeballFragment();
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_fragment_container, mViewPokeballFragment)
-                    .commit();
-        } else if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof IVCalculatorFragment) {
+        if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof IVCalculatorFragment) {
             long currentTime = System.currentTimeMillis();
             if (mLastPressed + 4000 > currentTime) {
                 mToast.cancel();
@@ -174,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                 mToast.show();
                 mLastPressed = currentTime;
             }
-
-
+        } else {
+            super.onBackPressed();
         }
     }
 
