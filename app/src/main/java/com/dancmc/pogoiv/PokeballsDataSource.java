@@ -50,7 +50,10 @@ public class PokeballsDataSource {
         SQLiteDatabase db =mDbHelper.getWritableDatabase();
 
         //delete without decrementing, then set
+        Log.d(TAG, "step 2a");
         db.delete(mDbHelper.POKEBALLS_TABLE, mDbHelper.POKEBALL_NUMBER + "=" + pokeballNumber + " AND " + mDbHelper.POKEBALL_LIST_NUMBER + "=" + pokeballListNumber, null);
+        Log.d(TAG, "step 2b");
+        db.beginTransaction();
 
         for (int i = 0; i < pokemon.getNumberOfResults(); i++) {
 
@@ -77,7 +80,13 @@ public class PokeballsDataSource {
             values.put(PokeballsDbHelper.BASE_DEF, pokemon.getBaseDef());
 
             db.insert(PokeballsDbHelper.POKEBALLS_TABLE, null, values);
+            
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+
+        Log.d(TAG, "setPokemonData: step 2c");
     }
 
 

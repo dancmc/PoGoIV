@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     @Override
     public void moreInfoButtonPressed(Pokemon pokemon) {
 
-        mCompareSummaryFragment = CompareSummaryFragment.newInstance(pokemon, pokemon.getIVCombinationsArray(),true);
+        mCompareSummaryFragment = CompareSummaryFragment.newInstance(pokemon, pokemon.getIVCombinationsArray(), true);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mCompareSummaryFragment).addToBackStack(null)
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     @Override
     public void onAddFabClick(int pokeballNumber) {
 
-        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber,-1);
+        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber, -1);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     public void editPokemon(int pokeballNumber, int pokeballListNumber) {
-        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber,pokeballListNumber);
+        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber, pokeballListNumber);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
@@ -213,29 +213,20 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     public void saveButtonPressed(int pokeballNumber, int pokeballListNumber, Pokemon pokemon) {
-        onBackPressed();
-        mSaveAsyncTask = new SaveAsyncTask(pokemon, pokeballNumber, pokeballListNumber, this){
-            @Override
-            void onFinishListener() {
-                Log.d(TAG, "onFinishListener: called");
-                Log.d(TAG, "onFinishListener: "+getSupportFragmentManager().findFragmentById(R.id.main_fragment_container).getClass().getSimpleName());
-                if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment){
-                    ((ViewPokeballFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment_container)).editAsyncFinished();
-            }
-        }};
+        mSaveAsyncTask = new SaveAsyncTask(pokemon, pokeballNumber, pokeballListNumber, this);
         mSaveAsyncTask.execute();
-
+        onBackPressed();
     }
 
 
-    public SaveAsyncTask.Status getSaveAsyncStatus(){
-        if(mSaveAsyncTask!=null) {
+    public SaveAsyncTask.Status getSaveAsyncStatus() {
+        if (mSaveAsyncTask != null) {
             return mSaveAsyncTask.getStatus();
         }
         return null;
     }
 
-    public abstract class SaveAsyncTask extends AsyncTask<Void, Void, Void> {
+    public class SaveAsyncTask extends AsyncTask<Void, Void, Void> {
         private PokeballsDataSource mDataSource;
         Pokemon mPokemon;
         int mPokeballNumber;
@@ -246,17 +237,25 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
             mPokeballNumber = pokeballNumber;
             mPokeballListNumber = pokeballListNumber;
             mDataSource = new PokeballsDataSource(context);
-            onFinishListener();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
+            Log.d(TAG, "step 2");
             mDataSource.setPokemonData(mPokemon, mPokeballNumber, mPokeballListNumber);
+            Log.d(TAG, "step 3");
             return null;
         }
 
-        abstract void onFinishListener();
-    }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.d(TAG, "step 4");
+            if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
+                ((ViewPokeballFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment_container)).editAsyncFinished();
 
+            }
+        }
+
+    }
 
 }

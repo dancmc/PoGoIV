@@ -236,6 +236,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             Toast.makeText(getActivity(), "Edited Pokemon!", Toast.LENGTH_SHORT)
                                     .show();
 
+                            Log.d(TAG, "step 1");
                             getContract().saveButtonPressed(mPokeballNumber,mPokeballListNumber,mPokemon);
 
                             return true;

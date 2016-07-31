@@ -283,7 +283,6 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mResult = mDataSource.compareAllPokemon(mPokeballNumber);
         ArrayList<Double> percentRange = new ArrayList<>();
 
-        Log.d(TAG, "onCreateView: POkeball Number " + mPokeballNumber);
         Log.d(TAG, "onCreateView: result " + mResult.size());
 
 
@@ -331,8 +330,9 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
 
     public void editAsyncFinished() {
+        Log.d(TAG, "step 5");
         updateBasedOnCompare();
-        Log.d(TAG, "editAsyncFinished: called");
+        Log.d(TAG, "step 6");
         mComparison.setEnabled(true);
     }
 }
