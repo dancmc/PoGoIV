@@ -22,14 +22,18 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
 
         private ImageView mImageView;
         private TextView mTextView;
+        private ImageView mEditButton;
 
 
         public ViewHolder(View v){
             super(v);
             mImageView = (ImageView) v.findViewById(R.id.view_pokemon_recycler_image);
             mTextView = (TextView) v.findViewById(R.id.view_pokemon_recycler_text);
+            mEditButton = (ImageView) v.findViewById(R.id.view_pokemon_recycler_edit);
             v.setOnLongClickListener(this);
-            v.setOnClickListener(this);
+            mImageView.setOnClickListener(this);
+            mTextView.setOnClickListener(this);
+            mEditButton.setOnClickListener(this);
         }
 
 
@@ -83,37 +87,41 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
     }
 
     public void updateAdapter(){
-        mPokeball = Pokeballs.getPokeballsInstance().get(mPokeballPosition);
+        try {
+            mPokeball = Pokeballs.getPokeballsInstance().get(mPokeballPosition);
 
-        mListImages = new ArrayList<>();
-        for (int i = 0; i < mPokeball.size(); i++) {
-            mListImages.add(mContext.getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.get(i).getPokemonNumber()), "drawable", mContext.getPackageName()));
-        }
+            mListImages = new ArrayList<>();
+            for (int i = 0; i < mPokeball.size(); i++) {
+                mListImages.add(mContext.getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.get(i).getPokemonNumber()), "drawable", mContext.getPackageName()));
+            }
 
-        mListText = new ArrayList<>();
-        for (int i = 0; i < mPokeball.size(); i++) {
-            StringBuilder sb = new StringBuilder();
-            if (mPokeball.get(i).getCP() > 0) {
-                sb.append("CP : " + mPokeball.get(i).getCP() + "  ");
-            } else {
-                sb.append("CP : nil  ");
+            mListText = new ArrayList<>();
+            for (int i = 0; i < mPokeball.size(); i++) {
+                StringBuilder sb = new StringBuilder();
+                if (mPokeball.get(i).getCP() > 0) {
+                    sb.append("CP : " + mPokeball.get(i).getCP() + "  ");
+                } else {
+                    sb.append("CP : nil  ");
+                }
+                if (mPokeball.get(i).getHP() > 0) {
+                    sb.append("HP : " + mPokeball.get(i).getHP() + "  ");
+                } else {
+                    sb.append("HP : nil  ");
+                }
+                if (mPokeball.get(i).getStardust() > 0) {
+                    sb.append("Dust : " + mPokeball.get(i).getStardust() + " \n");
+                } else {
+                    sb.append("Dust : nil  \n");
+                }
+                if (mPokeball.get(i).getFreshMeat()) {
+                    sb.append("Not powered up");
+                } else {
+                    sb.append("Powered up");
+                }
+                mListText.add(sb.toString());
             }
-            if (mPokeball.get(i).getHP() > 0) {
-                sb.append("HP : " + mPokeball.get(i).getHP() + "  ");
-            } else {
-                sb.append("HP : nil  ");
-            }
-            if (mPokeball.get(i).getStardust() > 0) {
-                sb.append("Dust : " + mPokeball.get(i).getStardust() + " \n");
-            } else {
-                sb.append("Dust : nil  \n");
-            }
-            if (mPokeball.get(i).getFreshMeat()) {
-                sb.append("Not powered up");
-            } else {
-                sb.append("Powered up");
-            }
-            mListText.add(sb.toString());
+        }catch (Exception e){
+
         }
     }
 

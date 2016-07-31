@@ -93,7 +93,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             mToolbar.setVisibility(View.GONE);
         }
 
-        if (mPokemon!=null) {
+        if (mPokemon!=null&&mPokemon.getNumberOfResults()!=0) {
             mPokemonNameInput.setText(mPokemon.getPokemonName());
             mCPInput.setText(mPokemon.getCP()+"");
             if(mPokemon.getHP()>0){
@@ -114,8 +114,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
             mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
             mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-            mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
-            mAverageCPPercentDesc.setText("CP%\n" +  "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
+            mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
 
             mOutputView.setText(mStringBuilder.toString());
         }
@@ -140,9 +140,9 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     return;
                 }
 
-                mOutputView.setText(mStringBuilder.toString());
+                //mOutputView.setText(mStringBuilder.toString());
 
-                if (mPokemon != null && mPokemon.mNumberOfResults != 0) {
+                if (mPokemon != null && mPokemon.getNumberOfResults() != 0) {
                     ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
                     //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
                     int lowestLevel = Collections.min(tempLevelRange);
@@ -150,11 +150,15 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
                     mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
                     mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-                    mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
-                    mAverageCPPercentDesc.setText("CP%\n" +  "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+                    mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
+                    mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+                    Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
+                            .show();
                 }
-                Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
-                        .show();
+                if(mPokemon!=null&&mPokemon.getNumberOfResults()==0){
+                    Toast.makeText(getActivity(), "No combinations found!", Toast.LENGTH_SHORT)
+                            .show();
+                }
             }
         });
 
@@ -240,10 +244,12 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         if (input.equals("")) {
             if (textInput == mCPInput)
                 throw new IllegalArgumentException("You must enter a CP value.");
-            else if (textInput == mStarDustInput)
-                mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n\n");
-            else if (textInput == mHPInput)
-                mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n\n");
+            else if (textInput == mStarDustInput) {
+                //mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n\n");
+            }
+            else if (textInput == mHPInput) {
+                //StringBuilder.append("Note : You did not enter a HP value. All values calculated\n\n");
+            }
             return -1;
         } else {
             try {

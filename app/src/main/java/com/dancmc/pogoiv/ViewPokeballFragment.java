@@ -77,6 +77,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     private DecimalFormat mDF;
     private boolean asyncIsRunning;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,7 +114,6 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         }
 
         mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.getHighestEvolvedPokemonNumber()), "drawable", getActivity().getPackageName()));
-        mPokemonImage.setBackgroundResource(R.drawable.circle_background);
         mNickname.setText(mPokeball.get(0).getNickname());
         mEditNickname.setVisibility(View.INVISIBLE);
 
@@ -171,7 +171,9 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
         //use database to do comparison, initialise holder for percents
 
+        Log.d(TAG, "onCreateView: " + getActivity().getClass().getSimpleName());
         if (getActivity() instanceof MainActivity) {
+            Log.d(TAG, "onCreateView: got here");
             if (((MainActivity) getActivity()).getSaveAsyncStatus() == AsyncTask.Status.RUNNING || ((MainActivity) getActivity()).getSaveAsyncStatus() == AsyncTask.Status.PENDING) {
                 mSummary.setText("RE-CALCULATING.....");
                 mIVPercent.setText("--%");
@@ -179,20 +181,21 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
                 mCPPercent.setText("--%");
                 mCPPercentDesc.setText("IV%\n" + ("--"));
                 mComparison.setEnabled(false);
-            }else {
-                updateBasedOnCompare();}
+            } else {
+                updateBasedOnCompare();
+            }
         } else if (getActivity() instanceof AddPokemonActivity) {
-            if (((AddPokemonActivity) getActivity()).getSaveAsyncStatus() == AsyncTask.Status.RUNNING || ((MainActivity) getActivity()).getSaveAsyncStatus() == AsyncTask.Status.PENDING) {
+            if (((AddPokemonActivity) getActivity()).getSaveAsyncStatus() == AsyncTask.Status.RUNNING || ((AddPokemonActivity) getActivity()).getSaveAsyncStatus() == AsyncTask.Status.PENDING) {
                 mSummary.setText("RE-CALCULATING.....");
                 mIVPercent.setText("--%");
                 mIVPercentDesc.setText("IV%\n" + ("--"));
                 mCPPercent.setText("--%");
                 mCPPercentDesc.setText("IV%\n" + ("--"));
                 mComparison.setEnabled(false);
-            }else {
-                updateBasedOnCompare();}
+            } else {
+                updateBasedOnCompare();
+            }
         }
-
 
 
         mAdapter = new ViewPokeballRecyclerViewAdapter(getActivity(), mPokeballNumber);
@@ -210,6 +213,9 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
+                                //delete from SINGLETON
+                                Pokeballs.getPokeballsInstance().get(mPokeballNumber).remove(position);
+
                                 //delete from DATABASE
                                 new AsyncTask<Void, Void, Void>() {
                                     @Override
@@ -217,23 +223,41 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
                                         mDataSource.deletePokemon(mPokeballNumber, position);
                                         return null;
                                     }
+
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        if (getActivity() != null) {
+                                            updateBasedOnCompare();
+                                        }
+                                    }
                                 }.execute();
 
-                                //delete from SINGLETON
-                                Pokeballs.getPokeballsInstance().get(mPokeballNumber).remove(position);
+                                Toast.makeText(getActivity(), "Pokemon deleted", Toast.LENGTH_LONG)
+                                        .show();
+
+                                //stop before gets to notifyadapter if there is no pokemon left
                                 if (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size() == 0) {
                                     Pokeballs.getPokeballsInstance().remove(mPokeballNumber);
                                     getContract().onDeleteLastPokemon();
                                     return;
                                 }
 
+                                //update picture with highest remaining pokemon
+                                int highestTier = 0;
+                                int highestEvolved = 0;
+                                for (int i = 0; i < Pokeballs.getPokeballsInstance().get(mPokeballNumber).size(); i++) {
+                                    int tier = Pokeballs.getPokeballsInstance().get(mPokeballNumber).get(i).getEvolutionTier();
+                                    if (tier > highestTier) {
+                                        highestTier = tier;
+                                        highestEvolved = i;
+                                    }
+                                }
+                                Pokeballs.getPokeballsInstance().get(mPokeballNumber).setHighestEvolvedPokemonNumber(Pokeballs.getPokeballsInstance().get(mPokeballNumber).get(highestEvolved).getPokemonNumber());
+                                mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.getHighestEvolvedPokemonNumber()), "drawable", getActivity().getPackageName()));
+
                                 //can either make a new adapter or use a method to reset internal data
                                 mAdapter.updateAdapter();
                                 mAdapter.notifyDataSetChanged();
-
-                                Toast.makeText(getActivity(), "Pokemon deleted", Toast.LENGTH_LONG)
-                                        .show();
-
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -253,9 +277,16 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getContract().editPokemon(mPokeballNumber, position);
+                if (view.getId() == R.id.view_pokemon_recycler_text || view.getId() == R.id.view_pokemon_recycler_image) {
+                    getContract().moreInfoButtonPressed(Pokeballs.getPokeballsInstance().get(mPokeballNumber).get(position));
+                } else if (view.getId()==R.id.view_pokemon_recycler_edit){
+                    getContract().editPokemon(mPokeballNumber,position);
+                }
+
             }
+
         });
+
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,14 +308,16 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
         public void editPokemon(int pokeballPosition, int pokeballListPosition);
 
+        void moreInfoButtonPressed(Pokemon pokemon);
+
     }
 
     private void updateBasedOnCompare() {
         mResult = mDataSource.compareAllPokemon(mPokeballNumber);
         ArrayList<Double> percentRange = new ArrayList<>();
 
-        Log.d(TAG, "onCreateView: result " + mResult.size());
-
+        mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.getHighestEvolvedPokemonNumber()), "drawable", getActivity().getPackageName()));
+        mNickname.setText(mPokeball.get(0).getNickname());
 
         if (mResult.size() == 0) {
             mSummary.setText("There were no overlapping combinations found, are these the same pokemon? (You can try editing all Pokemon to 'powered up'.)");

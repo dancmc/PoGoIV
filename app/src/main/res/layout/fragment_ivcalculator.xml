@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -37,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="240dp"
                     android:layout_alignParentTop="true"
-                    android:background="@android:color/holo_blue_light"
+                    android:background="@color/colorPrimary"
                     android:orientation="vertical">
 
                     <com.example.daniel.material.RatioLayout
@@ -45,7 +46,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="16dp"
                         app:ratio="1">
 
                         <ImageView
@@ -79,7 +80,6 @@
                         android:layout_marginLeft="45dp"
                         android:layout_marginTop="175dp"
                         android:gravity="center_horizontal|top"
-                        android:text="range"
                         android:textColor="@android:color/white"
                         android:textSize="14sp" />
 
@@ -105,7 +105,6 @@
                         android:layout_marginRight="45dp"
                         android:layout_marginTop="175dp"
                         android:gravity="center_horizontal|top"
-                        android:text="range"
                         android:textColor="@android:color/white"
                         android:textSize="14sp" />
 
@@ -120,7 +119,8 @@
                         android:text="IV%"
                         android:textColor="@android:color/white"
                         android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:id="@+id/textView2" />
 
                     <TextView
 
@@ -139,11 +139,12 @@
                         android:id="@+id/iv_calc_more_info_button"
                         android:layout_width="110dp"
                         android:layout_height="50dp"
-                        android:layout_alignBottom="@+id/iv_calc_cppercent_text"
-                        android:layout_centerHorizontal="true"
                         android:text="More Info"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_below="@+id/textView2"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/shape_rectangle_grey"/>
                 </RelativeLayout>
 
 
@@ -267,6 +268,7 @@
         android:background="@drawable/shape_rectangle"
         android:fontFamily="sans-serif"
         android:text="PokeBox"
+        android:elevation="8dp"
         android:textColor="@android:color/white"
         android:textSize="16dp"
         android:textStyle="bold" />

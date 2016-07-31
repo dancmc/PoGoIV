@@ -191,14 +191,6 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     public void onDeleteLastPokemon() {
-        /*if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
-            if (mPokeboxFragment == null) {
-                mPokeboxFragment = new PokeboxFragment();
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_fragment_container, mPokeboxFragment)
-                    .commit();
-        }*/
         getSupportFragmentManager().popBackStack();
     }
 
@@ -241,15 +233,12 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d(TAG, "step 2");
             mDataSource.setPokemonData(mPokemon, mPokeballNumber, mPokeballListNumber);
-            Log.d(TAG, "step 3");
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.d(TAG, "step 4");
             if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
                 ((ViewPokeballFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment_container)).editAsyncFinished();
 

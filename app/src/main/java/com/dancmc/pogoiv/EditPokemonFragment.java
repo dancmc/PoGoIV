@@ -194,7 +194,8 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                                     .show();
 
                             //async was causing the adapter to not update when going back to view pookeball fragment, so have to do series of callbacks
-                            getContract().saveButtonPressed(mPokeballNumber, (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size()-1),mPokemon);
+                            //new pokemon already added to Pokeballs instance, so will be the last one
+                            getContract().saveButtonPressed(mPokeballNumber, (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size() - 1), mPokemon);
                             return true;
 
                         } else
@@ -219,9 +220,11 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                                 return true;
                             }
 
+                            //set nickname for pokeball
                             mPokemon.setNickname(pokeball.getNickname());
                             Pokeballs.getPokeballsInstance().get(mPokeballNumber).set(mPokeballListNumber, mPokemon);
 
+                            //set pokeball with highest evolved pokemon number
                             int highestTier = 0;
                             int highestEvolved = 0;
                             for (int i = 0; i < Pokeballs.getPokeballsInstance().get(mPokeballNumber).size(); i++) {
@@ -236,8 +239,9 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             Toast.makeText(getActivity(), "Edited Pokemon!", Toast.LENGTH_SHORT)
                                     .show();
 
-                            Log.d(TAG, "step 1");
-                            getContract().saveButtonPressed(mPokeballNumber,mPokeballListNumber,mPokemon);
+
+                            //just replace pokemon at the list number
+                            getContract().saveButtonPressed(mPokeballNumber, mPokeballListNumber, mPokemon);
 
                             return true;
                         }
@@ -290,8 +294,8 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
             mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
             mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
             mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-            mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
-            mAverageCPPercentDesc.setText("CP%\n" + "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
+            mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
 
         }
 
@@ -316,7 +320,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                     return;
                 }
 
-                mOutputView.setText(mStringBuilder.toString());
+                //mOutputView.setText(mStringBuilder.toString());
 
                 if (mPokemon != null && mPokemon.mNumberOfResults != 0) {
                     ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
@@ -326,11 +330,15 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                     mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
                     mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
                     mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-                    mAverageIVPercentDesc.setText("IV%\n" + "(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
-                    mAverageCPPercentDesc.setText("CP%\n" + "(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+                    mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
+                    mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+                    Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
+                            .show();
                 }
-                Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
-                        .show();
+                if (mPokemon != null && mPokemon.mNumberOfResults == 0) {
+                    Toast.makeText(getActivity(), "No combinations found!", Toast.LENGTH_SHORT)
+                            .show();
+                }
                 mCalculateButtonPressed += 1;
             }
         });
@@ -387,10 +395,11 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         if (input.equals("")) {
             if (textInput == mCPInput)
                 throw new IllegalArgumentException("You must enter a CP value.");
-            else if (textInput == mStarDustInput)
-                mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n\n");
-            else if (textInput == mHPInput)
-                mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n\n");
+            else if (textInput == mStarDustInput) {
+                //mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n\n");
+            } else if (textInput == mHPInput) {
+                //mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n\n");
+            }
             return -1;
         } else {
             try {

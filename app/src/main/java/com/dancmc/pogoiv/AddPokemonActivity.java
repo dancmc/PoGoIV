@@ -153,6 +153,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
 
     @Override
     public void onBackPressed() {
+        //clean up extra pokeball
         if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof PokeboxFragment) {
             Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
             finish();
@@ -230,6 +231,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                             }
                         }
                         Pokeballs.getPokeballsInstance().get(position).setHighestEvolvedPokemonNumber(Pokeballs.getPokeballsInstance().get(position).get(highestEvolved).getPokemonNumber());
+                        //added to existing pokeball, so need to remove the extra 'add new' pokeball outside
                         Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
 
                         new AsyncTask<Integer, Void, Void>() {
@@ -240,6 +242,8 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                             }
                         }.execute();
                         finish();
+
+                        //goes back to IV calc, so no need to refresh view
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -294,13 +298,6 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
     }
 
 
-    public SaveAsyncTask.Status getSaveAsyncStatus(){
-        if(mSaveAsyncTask!=null) {
-            return mSaveAsyncTask.getStatus();
-        }
-        return null;
-    }
-
     public class SaveAsyncTask extends AsyncTask<Void, Void, Void> {
         private PokeballsDataSource mDataSource;
         Pokemon mPokemon;
@@ -312,9 +309,6 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
             mPokeballNumber = pokeballNumber;
             mPokeballListNumber = pokeballListNumber;
             mDataSource = new PokeballsDataSource(context);
-            if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof ViewPokeballFragment){
-                ((ViewPokeballFragment) getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container)).editAsyncFinished();
-            }
         }
 
         @Override
@@ -322,5 +316,21 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
             mDataSource.setPokemonData(mPokemon, mPokeballNumber, mPokeballListNumber);
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment) {
+                ((ViewPokeballFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment_container)).editAsyncFinished();
+
+            }
+        }
+
+    }
+
+    public SaveAsyncTask.Status getSaveAsyncStatus() {
+        if (mSaveAsyncTask != null) {
+            return mSaveAsyncTask.getStatus();
+        }
+        return null;
     }
 }
