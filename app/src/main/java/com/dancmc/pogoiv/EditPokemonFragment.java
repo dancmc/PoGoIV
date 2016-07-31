@@ -39,7 +39,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
     private EditText mHPInput;
     private EditText mStarDustInput;
     private EditText mLevelInput;
-    private CheckBox mFreshMeatInput;
+    private CheckBox mNotFreshMeatInput;
     private StringBuilder mStringBuilder;
     private Pokemon mPokemon;
 
@@ -61,6 +61,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
     //extra stuff for edit pokemon
     private int mPokeballNumber;
     private int mPokeballListNumber;
+    private Toolbar mToolbar;
 
     public EditPokemonFragment() {
         // Required empty public constructor
@@ -68,13 +69,13 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
 
     public static EditPokemonFragment newInstance(int pokeballNumber, int pokeballListNumber) {
         EditPokemonFragment myFragment = new EditPokemonFragment();
-        Log.d(TAG, "newInstance: "+pokeballListNumber);
+
         Bundle args = new Bundle();
         args.putInt("pokeballNumber", pokeballNumber);
         args.putInt("pokeballListNumber", pokeballListNumber);
-        if(pokeballListNumber==-1){
+        if (pokeballListNumber == -1) {
             args.putSerializable("pokemon", null);
-        } else{
+        } else {
             args.putSerializable("pokemon", Pokeballs.getPokeballsInstance().get(pokeballNumber).get(pokeballListNumber));
         }
 
@@ -95,26 +96,29 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         mPokeballListNumber = getArguments().getInt("pokeballListNumber");
         mPokemon = (Pokemon) getArguments().getSerializable("pokemon");
         mCalculateButtonPressed = 0;
-        Log.d(TAG, "onCreateView: "+mPokeballListNumber);
 
-        //create toolbar
-        if (getActivity().getClass().getSimpleName() != "AddPokemonActivity") {
-            Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_edit_toolbar);
-            toolbar.inflateMenu(R.menu.menu_edit_fragment);
-            if (mPokeballListNumber == -1) {
-                toolbar.setTitle(getResources().getString(R.string.edit_pokemon_fragment_add));
-            } else {
-                toolbar.setTitle(getResources().getString(R.string.edit_pokemon_fragment_edit));
-            }
-            toolbar.setNavigationIcon(R.drawable.ic_close_white_48px);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar = (Toolbar) v.findViewById(R.id.fragment_edit_toolbar);
+        mToolbar.inflateMenu(R.menu.menu_edit_fragment);
+        if (mPokeballListNumber == -1) {
+            mToolbar.setTitle(getResources().getString(R.string.edit_pokemon_fragment_add));
+        } else {
+            mToolbar.setTitle(getResources().getString(R.string.edit_pokemon_fragment_edit));
+        }
+
+        if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
+            mToolbar.setVisibility(View.GONE);
+        } else {
+
+
+            mToolbar.setNavigationIcon(R.drawable.ic_close_white_48px);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     getActivity().onBackPressed();
                 }
             });
 
-            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     //if mPokeballListNumber is -1, we are adding, if ListNumber >=0, we are editing
@@ -172,12 +176,6 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                                 }
                             }
 
-                            if (mCalculateButtonPressed == 0) {
-                                Toast.makeText(getActivity(), "You need to press the calculate button first.", Toast.LENGTH_SHORT)
-                                        .show();
-                                return true;
-                            }
-
                             mPokemon.setNickname(pokeball.getNickname());
                             Pokeballs.getPokeballsInstance().get(mPokeballNumber).add(mPokemon);
 
@@ -192,18 +190,11 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             }
                             Pokeballs.getPokeballsInstance().get(mPokeballNumber).setHighestEvolvedPokemonNumber(Pokeballs.getPokeballsInstance().get(mPokeballNumber).get(highestEvolved).getPokemonNumber());
 
-                            new AsyncTask<Integer, Void, Void>() {
-                                @Override
-                                protected Void doInBackground(Integer... params) {
-                                    mDataSource.setPokemonData(mPokemon, mPokeballNumber, Pokeballs.getPokeballsInstance().get(mPokeballNumber).size() - 1);
-                                    return null;
-                                }
-                            }.execute();
-
                             Toast.makeText(getActivity(), "Added Pokemon!", Toast.LENGTH_SHORT)
                                     .show();
 
-                            getActivity().onBackPressed();
+                            //async was causing the adapter to not update when going back to view pookeball fragment, so have to do series of callbacks
+                            getContract().saveButtonPressed(mPokeballNumber, (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size()-1),mPokemon);
                             return true;
 
                         } else
@@ -212,7 +203,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
 
                             //handle scenario when already added pokemon
                             for (int i = 0; i < pokeball.size(); i++) {
-                                Log.d(TAG, "onMenuItemClick: "+mPokeballListNumber);
+
                                 if (i == mPokeballListNumber) {
                                 } else if (pokeball.get(i).customEquals(mPokemon)) {
                                     Toast.makeText(getActivity(), "You have added the same Pokemon before!", Toast.LENGTH_SHORT)
@@ -221,8 +212,15 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                                 }
                             }
 
+                            //handling scenario where editing but haven't made a change
+                            if (mCalculateButtonPressed == 0) {
+                                Toast.makeText(getActivity(), "You need to recalculate before saving changes.", Toast.LENGTH_SHORT)
+                                        .show();
+                                return true;
+                            }
+
                             mPokemon.setNickname(pokeball.getNickname());
-                            Pokeballs.getPokeballsInstance().get(mPokeballNumber).set(mPokeballListNumber,mPokemon);
+                            Pokeballs.getPokeballsInstance().get(mPokeballNumber).set(mPokeballListNumber, mPokemon);
 
                             int highestTier = 0;
                             int highestEvolved = 0;
@@ -235,19 +233,11 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             }
                             Pokeballs.getPokeballsInstance().get(mPokeballNumber).setHighestEvolvedPokemonNumber(Pokeballs.getPokeballsInstance().get(mPokeballNumber).get(highestEvolved).getPokemonNumber());
 
-                            new AsyncTask<Integer, Void, Void>() {
-                                @Override
-                                protected Void doInBackground(Integer... params) {
-                                    Log.d(TAG, "doInBackground: "+mPokeballListNumber);
-                                    mDataSource.replacePokemon(mPokeballNumber,mPokeballListNumber,mPokemon);
-                                    return null;
-                                }
-                            }.execute();
-
                             Toast.makeText(getActivity(), "Edited Pokemon!", Toast.LENGTH_SHORT)
                                     .show();
 
-                            getActivity().onBackPressed();
+                            getContract().saveButtonPressed(mPokeballNumber,mPokeballListNumber,mPokemon);
+
                             return true;
                         }
                     }
@@ -257,13 +247,12 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         }
 
 
-
         //finding views
         mCPInput = (EditText) v.findViewById(R.id.edit_enter_cp);
         mHPInput = (EditText) v.findViewById(R.id.edit_enter_hp);
         mStarDustInput = (EditText) v.findViewById(R.id.edit_enter_stardust);
         mLevelInput = (EditText) v.findViewById(R.id.edit_enter_known_level);
-        mFreshMeatInput = (CheckBox) v.findViewById(R.id.edit_checkbox_powerup);
+        mNotFreshMeatInput = (CheckBox) v.findViewById(R.id.edit_checkbox_powerup);
         mOutputView = (TextView) v.findViewById(R.id.edit_output);
 
         mPokemonImage = (ImageView) v.findViewById(R.id.edit_iv_calc_pokemon_image);
@@ -291,7 +280,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
             if (mPokemon.getKnownLevel() > 0) {
                 mLevelInput.setText(mPokemon.getKnownLevel() + "");
             }
-            mFreshMeatInput.setChecked(mPokemon.getFreshMeat());
+            mNotFreshMeatInput.setChecked(!mPokemon.getFreshMeat());
 
             ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
             //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
@@ -378,7 +367,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         int hp = parseIntInput(mHPInput);
         int stardust = parseIntInput(mStarDustInput);
         int level = parseIntInput(mLevelInput);
-        boolean freshMeat = mFreshMeatInput.isChecked();
+        boolean freshMeat = !(mNotFreshMeatInput.isChecked());
 
         //throws exception if invalid/blank pokemon name, or invalid stardust
         //if HP/CP/Stardust blank, is ok, passes in a -1
@@ -419,6 +408,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
 
         void moreInfoButtonPressed(Pokemon pokemon);
 
+        void saveButtonPressed(int pokeballNumber, int pokeballListNumber, Pokemon pokemon);
     }
 
     public void setPokemon(Pokemon pokemon) {

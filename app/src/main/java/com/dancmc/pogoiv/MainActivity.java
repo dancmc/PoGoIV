@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     private long mLastPressed;
     private PokeballsDataSource mDataSource;
 
+    private boolean mEditAsyncIsRunning;
+    private SaveAsyncTask mSaveAsyncTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,7 +209,54 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void saveButtonPressed(int pokeballNumber, int pokeballListNumber, Pokemon pokemon) {
+        onBackPressed();
+        mSaveAsyncTask = new SaveAsyncTask(pokemon, pokeballNumber, pokeballListNumber, this){
+            @Override
+            void onFinishListener() {
+                Log.d(TAG, "onFinishListener: called");
+                Log.d(TAG, "onFinishListener: "+getSupportFragmentManager().findFragmentById(R.id.main_fragment_container).getClass().getSimpleName());
+                if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof ViewPokeballFragment){
+                    ((ViewPokeballFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment_container)).editAsyncFinished();
+            }
+        }};
+        mSaveAsyncTask.execute();
 
     }
+
+
+    public SaveAsyncTask.Status getSaveAsyncStatus(){
+        if(mSaveAsyncTask!=null) {
+            return mSaveAsyncTask.getStatus();
+        }
+        return null;
+    }
+
+    public abstract class SaveAsyncTask extends AsyncTask<Void, Void, Void> {
+        private PokeballsDataSource mDataSource;
+        Pokemon mPokemon;
+        int mPokeballNumber;
+        int mPokeballListNumber;
+
+        public SaveAsyncTask(Pokemon pokemon, int pokeballNumber, int pokeballListNumber, Context context) {
+            mPokemon = pokemon;
+            mPokeballNumber = pokeballNumber;
+            mPokeballListNumber = pokeballListNumber;
+            mDataSource = new PokeballsDataSource(context);
+            onFinishListener();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mDataSource.setPokemonData(mPokemon, mPokeballNumber, mPokeballListNumber);
+            return null;
+        }
+
+        abstract void onFinishListener();
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.dancmc.pogoiv;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +37,8 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
     private ViewPokeballFragment mViewPokeballFragment;
     private EditPokemonFragment mEditPokemonFragment;
     private CompareSummaryFragment mCompareSummaryFragment;
+    private SaveAsyncTask mSaveAsyncTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +145,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
         } else {
             mViewPokeballFragment = ViewPokeballFragment.newInstance(position);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.add_activity_fragment_container, mViewPokeballFragment)
+                    .replace(R.id.add_activity_fragment_container, mViewPokeballFragment).addToBackStack(null)
                     .commit();
             mTextPrompt.setText("Press the + button to add to this Pokeball.");
         }
@@ -150,14 +153,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof ViewPokeballFragment) {
-            if (mPokeboxFragment == null) {
-                mPokeboxFragment = new PokeboxFragment();
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.add_activity_fragment_container, mPokeboxFragment)
-                    .commit();
-        } else if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof PokeboxFragment) {
+        if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof PokeboxFragment) {
             Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
             finish();
         }
@@ -258,14 +254,15 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
 
     @Override
     public void onDeleteLastPokemon() {
-        if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof ViewPokeballFragment) {
+        /*if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof ViewPokeballFragment) {
             if (mPokeboxFragment == null) {
                 mPokeboxFragment = new PokeboxFragment();
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.add_activity_fragment_container, mPokeboxFragment)
                     .commit();
-        }
+        }*/
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -289,6 +286,41 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
 
     }
 
+    @Override
+    public void saveButtonPressed(int pokeballNumber, int pokeballListNumber, Pokemon pokemon) {
+        mSaveAsyncTask = new SaveAsyncTask(pokemon, pokeballNumber, pokeballListNumber, this);
+        mSaveAsyncTask.execute();
+        onBackPressed();
+    }
 
 
+    public SaveAsyncTask.Status getSaveAsyncStatus(){
+        if(mSaveAsyncTask!=null) {
+            return mSaveAsyncTask.getStatus();
+        }
+        return null;
+    }
+
+    public class SaveAsyncTask extends AsyncTask<Void, Void, Void> {
+        private PokeballsDataSource mDataSource;
+        Pokemon mPokemon;
+        int mPokeballNumber;
+        int mPokeballListNumber;
+
+        public SaveAsyncTask(Pokemon pokemon, int pokeballNumber, int pokeballListNumber, Context context) {
+            mPokemon = pokemon;
+            mPokeballNumber = pokeballNumber;
+            mPokeballListNumber = pokeballListNumber;
+            mDataSource = new PokeballsDataSource(context);
+            if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof ViewPokeballFragment){
+                ((ViewPokeballFragment) getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container)).editAsyncFinished();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mDataSource.setPokemonData(mPokemon, mPokeballNumber, mPokeballListNumber);
+            return null;
+        }
+    }
 }

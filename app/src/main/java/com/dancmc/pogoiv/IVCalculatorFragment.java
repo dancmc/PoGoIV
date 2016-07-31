@@ -34,7 +34,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
     private EditText mHPInput;
     private EditText mStarDustInput;
     private EditText mLevelInput;
-    private CheckBox mFreshMeatInput;
+    private CheckBox mNotFreshMeatInput;
     private StringBuilder mStringBuilder;
     private Pokemon mPokemon;
 
@@ -53,6 +53,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
     private DecimalFormat mDF;
 
     private PokeballsDataSource mDataSource;
+    private Toolbar mToolbar;
 
     public IVCalculatorFragment() {
         // Required empty public constructor
@@ -70,7 +71,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mHPInput = (EditText) v.findViewById(R.id.enter_hp);
         mStarDustInput = (EditText) v.findViewById(R.id.enter_stardust);
         mLevelInput = (EditText) v.findViewById(R.id.enter_known_level);
-        mFreshMeatInput = (CheckBox) v.findViewById(R.id.checkbox_powerup);
+        mNotFreshMeatInput = (CheckBox) v.findViewById(R.id.checkbox_powerup);
         mOutputView = (TextView) v.findViewById(R.id.output);
 
         mPokemonImage = (ImageView) v.findViewById(R.id.iv_calc_pokemon_image);
@@ -80,14 +81,16 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mAverageCPPercentDesc = (TextView) v.findViewById(R.id.iv_calc_cppercent_text_desc);
         mDF = new DecimalFormat("0.0");
 
+        mToolbar = (Toolbar) v.findViewById(R.id.fragment_iv_calc_toolbar);
+        mToolbar.setTitle("IV Calculator");
+
         //Autocomplete textview setup
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
         mPokemonNameInput = (AutoCompleteTextView) v.findViewById(R.id.enter_pokemon_name);
         mPokemonNameInput.setAdapter(adapter);
 
-        if(getActivity().getClass().getSimpleName()!="AddPokemonActivity") {
-            Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_iv_calc_toolbar);
-            toolbar.setTitle("IV Calculator");
+        if(getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
+            mToolbar.setVisibility(View.GONE);
         }
 
         if (mPokemon!=null) {
@@ -102,7 +105,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             if(mPokemon.getKnownLevel()>0){
                 mLevelInput.setText(mPokemon.getKnownLevel()+"");
             }
-            mFreshMeatInput.setChecked(mPokemon.getFreshMeat());
+            mNotFreshMeatInput.setChecked(!mPokemon.getFreshMeat());
 
             ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
             //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
@@ -218,7 +221,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         int hp = parseIntInput(mHPInput);
         int stardust = parseIntInput(mStarDustInput);
         int level = parseIntInput(mLevelInput);
-        boolean freshMeat = mFreshMeatInput.isChecked();
+        boolean freshMeat = !(mNotFreshMeatInput.isChecked());
 
         //throws exception if invalid/blank pokemon name, or invalid stardust
         //if HP/CP/Stardust blank, is ok, passes in a -1

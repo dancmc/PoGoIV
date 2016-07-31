@@ -41,8 +41,8 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
         mToolbar = (Toolbar) v.findViewById(R.id.fragment_pokebox_toolbar);
         mToolbar.setTitle("View Storage");
 
-        if (getActivity().getClass().getSimpleName() == "AddPokemonActivity") {
-
+        if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
+                mToolbar.setVisibility(View.GONE);
         }
 
             mDataSource = new PokeballsDataSource(getActivity());

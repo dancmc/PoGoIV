@@ -89,7 +89,7 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
         for (int i = 0; i < mPokeball.size(); i++) {
             mListImages.add(mContext.getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.get(i).getPokemonNumber()), "drawable", mContext.getPackageName()));
         }
-        Log.d(TAG, "updateAdapter: "+mPokeballPosition);
+
         mListText = new ArrayList<>();
         for (int i = 0; i < mPokeball.size(); i++) {
             StringBuilder sb = new StringBuilder();
@@ -109,9 +109,9 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
                 sb.append("Dust : nil  \n");
             }
             if (mPokeball.get(i).getFreshMeat()) {
-                sb.append("Powered up");
-            } else {
                 sb.append("Not powered up");
+            } else {
+                sb.append("Powered up");
             }
             mListText.add(sb.toString());
         }

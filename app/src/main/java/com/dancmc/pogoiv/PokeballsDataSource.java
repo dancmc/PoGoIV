@@ -47,8 +47,10 @@ public class PokeballsDataSource {
 
     public void setPokemonData(Pokemon pokemon, int pokeballNumber, int pokeballListNumber) {
 
-        //delete any current pokemon with those coordinates and set new one
-        deletePokemon(pokeballNumber, pokeballListNumber);
+        SQLiteDatabase db =mDbHelper.getWritableDatabase();
+
+        //delete without decrementing, then set
+        db.delete(mDbHelper.POKEBALLS_TABLE, mDbHelper.POKEBALL_NUMBER + "=" + pokeballNumber + " AND " + mDbHelper.POKEBALL_LIST_NUMBER + "=" + pokeballListNumber, null);
 
         for (int i = 0; i < pokemon.getNumberOfResults(); i++) {
 
@@ -73,7 +75,8 @@ public class PokeballsDataSource {
             values.put(PokeballsDbHelper.BASE_STA, pokemon.getBaseSta());
             values.put(PokeballsDbHelper.BASE_ATK, pokemon.getBaseAtk());
             values.put(PokeballsDbHelper.BASE_DEF, pokemon.getBaseDef());
-            mDbHelper.getWritableDatabase().insert(PokeballsDbHelper.POKEBALLS_TABLE, null, values);
+
+            db.insert(PokeballsDbHelper.POKEBALLS_TABLE, null, values);
         }
     }
 
@@ -170,11 +173,6 @@ public class PokeballsDataSource {
 
     }
 
-    public void replacePokemon(int pokeballNumber, int pokeballListNumber, Pokemon pokemon){
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.delete(mDbHelper.POKEBALLS_TABLE, mDbHelper.POKEBALL_NUMBER + "=" + pokeballNumber + " AND " + mDbHelper.POKEBALL_LIST_NUMBER + "=" + pokeballListNumber, null);
-        setPokemonData(pokemon,pokeballNumber,pokeballListNumber);
-    }
 
     public void setNickname(String nickname, int pokeball) {
         mDbHelper.getWritableDatabase().execSQL("update " + mDbHelper.POKEBALLS_TABLE + " set " + mDbHelper.NICKNAME + "='" + nickname + "' where " + mDbHelper.POKEBALL_NUMBER + "=" + pokeball);

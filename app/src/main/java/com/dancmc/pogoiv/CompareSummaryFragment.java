@@ -31,6 +31,7 @@ public class CompareSummaryFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private SummaryFragRecyclerViewAdapter mAdapter;
     private static final String TAG = "CompareSummaryFragment";
+    private Toolbar mToolbar;
 
 
     public CompareSummaryFragment() {
@@ -61,10 +62,11 @@ public class CompareSummaryFragment extends Fragment {
         isSinglePokemon = getArguments().getBoolean("isSinglePokemon");
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.summary_recyclerview);
+        mToolbar = (Toolbar) v.findViewById(R.id.compare_summary_toolbar);
+        mToolbar.setTitle(getResources().getString(R.string.compare_summary));
 
-        if (getActivity().getClass().getSimpleName() != "AddPokemonActivity") {
-            Toolbar toolbar = (Toolbar) v.findViewById(R.id.compare_summary_toolbar);
-            toolbar.setTitle(getResources().getString(R.string.compare_summary));
+        if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
+            mToolbar.setVisibility(View.GONE);
         }
 
         LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
@@ -113,7 +115,6 @@ public class CompareSummaryFragment extends Fragment {
         mAdapter = new SummaryFragRecyclerViewAdapter(getActivity(), mIVCombos);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        Log.d(TAG, "onCreateView: end");
         return v;
     }
 
