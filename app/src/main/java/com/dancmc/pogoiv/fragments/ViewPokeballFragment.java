@@ -1,4 +1,4 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.fragments;
 
 
 import android.content.Context;
@@ -21,15 +21,24 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dancmc.pogoiv.utilities.Pokeball;
+import com.dancmc.pogoiv.utilities.Pokeballs;
+import com.dancmc.pogoiv.database.PokeballsDataSource;
+import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.adapters.ViewPokeballRecyclerViewAdapter;
+import com.dancmc.pogoiv.activities.AddPokemonActivity;
+import com.dancmc.pogoiv.activities.MainActivity;
+import com.dancmc.pogoiv.utilities.Pokemon;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
 
 
 /**
@@ -71,9 +80,11 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     private FloatingActionButton mFAB;
     private static final String TAG = "ViewPokeballFragment";
 
-    Toolbar mToolbar;
+    private Toolbar mToolbar;
+    private LinearLayout mToolbarContainer;
     private PokeballsDataSource mDataSource;
     private ViewPokeballRecyclerViewAdapter mAdapter;
+    private RelativeLayout mMainLayout;
     private DecimalFormat mDF;
     private boolean asyncIsRunning;
 
@@ -106,11 +117,17 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.view_pokeball_recyclerview);
         mDataSource = new PokeballsDataSource(getActivity());
-        mToolbar = (Toolbar) v.findViewById(R.id.fragment_view_pokeball_toolbar);
-        mToolbar.setTitle("View Storage");
+        mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
+        mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
+        mMainLayout = (RelativeLayout) v.findViewById(R.id.view_pokeball_main_layout) ;
+        mToolbar.setTitle("Viewing Pokeball");
 
         if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
-            mToolbar.setVisibility(View.GONE);
+            mToolbarContainer.setVisibility(View.GONE);
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)mMainLayout.getLayoutParams();
+            params.topMargin = 0;
+            mMainLayout.setLayoutParams(params);
         }
 
         mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokeball.getHighestEvolvedPokemonNumber()), "drawable", getActivity().getPackageName()));
@@ -347,9 +364,9 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
             mCPPercent.setText((int) maxedAverageCPPercent + "%");
             mCPPercentDesc.setText("CP%\n" + "(" + mDF.format(Collections.min(CPRange)) + " - " + mDF.format(Collections.max(CPRange)) + "%)");
             if (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size() == 1) {
-                mSummary.setText("No comparison done as only one dataset for this Pokemon. " + mResult.size() + " IV combinations found.\n");
+                mSummary.setText("No comparison done as only one dataset for this Pokemon. " + mResult.size() + " IV combinations found.");
             } else {
-                mSummary.setText(mResult.size() + " overlapping combinations found.\n");
+                mSummary.setText(mResult.size() + " overlapping combinations found.");
             }
         }
 

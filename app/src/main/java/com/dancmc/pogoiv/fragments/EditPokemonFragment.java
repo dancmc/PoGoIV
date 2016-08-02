@@ -1,12 +1,10 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.fragments;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +15,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dancmc.pogoiv.utilities.Pokeball;
+import com.dancmc.pogoiv.utilities.Pokeballs;
+import com.dancmc.pogoiv.database.PokeballsDataSource;
+import com.dancmc.pogoiv.utilities.Pokemon;
+import com.dancmc.pogoiv.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -48,6 +53,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
     private TextView mAverageCPPercent;
     private TextView mAverageIVPercentDesc;
     private TextView mAverageCPPercentDesc;
+    private ScrollView mScrollview;
 
     private static final String TAG = "EditFragment";
     //Buttons
@@ -62,6 +68,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
     private int mPokeballNumber;
     private int mPokeballListNumber;
     private Toolbar mToolbar;
+    private LinearLayout mToolbarContainer;
 
     public EditPokemonFragment() {
         // Required empty public constructor
@@ -96,8 +103,10 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         mPokeballListNumber = getArguments().getInt("pokeballListNumber");
         mPokemon = (Pokemon) getArguments().getSerializable("pokemon");
         mCalculateButtonPressed = 0;
+        mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
+        mScrollview = (ScrollView)v.findViewById(R.id.edit_calculator_main_layout);
 
-        mToolbar = (Toolbar) v.findViewById(R.id.fragment_edit_toolbar);
+        mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
         mToolbar.inflateMenu(R.menu.menu_edit_fragment);
         if (mPokeballListNumber == -1) {
             mToolbar.setTitle(getResources().getString(R.string.edit_pokemon_fragment_add));
@@ -106,7 +115,11 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         }
 
         if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
-            mToolbar.setVisibility(View.GONE);
+            mToolbarContainer.setVisibility(View.GONE);
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)mScrollview.getLayoutParams();
+            params.topMargin = 0;
+            mScrollview.setLayoutParams(params);
         } else {
 
 
@@ -311,6 +324,8 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                 InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+                mOutputView.setText("");
+
                 try {
                     createPokemonFromInput();
                 } catch (Exception e) {
@@ -322,7 +337,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
 
                 //mOutputView.setText(mStringBuilder.toString());
 
-                if (mPokemon != null && mPokemon.mNumberOfResults != 0) {
+                if (mPokemon != null && mPokemon.getNumberOfResults() != 0) {
                     ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
                     //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
                     int lowestLevel = Collections.min(tempLevelRange);
@@ -335,7 +350,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                     Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
                             .show();
                 }
-                if (mPokemon != null && mPokemon.mNumberOfResults == 0) {
+                if (mPokemon != null && mPokemon.getNumberOfResults() == 0) {
                     Toast.makeText(getActivity(), "No combinations found!", Toast.LENGTH_SHORT)
                             .show();
                 }
@@ -354,7 +369,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                     Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
                             .show();
                     return;
-                } else if (mPokemon.mNumberOfResults == 0) {
+                } else if (mPokemon.getNumberOfResults() == 0) {
                     Toast.makeText(getActivity(), "There are no combinations!", Toast.LENGTH_SHORT)
                             .show();
                     return;

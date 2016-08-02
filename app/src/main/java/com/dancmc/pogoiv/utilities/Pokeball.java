@@ -1,4 +1,6 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.utilities;
+
+import com.dancmc.pogoiv.utilities.Pokemon;
 
 import java.util.ArrayList;
 

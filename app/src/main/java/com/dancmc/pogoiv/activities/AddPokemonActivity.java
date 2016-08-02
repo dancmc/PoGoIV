@@ -1,9 +1,8 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.dancmc.pogoiv.fragments.CompareSummaryFragment;
+import com.dancmc.pogoiv.utilities.Pokeball;
+import com.dancmc.pogoiv.utilities.Pokeballs;
+import com.dancmc.pogoiv.database.PokeballsDataSource;
+import com.dancmc.pogoiv.fragments.PokeboxFragment;
+import com.dancmc.pogoiv.utilities.Pokemon;
+import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.fragments.ViewPokeballFragment;
+import com.dancmc.pogoiv.fragments.EditPokemonFragment;
 
 import java.util.ArrayList;
 

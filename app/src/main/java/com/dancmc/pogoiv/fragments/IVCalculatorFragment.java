@@ -1,10 +1,9 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.fragments;
 
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,18 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dancmc.pogoiv.database.PokeballsDataSource;
+import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.utilities.Pokemon;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
 
 
 public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.Contract> {
@@ -43,6 +47,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
     private TextView mAverageCPPercent;
     private TextView mAverageIVPercentDesc;
     private TextView mAverageCPPercentDesc;
+    private RelativeLayout mMainLayout;
 
     private static final String TAG = "IVCalculatorFragment";
     //Buttons
@@ -54,6 +59,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
 
     private PokeballsDataSource mDataSource;
     private Toolbar mToolbar;
+    private LinearLayout mToolbarContainer;
 
     public IVCalculatorFragment() {
         // Required empty public constructor
@@ -81,8 +87,10 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mAverageCPPercentDesc = (TextView) v.findViewById(R.id.iv_calc_cppercent_text_desc);
         mDF = new DecimalFormat("0.0");
 
-        mToolbar = (Toolbar) v.findViewById(R.id.fragment_iv_calc_toolbar);
+        mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
         mToolbar.setTitle("IV Calculator");
+        mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
+        mMainLayout = (RelativeLayout)v.findViewById(R.id.iv_calc_main_layout);
 
         //Autocomplete textview setup
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
@@ -90,7 +98,11 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mPokemonNameInput.setAdapter(adapter);
 
         if(getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
-            mToolbar.setVisibility(View.GONE);
+            mToolbarContainer.setVisibility(View.GONE);
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)mMainLayout.getLayoutParams();
+            params.topMargin = 0;
+            mMainLayout.setLayoutParams(params);
         }
 
         if (mPokemon!=null&&mPokemon.getNumberOfResults()!=0) {
@@ -131,6 +143,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+                mOutputView.setText("");
+
                 try {
                     createPokemonFromInput();
                 } catch (Exception e) {
@@ -140,7 +154,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     return;
                 }
 
-                //mOutputView.setText(mStringBuilder.toString());
+
 
                 if (mPokemon != null && mPokemon.getNumberOfResults() != 0) {
                     ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
@@ -203,7 +217,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
                             .show();
                     return;
-                } else if(mPokemon.mNumberOfResults==0) {
+                } else if(mPokemon.getNumberOfResults()==0) {
                     Toast.makeText(getActivity(), "There are no combinations!", Toast.LENGTH_SHORT)
                             .show();
                     return;

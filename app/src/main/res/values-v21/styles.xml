@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.BlueButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@android:color/holo_blue_light</item>
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
+</resources>

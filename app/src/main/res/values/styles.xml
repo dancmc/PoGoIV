@@ -15,4 +15,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.BlueButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@android:color/holo_blue_light</item>"
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
+
 </resources>

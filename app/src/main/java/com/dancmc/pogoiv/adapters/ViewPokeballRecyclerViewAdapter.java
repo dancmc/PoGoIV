@@ -1,7 +1,6 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +10,13 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dancmc.pogoiv.utilities.Pokeball;
+import com.dancmc.pogoiv.utilities.Pokeballs;
+import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.utilities.Pokemon;
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Daniel on 30/07/2016.
@@ -30,7 +35,9 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
             mImageView = (ImageView) v.findViewById(R.id.view_pokemon_recycler_image);
             mTextView = (TextView) v.findViewById(R.id.view_pokemon_recycler_text);
             mEditButton = (ImageView) v.findViewById(R.id.view_pokemon_recycler_edit);
-            v.setOnLongClickListener(this);
+            mImageView.setOnLongClickListener(this);
+            mTextView.setOnLongClickListener(this);
+            mEditButton.setOnLongClickListener(this);
             mImageView.setOnClickListener(this);
             mTextView.setOnClickListener(this);
             mEditButton.setOnClickListener(this);
@@ -69,7 +76,7 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.pokeball_view_recyclerview_row, parent, false);
+                .inflate(R.layout.adapter_pokeball_view_recyclerview, parent, false);
 
         return new ViewPokeballRecyclerViewAdapter.ViewHolder(v);
     }
@@ -113,6 +120,7 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
                 } else {
                     sb.append("Dust : nil  \n");
                 }
+                sb.append("Lvl : "+ Collections.min(mPokeball.get(i).getResultLevelRange())+"-"+Collections.max(mPokeball.get(i).getResultLevelRange())+"  ");
                 if (mPokeball.get(i).getFreshMeat()) {
                     sb.append("Not powered up");
                 } else {

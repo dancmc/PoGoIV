@@ -1,4 +1,4 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,13 +9,15 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.dancmc.pogoiv.utilities.Pokeball;
+import com.dancmc.pogoiv.utilities.Pokeballs;
+import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.utilities.Pokemon;
 
 /**
  * Created by Daniel on 27/07/2016.
  */
-public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.ViewHolder> {
+public class PokeboxRecyclerViewAdapter extends RecyclerView.Adapter<PokeboxRecyclerViewAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private final ImageView pokeballPicture;
@@ -50,7 +52,7 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
     private AdapterView.OnItemClickListener mOnItemClickListener;
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
 
-    public PokeboxViewAdapter(Context context) {
+    public PokeboxRecyclerViewAdapter(Context context) {
         this.context = context;
     }
 
@@ -74,7 +76,7 @@ public class PokeboxViewAdapter extends RecyclerView.Adapter<PokeboxViewAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.pokeball_card_view, viewGroup, false);
+                .inflate(R.layout.adapter_pokebox_cardview, viewGroup, false);
         return new ViewHolder(v);
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,9 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:background="@android:color/white"
-        >
+        android:orientation="horizontal">
 
         <com.example.daniel.material.RatioLayout
             android:layout_width="0dp"
@@ -39,25 +39,26 @@
                 android:id="@+id/summary_card_pokemon"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
                 android:layout_margin="4dp"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="test"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/summary_card_CP"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
                 android:text="test"
-                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:layout_marginBottom="5dp" />
+                android:textStyle="bold" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -67,29 +68,30 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:gravity="center|bottom"
-                android:layout_marginTop="6dp"
                 android:layout_marginBottom="4dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center|bottom"
                 android:maxLines="1"
                 android:text="Worst"
-                android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/summary_card_min__CP"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:gravity="center"
-                android:maxLines="1"
+                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
-                android:layout_marginBottom="12dp"
                 android:background="@drawable/shape_rectangle_clear"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="test"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="16sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -99,25 +101,25 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:gravity="center|bottom"
-                android:layout_marginTop="6dp"
                 android:layout_marginBottom="4dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center|bottom"
                 android:maxLines="1"
                 android:text="Perfect"
-                android:textStyle="bold"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/summary_card_perfect_CP"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:gravity="center"
-                android:maxLines="1"
+                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
-                android:layout_marginBottom="12dp"
                 android:background="@drawable/shape_rectangle_clear"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="test"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="16sp" />

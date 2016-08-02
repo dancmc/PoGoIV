@@ -1,4 +1,4 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,10 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.dancmc.pogoiv.utilities.Pokeball;
+import com.dancmc.pogoiv.utilities.Pokeballs;
+import com.dancmc.pogoiv.utilities.Pokemon;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Daniel on 22/07/2016.
@@ -36,10 +37,7 @@ public class PokeballsDataSource {
             PokeballsDbHelper.ATK_IV,
             PokeballsDbHelper.DEF_IV,
             PokeballsDbHelper.FRESH_MEAT,
-            PokeballsDbHelper.PERCENT_PERFECT,
-            PokeballsDbHelper.BASE_STA,
-            PokeballsDbHelper.BASE_ATK,
-            PokeballsDbHelper.BASE_DEF};
+            PokeballsDbHelper.PERCENT_PERFECT};
 
     public PokeballsDataSource(Context context) {
         mDbHelper = PokeballsDbHelper.getInstance(context);
@@ -50,11 +48,9 @@ public class PokeballsDataSource {
         SQLiteDatabase db =mDbHelper.getWritableDatabase();
 
         //delete without decrementing, then set
-        Log.d(TAG, "step 2a");
         db.delete(mDbHelper.POKEBALLS_TABLE, mDbHelper.POKEBALL_NUMBER + "=" + pokeballNumber + " AND " + mDbHelper.POKEBALL_LIST_NUMBER + "=" + pokeballListNumber, null);
-        Log.d(TAG, "step 2b");
-        db.beginTransaction();
 
+        db.beginTransaction();
         for (int i = 0; i < pokemon.getNumberOfResults(); i++) {
 
             ContentValues values = new ContentValues();
@@ -75,9 +71,6 @@ public class PokeballsDataSource {
             values.put(PokeballsDbHelper.DEF_IV, pokemon.getIVCombinationsArray().get(i)[3]);
             values.put(PokeballsDbHelper.FRESH_MEAT, pokemon.getFreshMeat());
             values.put(PokeballsDbHelper.PERCENT_PERFECT, pokemon.getIVCombinationsArray().get(i)[4]);
-            values.put(PokeballsDbHelper.BASE_STA, pokemon.getBaseSta());
-            values.put(PokeballsDbHelper.BASE_ATK, pokemon.getBaseAtk());
-            values.put(PokeballsDbHelper.BASE_DEF, pokemon.getBaseDef());
 
             db.insert(PokeballsDbHelper.POKEBALLS_TABLE, null, values);
             
@@ -86,7 +79,7 @@ public class PokeballsDataSource {
         db.endTransaction();
 
 
-        Log.d(TAG, "setPokemonData: step 2c");
+
     }
 
 

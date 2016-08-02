@@ -1,4 +1,4 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,16 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.dancmc.pogoiv.fragments.CompareSummaryFragment;
+import com.dancmc.pogoiv.fragments.IVCalculatorFragment;
+import com.dancmc.pogoiv.utilities.Pokeballs;
+import com.dancmc.pogoiv.database.PokeballsDataSource;
+import com.dancmc.pogoiv.fragments.PokeboxFragment;
+import com.dancmc.pogoiv.utilities.Pokemon;
+import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.fragments.ViewPokeballFragment;
+import com.dancmc.pogoiv.fragments.EditPokemonFragment;
 
 import java.util.ArrayList;
 
@@ -115,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                 .commit();
     }
 
+    //merge with viewsummaryclicked
     @Override
     public void moreInfoButtonPressed(Pokemon pokemon) {
 

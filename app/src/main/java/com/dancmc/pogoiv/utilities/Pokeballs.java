@@ -1,4 +1,4 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.utilities;
 
 /**
  * Created by Daniel on 27/07/2016.

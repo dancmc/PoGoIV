@@ -1,11 +1,9 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.utilities;
 
 import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -54,7 +52,7 @@ public class Pokemon implements Serializable {
 
     //calculating values
     private ArrayList<double[]> mIVCombinationsArray;
-    int mNumberOfResults;
+    private int mNumberOfResults;
 
     private ArrayList<Double> mIVPercentRange;
     private ArrayList<Double> mCPPercentRange;
@@ -82,7 +80,6 @@ public class Pokemon implements Serializable {
         //hp/stardust will be -1 if no input
         hasHP = (hp >= 0);
         hasStardust = (stardust >= 0);
-        Log.d(TAG, "HasHP=" + hasHP + ", HasStardust=" + hasStardust);
 
         mUniqueID = UUID.randomUUID().hashCode();
         mHP = hp;
@@ -121,8 +118,6 @@ public class Pokemon implements Serializable {
 
 
     public void generateIV() {
-
-        Log.d(TAG, "Possible Level Range is " + mLevelRange.get(0) + " to " + mLevelRange.get(mLevelRange.size() - 1));
 
 
         for (int i = 0; i < mLevelRange.size(); i++) {
@@ -212,7 +207,6 @@ public class Pokemon implements Serializable {
                 for (int i = 1; i < STARDUST_AMOUNTS.length; i += 2) {
                     if (stardust == STARDUST_AMOUNTS[i]) {
                         mLevelRange.add(i);
-                        Log.d(TAG, "getLevelsFromStardust: " + mStardust + i);
                     } else if (stardust < STARDUST_AMOUNTS[i])
                         break;
                 }
@@ -232,7 +226,6 @@ public class Pokemon implements Serializable {
 
     public boolean customEquals(Pokemon pokemon) {
         boolean temp = ((pokemon.getPokemonName().equals(this.mPokemonName)) && (pokemon.getHP() == this.mHP) && (pokemon.getCP() == this.mCP) && (pokemon.getStardust() == this.mStardust));
-        Log.d(TAG, "customEquals: "+(pokemon.getPokemonName() == this.mPokemonName));
         return temp;
     }
 

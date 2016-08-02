@@ -1,4 +1,4 @@
-package com.dancmc.pogoiv;
+package com.dancmc.pogoiv.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,7 +22,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
     }
 
     private static final String DATABASE_NAME = "pokeballtracker.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String POKEBALLS_TABLE = "pokeballs";
     public static final String COLUMN_ID = "_id";
@@ -44,9 +44,6 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
     public static final String DEF_IV = "def_iv";
     public static final String FRESH_MEAT = "fresh_meat";
     public static final String PERCENT_PERFECT = "percent_perfect";
-    public static final String BASE_STA = "base_sta";
-    public static final String BASE_ATK = "base_atk";
-    public static final String BASE_DEF = "base_def";
 
 
 
@@ -72,10 +69,7 @@ public class PokeballsDbHelper extends SQLiteOpenHelper {
                 +ATK_IV+" INTEGER, "
                 +DEF_IV+" INTEGER, "
                 +FRESH_MEAT+" BOOLEAN, "
-                +PERCENT_PERFECT+" DOUBLE, "
-                +BASE_STA+" INTEGER, "
-                +BASE_ATK+" INTEGER, "
-                +BASE_DEF+" INTEGER"
+                +PERCENT_PERFECT+" DOUBLE"
                 +")"
         );
     }
