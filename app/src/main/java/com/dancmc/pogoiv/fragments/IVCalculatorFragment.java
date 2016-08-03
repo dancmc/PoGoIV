@@ -22,8 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dancmc.pogoiv.activities.MainActivity;
-import com.dancmc.pogoiv.activities.TestActivity;
+import com.dancmc.pogoiv.activities.OverlayActivity;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.services.FloatingHead;
@@ -115,6 +114,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 public boolean onMenuItemClick(MenuItem item) {
                     if(item.getItemId() == R.id.start_floating_head){
                         getActivity().startService(new Intent(getActivity(), FloatingHead.class));
+                        getActivity().startActivity(new Intent(getActivity(), OverlayActivity.class));
                         return true;
                     }
                     return false;
@@ -245,23 +245,6 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             }
         });
 
-        Button testButton = (Button)v.findViewById(R.id.test_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getActivity().getClass().getSimpleName().equals("MainActivity")) {
-                    Intent window = new Intent(getActivity(), TestActivity.class);
-                    window.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getActivity().startActivity(window);
-                    getActivity().finish();
-                } else if (getActivity().getClass().getSimpleName().equals("TestActivity")) {
-                    Intent fullApp = new Intent(getActivity(), MainActivity.class);
-                    fullApp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getActivity().startActivity(fullApp);
-                    getActivity().finish();
-                }
-            }
-        });
 
         return v;
     }
