@@ -2,9 +2,11 @@ package com.dancmc.pogoiv.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -20,8 +22,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dancmc.pogoiv.activities.MainActivity;
+import com.dancmc.pogoiv.activities.TestActivity;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.services.FloatingHead;
 import com.dancmc.pogoiv.utilities.Pokemon;
 
 import java.text.DecimalFormat;
@@ -103,6 +108,18 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)mMainLayout.getLayoutParams();
             params.topMargin = 0;
             mMainLayout.setLayoutParams(params);
+        } else{
+            mToolbar.inflateMenu(R.menu.menu_iv_calculator);
+            mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if(item.getItemId() == R.id.start_floating_head){
+                        getActivity().startService(new Intent(getActivity(), FloatingHead.class));
+                        return true;
+                    }
+                    return false;
+                }
+            });
         }
 
         if (mPokemon!=null&&mPokemon.getNumberOfResults()!=0) {
@@ -225,6 +242,24 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     getContract().moreInfoButtonPressed(mPokemon);
                 }
 
+            }
+        });
+
+        Button testButton = (Button)v.findViewById(R.id.test_button);
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity().getClass().getSimpleName().equals("MainActivity")) {
+                    Intent window = new Intent(getActivity(), TestActivity.class);
+                    window.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(window);
+                    getActivity().finish();
+                } else if (getActivity().getClass().getSimpleName().equals("TestActivity")) {
+                    Intent fullApp = new Intent(getActivity(), MainActivity.class);
+                    fullApp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(fullApp);
+                    getActivity().finish();
+                }
             }
         });
 

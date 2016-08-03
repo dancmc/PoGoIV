@@ -43,7 +43,10 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        setUpWindow();
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         mDataSource = new PokeballsDataSource(this);
@@ -68,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                     .add(R.id.main_fragment_container, mCalcFragment, "calcFragment")
                     .commit();
         }
+
+
+
+    }
+
+    public void setUpWindow(){
 
     }
 

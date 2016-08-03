@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.dancmc.pogoiv">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -18,8 +22,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AddPokemonActivity"
-            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".activities.AddPokemonActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.TestActivity"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.FloatingWindow.Popup"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            tools:ignore="ExportedActivity" />
+
+        <service
+            android:name=".services.FloatingHead"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
