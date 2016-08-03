@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -43,6 +44,14 @@ public class FloatingHead extends Service {
     private Context mContext;
     private int mShortAnimationDuration;
     private FrameLayout mBottomZoneGradient;
+    private int mFinalX;
+    private int mFinalY;
+    private RelativeLayout.LayoutParams mCloneRLParams;
+    private ImageView mCloneImage;
+    private RelativeLayout mCloneRL;
+    private WindowManager.LayoutParams mWMParams;
+    private RelativeLayout.LayoutParams mRLParams;
+    private Vibrator mVibrator;
 
 
     @Override
@@ -56,6 +65,7 @@ public class FloatingHead extends Service {
     public void onCreate() {
         super.onCreate();
 
+        mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         display = windowManager.getDefaultDisplay();
         mScreenMetrics = new DisplayMetrics();
@@ -67,21 +77,21 @@ public class FloatingHead extends Service {
         chatHead.setImageResource(R.drawable.floating_head);
         mBottomZoneGradient = new FrameLayout(mContext);
 
-        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+        mWMParams = new WindowManager.LayoutParams(
                 (int) (70 * mScreenMetrics.density), (int) (70 * mScreenMetrics.density),
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.TOP | Gravity.LEFT;
-        params.x = 0;
-        params.y = 0;
+        mWMParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mWMParams.x = 0;
+        mWMParams.y = 0;
 
         mRelativeLayout = new RelativeLayout(this);
-        windowManager.addView(mRelativeLayout, params);
+        windowManager.addView(mRelativeLayout, mWMParams);
 
-        final RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        mRelativeLayout.addView(chatHead, params2);
+        mRLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        mRelativeLayout.addView(chatHead, mRLParams);
 
         mRelativeLayout.setClipChildren(false);
         mRelativeLayout.setClipToPadding(false);
@@ -91,13 +101,10 @@ public class FloatingHead extends Service {
         final ImageView closeButtonHalo = new ImageView(mContext);
         closeButtonHalo.setImageResource(R.drawable.close_button_halo);
         final FrameLayout.LayoutParams llp = new FrameLayout.LayoutParams((int) (55 * mScreenMetrics.density), (int) (55 * mScreenMetrics.density), Gravity.CENTER_HORIZONTAL);
-        //mBottomZoneGradient.setVerticalGravity(Gravity.TOP);
-        //mBottomZoneGradient.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
         mBottomZoneGradient.addView(closeButton, llp);
 
         try {
             chatHead.setOnTouchListener(new View.OnTouchListener() {
-                //private WindowManager.LayoutParams paramsF = params;
                 private int initialX;
                 private int initialY;
                 private float initialTouchX;
@@ -109,8 +116,8 @@ public class FloatingHead extends Service {
 
                         case MotionEvent.ACTION_DOWN:
 
-                            initialX = params.x;
-                            initialY = params.y;
+                            initialX = mWMParams.x;
+                            initialY = mWMParams.y;
                             initialTouchX = event.getRawX();
                             initialTouchY = event.getRawY();
 
@@ -126,123 +133,61 @@ public class FloatingHead extends Service {
 
                             final float rawX = event.getRawX();
                             final float rawY = event.getRawY();
-                            final int currentX = params.x;
-                            int currentY = params.y;
+                            mFinalX = mWMParams.x;
+                            mFinalY = mWMParams.y;
 
                             //create a new cloned icon with a match parent relativelayout so icon can bounce outside bounds
                             //Adding new Relative Layout to WindowManager
-                            final RelativeLayout newLayout = new RelativeLayout(mContext);
-                            windowManager.addView(newLayout, new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT));
+                            mCloneRL = new RelativeLayout(mContext);
+                            windowManager.addView(mCloneRL, new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT));
                             //Adding new ImageView to Relative Layout
-                            final ImageView newImage = new ImageView(mContext);
-                            newImage.setImageResource(R.drawable.floating_head);
-                            final RelativeLayout.LayoutParams tempParams = new RelativeLayout.LayoutParams((int) (70 * mScreenMetrics.density), (int) (70 * mScreenMetrics.density));
-                            tempParams.leftMargin = currentX;
-                            tempParams.topMargin = currentY;
-                            newLayout.addView(newImage, tempParams);
+                            mCloneImage = new ImageView(mContext);
+                            mCloneImage.setImageResource(R.drawable.floating_head);
+                            mCloneRLParams = new RelativeLayout.LayoutParams((int) (70 * mScreenMetrics.density), (int) (70 * mScreenMetrics.density));
+                            //mCloneRLParams.leftMargin = mFinalX;
+                            //mCloneRLParams.topMargin = mFinalY;
+                            mCloneRL.addView(mCloneImage, mCloneRLParams);
+                            mCloneImage.setTranslationX(mFinalX);
+                            mCloneImage.setTranslationY(mFinalY);
 
                             //hide dragged main icon, only cloned one visible
                             mRelativeLayout.setVisibility(View.INVISIBLE);
 
                             //Set the X value for where cloned icon should end up
-                            if ((params.x < mScreenMetrics.widthPixels / 2 - chatHead.getWidth() / 2)&&!inViewInBounds(mBottomZoneGradient, (int)rawX, (int)rawY)) {
-
-                                params.x = -(int) (chatHead.getWidth() * 0.2);
-
+                            if ((mWMParams.x < mScreenMetrics.widthPixels / 2 - chatHead.getWidth() / 2) && !inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
+                                mWMParams.x = -(int) (chatHead.getWidth() * 0.3);
                                 //animate the new icon, then replace it with the old one at the end
-                                ValueAnimator translateLeft = ValueAnimator.ofInt(currentX, params.x);
-                                translateLeft.setInterpolator(new OvershootInterpolator(2f));
-                                translateLeft.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                        int val = (Integer) valueAnimator.getAnimatedValue();
-                                        tempParams.leftMargin = val;
-                                        newLayout.updateViewLayout(newImage, tempParams);
-                                    }
-                                });
-                                translateLeft.setDuration(1000);
-                                translateLeft.start();
-                                //
-                                translateLeft.addListener(new AnimatorListenerAdapter() {
+                                animateSnapToEdge(true);
 
-                                    @Override
-                                    public void onAnimationEnd(Animator animator) {
+                            } else if ((mWMParams.x > mScreenMetrics.widthPixels / 2 - chatHead.getWidth() / 2) && !inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
+                                mWMParams.x = mScreenMetrics.widthPixels - (int) (chatHead.getWidth() * 0.7);
+                                animateSnapToEdge(false);
 
-                                            windowManager.updateViewLayout(mRelativeLayout, params);
-                                            params2.leftMargin = -(int) (chatHead.getWidth() * 0.2);
-                                            mRelativeLayout.updateViewLayout(chatHead, params2);
-                                            mRelativeLayout.setVisibility(View.VISIBLE);
-                                            Log.d(TAG, "onTouch: " + params2.leftMargin);
-                                            newLayout.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
-                                                @Override
-                                                public void onAnimationEnd(Animator animation) {
-                                                    windowManager.removeView(newLayout);
-                                                }
-                                            });
-
-
-
-                                    }
-                                });
-                            } else if ((params.x > mScreenMetrics.widthPixels / 2 - chatHead.getWidth() / 2)&&!inViewInBounds(mBottomZoneGradient, (int)rawX, (int)rawY)) {
-
-                                params.x = mScreenMetrics.widthPixels - (int) (chatHead.getWidth() * 0.8);
-                                //animate the new icon, then replace it with the old one at the end
-                                ValueAnimator translateRight = ValueAnimator.ofInt(currentX, params.x);
-                                translateRight.setInterpolator(new OvershootInterpolator(2f));
-                                translateRight.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                        int val = (Integer) valueAnimator.getAnimatedValue();
-                                        //paramsF.x = val;
-                                        //windowManager.updateViewLayout(mRelativeLayout, paramsF);
-                                        tempParams.leftMargin = val;
-                                        tempParams.rightMargin = mScreenMetrics.widthPixels - val - chatHead.getWidth();
-                                        newLayout.updateViewLayout(newImage, tempParams);
-                                    }
-                                });
-                                translateRight.setDuration(1000);
-                                translateRight.start();
-                                translateRight.addListener(new AnimatorListenerAdapter() {
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animator) {
-
-                                            windowManager.updateViewLayout(mRelativeLayout, params);
-                                            params2.leftMargin = (int) (chatHead.getWidth() * 0.2);
-                                            params2.rightMargin = -(int) (chatHead.getWidth() * 0.2);
-
-                                            mRelativeLayout.updateViewLayout(chatHead, params2);
-                                            Log.d(TAG, "onTouch: " + params2.rightMargin);
-                                            mRelativeLayout.setVisibility(View.VISIBLE);
-                                            newLayout.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
-                                                @Override
-                                                public void onAnimationEnd(Animator animation) {
-                                                    windowManager.removeView(newLayout);
-                                                }
-                                            });
-
-
-                                    }
-                                });
-                            }else if (inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
-                                if (chatHead != null) windowManager.removeView(mRelativeLayout);
-                                if(newLayout!=null&&newLayout.getParent()!=null) windowManager.removeView(newLayout);
+                            } else if (inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
+                                //cleaning up
+                                if (chatHead != null) {
+                                    windowManager.removeView(mRelativeLayout);
+                                }
+                                if (mCloneRL != null && mCloneRL.getParent() != null) {
+                                    windowManager.removeView(mCloneRL);
+                                }
+                                mVibrator.vibrate(100);
                                 stopSelf();
                             }
+
+                            //clean up
                             mBottomZoneGradient.removeView(closeButtonHalo);
                             windowManager.removeView(mBottomZoneGradient);
-
                             break;
+
                         case MotionEvent.ACTION_MOVE:
-                            Log.d(TAG, "onTouch: moving");
 
-                            params2.setMargins(0, 0, 0, 0);
-                            mRelativeLayout.updateViewLayout(chatHead, params2);
+                            mRLParams.setMargins(0, 0, 0, 0);
+                            mRelativeLayout.updateViewLayout(chatHead, mRLParams);
 
-                            params.x = initialX + (int) (event.getRawX() - initialTouchX);
-                            params.y = initialY + (int) (event.getRawY() - initialTouchY);
-                            windowManager.updateViewLayout(mRelativeLayout, params);
+                            mWMParams.x = initialX + (int) (event.getRawX() - initialTouchX);
+                            mWMParams.y = initialY + (int) (event.getRawY() - initialTouchY);
+                            windowManager.updateViewLayout(mRelativeLayout, mWMParams);
 
                             if (inViewInBounds(mBottomZoneGradient, (int) event.getRawX(), (int) event.getRawY()) && closeButtonHalo.getParent() == null) {
                                 mBottomZoneGradient.addView(closeButtonHalo, llp);
@@ -259,7 +204,35 @@ public class FloatingHead extends Service {
             Log.d(TAG, "onCreate: " + e.getMessage());
             // TODO: handle exception
         }
+    }
 
+    private void animateSnapToEdge(final boolean onTheLeft) {
+        //animate the new icon, then replace it with the old one at the end
+
+
+        mCloneImage.animate().x((float)mWMParams.x).setDuration(1500).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+
+                windowManager.updateViewLayout(mRelativeLayout, mWMParams);
+                if (onTheLeft) {
+                    mRLParams.leftMargin = -(int) (chatHead.getWidth() * 0.3);
+                    mRLParams.rightMargin = (int) (chatHead.getWidth() * 0.3);
+                } else {
+                    mRLParams.leftMargin = (int) (chatHead.getWidth() * 0.3);
+                    mRLParams.rightMargin = -(int) (chatHead.getWidth() * 0.3);
+                }
+                mRelativeLayout.updateViewLayout(chatHead, mRLParams);
+                mRelativeLayout.setVisibility(View.VISIBLE);
+                mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        windowManager.removeView(mCloneRL);
+                    }
+                });
+            }
+        });
     }
 
 
@@ -273,12 +246,11 @@ public class FloatingHead extends Service {
         return outRect.contains(x, y);
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-
-        Log.d(TAG, "onDestroy: ");
     }
 
 
