@@ -32,7 +32,7 @@ import com.dancmc.pogoiv.activities.OverlayActivity;
 public class FloatingHead extends Service {
 
     public static boolean mRunning;
-    private static final String TAG = "FlyBitch";
+    private static final String TAG = "FloatingHead";
     private WindowManager windowManager;
     private ImageView chatHead;
     private Display display;
@@ -128,11 +128,7 @@ public class FloatingHead extends Service {
                             initialTouchY = event.getRawY();
                             totalDeltaMove = 0;
 
-                            //add bottom zone
-                            WindowManager.LayoutParams rlBottomParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, (int) (150 * mScreenMetrics.density), WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
-                            rlBottomParams.gravity = Gravity.BOTTOM;
-                            mBottomZoneGradient.setBackgroundResource(R.drawable.bottom_shadow);
-                            windowManager.addView(mBottomZoneGradient, rlBottomParams);
+                            //button pressed animation
                             chatHead.setImageResource(R.drawable.inset_floating_head);
                             chatHead.setAlpha(0.75f);
 
@@ -174,6 +170,8 @@ public class FloatingHead extends Service {
                                     window.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     OverlayActivity.mIsIntentionalCall = true;
                                     startActivity(window);
+
+
                                 }
 
                             }
@@ -201,7 +199,10 @@ public class FloatingHead extends Service {
                                     mVibrator.vibrate(10);
                                     stopSelf();
                                 }
-                            }else{
+                                //clean up bottom zone on finger up
+                                mBottomZoneGradient.removeView(closeButtonHalo);
+                                windowManager.removeView(mBottomZoneGradient);
+                            } else {
                                 mRelativeLayout.setVisibility(View.VISIBLE);
                                 mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
                                     @Override
@@ -209,12 +210,10 @@ public class FloatingHead extends Service {
                                         windowManager.removeView(mCloneRL);
                                     }
                                 });
+
                             }
 
 
-                            //clean up bottom zone on finger up
-                            mBottomZoneGradient.removeView(closeButtonHalo);
-                            windowManager.removeView(mBottomZoneGradient);
                             break;
 
                         case MotionEvent.ACTION_MOVE:
@@ -237,10 +236,18 @@ public class FloatingHead extends Service {
                                 moveX2 = event.getRawX();
                                 moveY2 = event.getRawY();
                                 totalDeltaMove += (moveX2 - moveX1 + moveY2 - moveY1);
-                                numberOfMoves += 1;
                                 if (numberOfMoves == 2) {
+                                    numberOfMoves += 1;
+                                    //add bottom zone
+                                    WindowManager.LayoutParams rlBottomParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, (int) (150 * mScreenMetrics.density), WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+                                    rlBottomParams.gravity = Gravity.BOTTOM;
+                                    mBottomZoneGradient.setBackgroundResource(R.drawable.bottom_shadow);
+                                    windowManager.addView(mBottomZoneGradient, rlBottomParams);
+
                                     break;
                                 }
+                                numberOfMoves += 1;
+
                             }
 
                             mRLParams.setMargins(0, 0, 0, 0);

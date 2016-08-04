@@ -151,9 +151,9 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    mEditNickname.clearFocus();
                     InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    mEditNickname.clearFocus();
                     return true;
                 }
                 return false;

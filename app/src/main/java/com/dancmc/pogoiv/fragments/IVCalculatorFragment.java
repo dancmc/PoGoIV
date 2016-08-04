@@ -119,7 +119,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                         startOverlay.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         OverlayActivity.mIsIntentionalCall = true;
                         getActivity().startActivity(startOverlay);
-
+                        getActivity().finish();
                         return true;
                     }
                     return false;

@@ -21,7 +21,7 @@
 
     </style>
 
-    <style name="Theme.FloatingWindow.Popup" parent="Theme.AppCompat.Light.NoActionBar" >
+    <style name="Theme.FloatingWindow.Popup" parent="NoActionBar" >
 
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">stateUnchanged</item>
@@ -29,7 +29,7 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowFrame">@null</item>
-
+        <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowCloseOnTouchOutside">false</item>
         <item name="android:backgroundDimEnabled">false</item>
 

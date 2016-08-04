@@ -1,13 +1,272 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dancmc.pogoiv.fragments.OverlayFragment">
+    android:background="@null"
+    android:orientation="vertical"
+    tools:context=".activities.OverlayActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:background="@null"
+        android:fillViewport="true">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:orientation="vertical">
+
+            <com.example.daniel.material.RatioLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                app:ratio="0.640432">
+
+                <com.dancmc.pogoiv.utilities.LevelAngle
+                    android:id="@+id/level_angle_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null" />
+            </com.example.daniel.material.RatioLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@android:color/white">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:id="@+id/textview3"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_horizontal"
+                        android:text="Pokemon : "
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/enter_pokemon_name"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/textview3"
+                        android:completionThreshold="1"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:hint="Enter Pokemon Name"
+                        android:imeOptions="actionDone"
+                        android:inputType="textAutoComplete"
+                        android:selectAllOnFocus="true"
+                        android:textAlignment="center"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pokemon_name_display"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/textview3"
+                        android:gravity="center"
+                        android:text="Enter Pokemon Name"
+                        android:textAlignment="center"
+                        android:textSize="18dp"
+                        android:textColor="#EF5350"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/textview_trainer_level"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Trainer Level : 1"
+                        android:textSize="20sp" />
+
+                    <ImageButton
+                        android:id="@+id/button_minus_trainer_level"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_remove_circle_outline_black_48px" />
+
+                    <ImageButton
+                        android:id="@+id/button_plus_trainer_level"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_add_circle_outline_black_48px" />
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekbar_trainer_level"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/textview_pokemon_level"
+                        android:layout_width="220dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Pokemon Level : 1"
+                        android:textSize="20sp" />
+
+                    <ImageButton
+                        android:id="@+id/button_minus_pokemon_level"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_remove_circle_outline_black_48px" />
+
+                    <ImageButton
+                        android:id="@+id/button_plus_pokemon_level"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_add_circle_outline_black_48px" />
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekbar_pokemon_level"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/textview_cp"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="CP : 1"
+                        android:textSize="20sp" />
+
+                    <ImageButton
+                        android:id="@+id/button_minus_cp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_remove_circle_outline_black_48px" />
+
+                    <ImageButton
+                        android:id="@+id/button_plus_cp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_add_circle_outline_black_48px" />
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekbar_cp"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="4dp">
+
+                    <TextView
+                        android:id="@+id/textview_hp"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="HP : 1"
+                        android:textSize="20sp" />
+
+                    <ImageButton
+                        android:id="@+id/button_minus_hp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_remove_circle_outline_black_48px" />
+
+                    <ImageButton
+                        android:id="@+id/button_plus_hp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_add_circle_outline_black_48px" />
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekbar_hp"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <Button
+                    android:id="@+id/overlay_calculate_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:focusable="true"
+                    android:text="Calculate!"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+
+
