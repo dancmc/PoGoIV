@@ -104,7 +104,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         mPokemon = (Pokemon) getArguments().getSerializable("pokemon");
         mCalculateButtonPressed = 0;
         mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
-        mScrollview = (ScrollView)v.findViewById(R.id.edit_calculator_main_layout);
+        mScrollview = (ScrollView) v.findViewById(R.id.edit_calculator_main_layout);
 
         mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
         mToolbar.inflateMenu(R.menu.menu_edit_fragment);
@@ -117,7 +117,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
             mToolbarContainer.setVisibility(View.GONE);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)mScrollview.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mScrollview.getLayoutParams();
             params.topMargin = 0;
             mScrollview.setLayoutParams(params);
         } else {
@@ -152,34 +152,31 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             return true;
                         }
 
-                        if (mPokemon.getNumberOfResults() == 0) {
-                            Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_SHORT)
-                                    .show();
-                            return true;
-                        }
+                        Pokeball pokeball = new Pokeball();
+                        if (mPokeballNumber > -1) {
+                            pokeball = Pokeballs.getPokeballsInstance().get(mPokeballNumber);
 
-                        Pokeball pokeball = Pokeballs.getPokeballsInstance().get(mPokeballNumber);
+                            //handle scenario when different family
+                            for (int i = 0; i < pokeball.size(); i++) {
+                                if (!(pokeball.get(i).getPokemonFamily().equals(mPokemon.getPokemonFamily()))) {
+                                    Toast.makeText(getActivity(), "These Pokemon are from different families!", Toast.LENGTH_SHORT)
+                                            .show();
+                                    return true;
+                                }
+                            }
 
-                        //handle scenario when different family
-                        for (int i = 0; i < pokeball.size(); i++) {
-                            if (!(pokeball.get(i).getPokemonFamily().equals(mPokemon.getPokemonFamily()))) {
-                                Toast.makeText(getActivity(), "These Pokemon are from different families!", Toast.LENGTH_SHORT)
-                                        .show();
-                                return true;
+                            //handle scenario when different evolution paths (need to change code later on to handle Wurmple)
+                            for (int i = 0; i < pokeball.size(); i++) {
+                                if ((pokeball.get(i).getEvolutionTier() == mPokemon.getEvolutionTier() && (pokeball.get(i).getPokemonNumber() != mPokemon.getPokemonNumber()))) {
+                                    Toast.makeText(getActivity(), "These Pokemon are from different evolution paths!", Toast.LENGTH_SHORT)
+                                            .show();
+                                    return true;
+                                }
                             }
                         }
 
-                        //handle scenario when different evolution paths (need to change code later on to handle Wurmple)
-                        for (int i = 0; i < pokeball.size(); i++) {
-                            if ((pokeball.get(i).getEvolutionTier() == mPokemon.getEvolutionTier() && (pokeball.get(i).getPokemonNumber() != mPokemon.getPokemonNumber()))) {
-                                Toast.makeText(getActivity(), "These Pokemon are from different evolution paths!", Toast.LENGTH_SHORT)
-                                        .show();
-                                return true;
-                            }
-                        }
-
-                        //if ADDING
-                        if (mPokeballListNumber == -1) {
+                        //if ADDING NEW POKEMON
+                        if (mPokeballNumber > -1 && mPokeballListNumber == -1) {
                             //handle scenario when already added pokemon
                             for (int i = 0; i < pokeball.size(); i++) {
                                 if (pokeball.get(i).customEquals(mPokemon)) {
@@ -209,6 +206,21 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             //async was causing the adapter to not update when going back to view pookeball fragment, so have to do series of callbacks
                             //new pokemon already added to Pokeballs instance, so will be the last one
                             getContract().saveButtonPressed(mPokeballNumber, (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size() - 1), mPokemon);
+                            return true;
+
+                        } else if (mPokeballNumber == -1)
+                        //ADDING NEW POKEBALL
+                        {
+                            pokeball.setNickname(mPokemon.getPokemonName());
+                            pokeball.setHighestEvolvedPokemonNumber(mPokemon.getPokemonNumber());
+                            pokeball.add(mPokemon);
+
+                            Pokeballs.getPokeballsInstance().add(pokeball);
+
+                            Toast.makeText(getActivity(), "Added Pokemon!", Toast.LENGTH_SHORT)
+                                    .show();
+
+                            getContract().saveButtonPressed(Pokeballs.getPokeballsInstance().size()-1, 0, mPokemon);
                             return true;
 
                         } else

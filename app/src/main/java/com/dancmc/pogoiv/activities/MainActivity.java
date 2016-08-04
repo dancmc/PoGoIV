@@ -148,9 +148,29 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     //Moving to EditFragment to ADD pokemon
     @Override
-    public void onAddFabClick(int pokeballNumber) {
+    public void addToExistingPokeball(int pokeballNumber) {
 
         mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber, -1);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
+                .commit();
+    }
+
+    //Moving to EditFragment to ADD pokeball
+    @Override
+    public void addNewPokeball() {
+        mEditPokemonFragment = EditPokemonFragment.newInstance(-1, -1);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
+                .commit();
+    }
+
+    //Moving to editpokemon to edit something
+    @Override
+    public void editPokemon(int pokeballNumber, int pokeballListNumber) {
+        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber, pokeballListNumber);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
@@ -212,15 +232,6 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     @Override
     public void onDeleteLastPokemon() {
         getSupportFragmentManager().popBackStack();
-    }
-
-    @Override
-    public void editPokemon(int pokeballNumber, int pokeballListNumber) {
-        mEditPokemonFragment = EditPokemonFragment.newInstance(pokeballNumber, pokeballListNumber);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, mEditPokemonFragment).addToBackStack(null)
-                .commit();
     }
 
     @Override

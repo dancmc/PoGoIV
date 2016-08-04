@@ -4,6 +4,7 @@ package com.dancmc.pogoiv.fragments;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dancmc.pogoiv.utilities.Pokeballs;
@@ -32,6 +34,8 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
     private PokeballsDataSource mDataSource;
     private Toolbar mToolbar;
     private LinearLayout mToolbarContainer;
+    private FloatingActionButton mAddButton;
+    private RelativeLayout mMainLayout;
 
     public PokeboxFragment() {
         // Required empty public constructor
@@ -43,18 +47,22 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_pokebox, container, false);
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.pokeball_grid);
+        mMainLayout = (RelativeLayout) v.findViewById(R.id.pokeball_grid);
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.pokebox_recyclerview);
+        mAddButton = (FloatingActionButton)v.findViewById(R.id.add_to_new_pokeball_fab);
 
         mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
         mToolbar.setTitle("Viewing Pokebox");
         mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
 
+
+        //in AddActivity, remove the toolbar + shadow, and insert a new button
         if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
             mToolbarContainer.setVisibility(View.GONE);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)recyclerView.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)mMainLayout.getLayoutParams();
             params.topMargin = 0;
-            recyclerView.setLayoutParams(params);
+            mMainLayout.setLayoutParams(params);
         }
 
         mDataSource = new PokeballsDataSource(getActivity());
@@ -106,14 +114,28 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
         recyclerView.setLayoutManager(mGridLayoutManager);
         recyclerView.setAdapter(mAdapter);
 
+
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContract().addNewPokeball();
+            }
+        });
+
         return v;
     }
 
 
     public interface Contract {
-        public void selectedPokeball(int position);
+        void selectedPokeball(int position);
+
+        void addNewPokeball();
 
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
 }

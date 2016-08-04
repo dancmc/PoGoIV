@@ -61,16 +61,12 @@ public class PokeboxRecyclerViewAdapter extends RecyclerView.Adapter<PokeboxRecy
     public void onBindViewHolder(ViewHolder holder, int position) {
         Pokeball pokeball = Pokeballs.getPokeballsInstance().get(position);
         //sets the cardview layout of this adapter to the pokeball nickname and picture of highest evolved pokemon inside pokeball
-        if (pokeball.isCustomAddBall()) {
-            holder.pokeballNickname.setText("Add New");
-            holder.pokeballPicture.setImageResource(R.drawable.pokeball);
-            holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } else {
-            holder.pokeballNickname.setText(pokeball.getNickname());
-            holder.pokeballPicture.setImageResource(context.getResources().getIdentifier(Pokemon.getPngFileName(pokeball.getHighestEvolvedPokemonNumber()), "drawable", context.getPackageName()));
-            holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            holder.pokeballPicture.setBackgroundResource(R.drawable.inset_circle_background);
-        }
+
+        holder.pokeballNickname.setText(pokeball.getNickname());
+        holder.pokeballPicture.setImageResource(context.getResources().getIdentifier(Pokemon.getPngFileName(pokeball.getHighestEvolvedPokemonNumber()), "drawable", context.getPackageName()));
+        holder.pokeballPicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        holder.pokeballPicture.setBackgroundResource(R.drawable.inset_circle_background);
+
     }
 
     @Override

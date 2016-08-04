@@ -113,7 +113,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mCPPercentDesc = (TextView) v.findViewById(R.id.pokeball_view_CP_percent_desc);
         mSummary = (TextView) v.findViewById(R.id.pokeball_view_summary);
         mComparison = (Button) v.findViewById(R.id.pokeball_view_comparison);
-        mFAB = (FloatingActionButton) v.findViewById(R.id.add_activity_fab);
+        mFAB = (FloatingActionButton) v.findViewById(R.id.add_to_existing_pokeball_fab);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.view_pokeball_recyclerview);
         mDataSource = new PokeballsDataSource(getActivity());
@@ -308,7 +308,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContract().onAddFabClick(mPokeballNumber);
+                getContract().addToExistingPokeball(mPokeballNumber);
             }
         });
 
@@ -319,7 +319,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     public interface Contract {
         public void onViewSummaryClick(Pokemon pokemon, ArrayList<double[]> ivCombos);
 
-        public void onAddFabClick(int pokeballPosition);
+        public void addToExistingPokeball(int pokeballPosition);
 
         public void onDeleteLastPokemon();
 

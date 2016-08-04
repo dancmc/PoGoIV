@@ -7,13 +7,29 @@
     tools:context=".activities.MainActivity">
 
 
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="?attr/actionBarSize"
+    <RelativeLayout
         android:id="@+id/pokeball_grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
 
-    <include layout="@layout/layout_toolbar_shadow"/>
+        <android.support.v7.widget.RecyclerView
+android:id="@+id/pokebox_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_to_new_pokeball_fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:elevation="8dp"
+            android:focusable="true"
+            android:src="@drawable/ic_add_white_24px" />
+    </RelativeLayout>
+
+    <include layout="@layout/layout_toolbar_shadow" />
 
 </FrameLayout>
