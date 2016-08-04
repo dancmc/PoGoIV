@@ -14,11 +14,13 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.dancmc.pogoiv.R;
+import com.dancmc.pogoiv.services.FloatingHead;
 
 public class OverlayActivity extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor ed;
     public static boolean mRunning;
+    public static boolean mIsIntentionalCall;
     private static final String TAG = "OverlayActivity";
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -28,6 +30,7 @@ public class OverlayActivity extends AppCompatActivity {
             if (mMessageReceiver != null) {
                 unregisterReceiver(mMessageReceiver);
             }
+
             finish();
         }
     };
@@ -38,6 +41,9 @@ public class OverlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overlay);
 
+
+
+        startService(new Intent(this, FloatingHead.class));
         //indicate that running
         sp = getSharedPreferences("OVERLAY_ACTIVITY", MODE_PRIVATE);
         //ed = sp.edit();
@@ -47,6 +53,7 @@ public class OverlayActivity extends AppCompatActivity {
 
         this.registerReceiver(mMessageReceiver, new IntentFilter("stop overlay"));
 
+        Log.d(TAG, "onCreate: "+mIsIntentionalCall);
     }
 
 
@@ -81,9 +88,14 @@ public class OverlayActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
+        if (mMessageReceiver != null) {
+            try {
+                unregisterReceiver(mMessageReceiver);
+            } catch (Exception e) {
+            }
 
+        }
         mRunning = false;
-
 
     }
 
@@ -91,7 +103,12 @@ public class OverlayActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-
+        if (mMessageReceiver != null) {
+            try {
+                unregisterReceiver(mMessageReceiver);
+            } catch (Exception e) {
+            }
+        }
         mRunning = false;
     }
 
@@ -99,32 +116,53 @@ public class OverlayActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-
+        if (mMessageReceiver != null) {
+            try {
+                unregisterReceiver(mMessageReceiver);
+            } catch (Exception e) {
+            }
+        }
         mRunning = false;
 
 
     }
 
+
+    //onResume is called every single time, whether from the restart route, or the oncreate
+    //so here do a check whether the overlay call was explicitly started by a button press, and then invalidate the boolean
+    //all explicit calls to this activity (ie not from recent tasks) have to set the static variable, or it will shift to MainActivity
     @Override
     protected void onResume() {
         super.onResume();
 
-        this.registerReceiver(mMessageReceiver, new IntentFilter("stop overlay"));
-        mRunning = true;
+        if (!mIsIntentionalCall) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
 
+        startService(new Intent(this, FloatingHead.class));
+        this.registerReceiver(mMessageReceiver, new IntentFilter("stop overlay"));
+
+        mRunning = true;
+        mIsIntentionalCall = false;
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
+        startService(new Intent(this, FloatingHead.class));
         this.registerReceiver(mMessageReceiver, new IntentFilter("stop overlay"));
+
         mRunning = true;
+
 
     }
 
     public static boolean overlayIsRunning() {
         return mRunning;
     }
+
+
+
 
 }

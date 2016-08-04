@@ -114,7 +114,12 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 public boolean onMenuItemClick(MenuItem item) {
                     if(item.getItemId() == R.id.start_floating_head){
                         getActivity().startService(new Intent(getActivity(), FloatingHead.class));
-                        getActivity().startActivity(new Intent(getActivity(), OverlayActivity.class));
+
+                        Intent startOverlay = new Intent(getActivity(), OverlayActivity.class);
+                        startOverlay.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        OverlayActivity.mIsIntentionalCall = true;
+                        getActivity().startActivity(startOverlay);
+
                         return true;
                     }
                     return false;

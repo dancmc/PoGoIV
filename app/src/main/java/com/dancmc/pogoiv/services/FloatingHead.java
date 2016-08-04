@@ -31,6 +31,7 @@ import com.dancmc.pogoiv.activities.OverlayActivity;
 
 public class FloatingHead extends Service {
 
+    public static boolean mRunning;
     private static final String TAG = "FlyBitch";
     private WindowManager windowManager;
     private ImageView chatHead;
@@ -171,6 +172,7 @@ public class FloatingHead extends Service {
                                 } else {
                                     Intent window = new Intent(mContext, OverlayActivity.class);
                                     window.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    OverlayActivity.mIsIntentionalCall = true;
                                     startActivity(window);
                                 }
 

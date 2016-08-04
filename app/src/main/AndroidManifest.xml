@@ -16,7 +16,8 @@
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustPan">
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +45,8 @@
             android:clearTaskOnLaunch="true"
             android:exported="true"
             tools:ignore="ExportedActivity"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            />
 
     </application>
 
