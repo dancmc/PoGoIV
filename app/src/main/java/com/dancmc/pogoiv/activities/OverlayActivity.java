@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.fragments.OverlayFragment;
@@ -27,20 +28,40 @@ public class OverlayActivity extends AppCompatActivity {
     SharedPreferences.Editor ed;
     public static boolean mRunning;
     public static boolean mIsIntentionalCall;
+    public static boolean mIsIntentionalShutdown;
     private static final String TAG = "OverlayActivity";
     private OverlayFragment mOverlayFragment;
+
+    private FrameLayout mMainLayout;
+    private boolean mVisible;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive: ");
-            if (mMessageReceiver != null) {
-                unregisterReceiver(mMessageReceiver);
-            }
 
+
+            /*if (intent.getAction().equals("toggle overlay")&&mVisible) {
+                mMainLayout.setVisibility(View.GONE);
+                mVisible = false;
+                getWindow().addFlags(
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            } else if (intent.getAction().equals("toggle overlay")&&!mVisible) {
+                mMainLayout.setVisibility(View.VISIBLE);
+                getWindow().clearFlags(
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                mVisible = true;
+            }else if (intent.getAction().equals("stop overlay")){
+                finish();
+            }*/
             finish();
         }
     };
+    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +70,19 @@ public class OverlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_overlay);
 
         startService(new Intent(this, FloatingHead.class));
+
+        mMainLayout = (FrameLayout) findViewById(R.id.overlay_main_layout);
+        mVisible = true;
+
         //indicate that running
         sp = getSharedPreferences("OVERLAY_ACTIVITY", MODE_PRIVATE);
 
         mRunning = true;
-        this.registerReceiver(mMessageReceiver, new IntentFilter("stop overlay"));
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("toggle overlay");
+        mIntentFilter.addAction("stop overlay");
+        this.registerReceiver(mMessageReceiver, mIntentFilter);
 
         if (mOverlayFragment == null) {
             mOverlayFragment = new OverlayFragment();
@@ -62,7 +91,6 @@ public class OverlayActivity extends AppCompatActivity {
                 .add(R.id.overlay_main_layout, mOverlayFragment)
                 .commit();
         Log.d(TAG, "onCreate: ");
-
 
 
     }
@@ -100,19 +128,13 @@ public class OverlayActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        if (mMessageReceiver != null) {
-            try {
-                unregisterReceiver(mMessageReceiver);
-            } catch (Exception e) {
-            }
-
-        }
         mRunning = false;
         Log.d(TAG, "onStop: ");
     }
 
     @Override
     protected void onPause() {
+
         super.onPause();
 
         if (mMessageReceiver != null) {
@@ -129,6 +151,7 @@ public class OverlayActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
 
         if (mMessageReceiver != null) {
@@ -151,17 +174,23 @@ public class OverlayActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        FloatingHead.removeWaitingText();
+
+        mMainLayout.setVisibility(View.VISIBLE);
+        mVisible = true;
+
         if (!mIsIntentionalCall) {
             startActivity(new Intent(this, MainActivity.class));
         }
 
         startService(new Intent(this, FloatingHead.class));
-        this.registerReceiver(mMessageReceiver, new IntentFilter("stop overlay"));
+        this.registerReceiver(mMessageReceiver, mIntentFilter);
 
         //get rid of slide up and down transitions
         overridePendingTransition(0, 0);
         mRunning = true;
         mIsIntentionalCall = false;
+        mIsIntentionalShutdown = false;
         Log.d(TAG, "onResume: ");
     }
 
@@ -183,7 +212,7 @@ public class OverlayActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean dispatchTouchEvent (MotionEvent event){
+    public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
             if (v instanceof EditText) {
@@ -196,7 +225,9 @@ public class OverlayActivity extends AppCompatActivity {
                 }
             }
         }
+        Log.d(TAG, "dispatchTouchEvent: ");
         return super.dispatchTouchEvent(event);
     }
+
 
 }

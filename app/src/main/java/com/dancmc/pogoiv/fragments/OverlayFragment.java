@@ -2,6 +2,7 @@ package com.dancmc.pogoiv.fragments;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
@@ -69,6 +70,9 @@ public class OverlayFragment extends Fragment {
     private int mHPMax;
     private Button mCalculateButton;
 
+    private SharedPreferences sp;
+    private SharedPreferences.Editor ed;
+
     private int mPokemonNumber;
 
     public OverlayFragment() {
@@ -105,11 +109,17 @@ public class OverlayFragment extends Fragment {
         mHPBar = (SeekBar) v.findViewById(R.id.seekbar_hp);
         mCalculateButton = (Button) v.findViewById(R.id.overlay_calculate_button);
 
-        mTrainerLevel = 10;
-        mPokemonLevel = 10;
-        mPokemonNumber = 0;
-        mCPInput = 1;
-        mHPInput = 1;
+        sp = getActivity().getPreferences(Context.MODE_PRIVATE);
+        ed = sp.edit();
+
+
+
+        mTrainerLevel = sp.getInt("TrainerLevel", 11);
+        mPokemonLevel = sp.getInt("PokemonLevel", 10);
+        mPokemonNumber = sp.getInt("PokemonNumber", 0);
+        mCPInput = sp.getInt("CPInput",1);
+        mHPInput = sp.getInt("HPInput", 1);
+        mPokemonNameDisplay.setText(sp.getString("PokemonName", "Enter Pokemon Name"));
 
         //Autocomplete textview setup
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
@@ -157,10 +167,10 @@ public class OverlayFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        mTrainerLevelBar.setProgress(9);
+        mTrainerLevelBar.setProgress(mTrainerLevel-1);
 
         //SETUP pokemon bar
-        mPokemonLevelBar.setMax(21);
+        mPokemonLevelBar.setMax(mTrainerLevel*2+1);
         mPokemonPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,10 +207,10 @@ public class OverlayFragment extends Fragment {
 
             }
         });
-        mPokemonLevelBar.setProgress(18);
+        mPokemonLevelBar.setProgress((int)((mPokemonLevel-1)/0.5));
 
         //SETUP CP bar
-        mCPBar.setMax(10);
+        mCPBar.setMax(1);
         mCPPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,9 +230,9 @@ public class OverlayFragment extends Fragment {
         mCPBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser){
-                    mCPInput = mCPMin+progress;
-                    mCPText.setText("CP : "+mCPInput);
+                if(fromUser) {
+                    mCPInput = mCPMin + progress;
+                    mCPText.setText("CP : " + mCPInput);
                 }
             }
 
@@ -239,7 +249,7 @@ public class OverlayFragment extends Fragment {
 
 
         //SETUP HP bar
-        mHPBar.setMax(10);
+        mHPBar.setMax(1);
         mHPPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,10 +269,10 @@ public class OverlayFragment extends Fragment {
         mHPBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser){
-                    mHPInput = mHPMin+progress;
-                    mHPText.setText("HP : "+mHPInput);
-                }
+                    if(fromUser) {
+                        mHPInput = mHPMin + progress;
+                        mHPText.setText("HP : " + mHPInput);
+                    }
             }
 
             @Override
@@ -275,6 +285,9 @@ public class OverlayFragment extends Fragment {
 
             }
         });
+        Log.d(TAG, "onCreateView: Overlay Frag");
+        alterCPHPBars();
+
         return v;
     }
 
@@ -318,20 +331,19 @@ public class OverlayFragment extends Fragment {
                     if (nickname.trim().equals("")) {
                         mPokemonNameDisplay.setText("Enter Pokemon Name");
                         mPokemonNameDisplay.setTextColor(Color.parseColor("#EF5350"));
-                    } else {
+                    } else if (Pokemon.getPokemonNumberFromName(nickname) == 0) {
+                        Toast.makeText(getActivity(), "Invalid Pokemon Name", Toast.LENGTH_SHORT)
+                                .show();
+                        mPokemonNameDisplay.setText("Enter Pokemon Name");
+                        mPokemonNameDisplay.setTextColor(Color.parseColor("#EF5350"));
+                    }else {
                         mPokemonNameDisplay.setText(nickname);
                         mPokemonNameDisplay.setTextColor(Color.parseColor("#0277BD"));
+                        mPokemonNumber=Pokemon.getPokemonNumberFromName(nickname);
+                        alterCPHPBars();
                     }
                     mPokemonNameInput.setVisibility(View.INVISIBLE);
 
-                    if (Pokemon.getPokemonNumberFromName(nickname) == 0) {
-                        Toast.makeText(getActivity(), "Invalid Pokemon Name", Toast.LENGTH_SHORT)
-                                .show();
-                        mPokemonNameDisplay.setTextColor(Color.parseColor("#EF5350"));
-                    } else {
-                        mPokemonNumber=Pokemon.getPokemonNumberFromName(nickname);
-                       alterCPHPBars();
-                    }
                 }
 
             }
@@ -377,7 +389,13 @@ public class OverlayFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mPokemonNameInput.getWindowToken(), 0);
 
-
-
+        ed.putInt("TrainerLevel", mTrainerLevel);
+        ed.putInt("PokemonLevel", (mPokemonLevel+1)/2);
+        ed.putInt("PokemonNumber", mPokemonNumber);
+        ed.putInt("CPInput", mCPInput);
+        ed.putInt("HPInput", mHPInput);
+        ed.putString("PokemonName", mPokemonNameDisplay.getText().toString());
+        ed.commit();
+        Log.d(TAG, "onPause: ");
     }
 }

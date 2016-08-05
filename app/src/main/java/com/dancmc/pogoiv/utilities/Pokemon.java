@@ -232,7 +232,7 @@ public class Pokemon implements Serializable {
     public static int getPokemonNumberFromName(String pokemonName) {
         int pokemonNumber = 0;
         for (int i = 0; i < POKEDEX.length; i++) {
-            if (pokemonName.equals(POKEDEX[i])) {
+            if (pokemonName.equalsIgnoreCase(POKEDEX[i])) {
                 pokemonNumber = i;
                 break;
             }

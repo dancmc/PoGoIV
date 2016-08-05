@@ -2,18 +2,22 @@ package com.dancmc.pogoiv.services;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -24,6 +28,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.activities.MainActivity;
@@ -33,7 +38,7 @@ public class FloatingHead extends Service {
 
     public static boolean mRunning;
     private static final String TAG = "FloatingHead";
-    private WindowManager windowManager;
+    private static WindowManager windowManager;
     private ImageView chatHead;
     private Display display;
     private DisplayMetrics mScreenMetrics;
@@ -43,12 +48,14 @@ public class FloatingHead extends Service {
     private FrameLayout mBottomZoneGradient;
     private int mFinalX;
     private int mFinalY;
-    private RelativeLayout.LayoutParams mCloneRLParams;
-    private ImageView mCloneImage;
-    private RelativeLayout mCloneRL;
+
     private WindowManager.LayoutParams mWMParams;
     private RelativeLayout.LayoutParams mRLParams;
     private Vibrator mVibrator;
+
+    private long mSystemTimeOnDown;
+    private static TextView mWaitingTextview;
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -117,6 +124,11 @@ public class FloatingHead extends Service {
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+
+                    final RelativeLayout.LayoutParams mCloneRLParams;
+                    final ImageView mCloneImage;
+                    final RelativeLayout mCloneRL;
+
                     switch (event.getAction()) {
 
                         case MotionEvent.ACTION_DOWN:
@@ -132,6 +144,8 @@ public class FloatingHead extends Service {
                             chatHead.setImageResource(R.drawable.inset_floating_head);
                             chatHead.setAlpha(0.75f);
 
+                            mSystemTimeOnDown = System.currentTimeMillis();
+
                             break;
 
                         case MotionEvent.ACTION_UP:
@@ -143,6 +157,7 @@ public class FloatingHead extends Service {
 
                             chatHead.setImageResource(R.drawable.floating_head);
                             chatHead.setAlpha(1.0f);
+
                             //create a new cloned icon with a match parent relativelayout so icon can bounce outside bounds
                             //Adding new Relative Layout to WindowManager
                             mCloneRL = new RelativeLayout(mContext);
@@ -163,12 +178,17 @@ public class FloatingHead extends Service {
                             Log.d(TAG, "onTouch: " + totalDeltaMove);
                             if (Math.abs(totalDeltaMove) < 30f) {
                                 if (OverlayActivity.overlayIsRunning()) {
-                                    Log.d(TAG, "onTouch: " + OverlayActivity.overlayIsRunning());
-                                    sendBroadcast(new Intent().setAction("stop overlay"));
+                                    if (System.currentTimeMillis() - mSystemTimeOnDown < 1000) {
+                                        Log.d(TAG, "onTouch: " + OverlayActivity.overlayIsRunning());
+
+                                        OverlayActivity.mIsIntentionalShutdown = true;
+                                        sendBroadcast(new Intent().setAction("toggle overlay"));
+                                    }
                                 } else {
                                     Intent window = new Intent(mContext, OverlayActivity.class);
                                     window.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     OverlayActivity.mIsIntentionalCall = true;
+                                    createWaitingText();
                                     startActivity(window);
 
 
@@ -181,11 +201,53 @@ public class FloatingHead extends Service {
                                 if ((mWMParams.x < mScreenMetrics.widthPixels / 2 - chatHead.getWidth() / 2) && !inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
                                     mWMParams.x = -(int) (chatHead.getWidth() * 0.2);
                                     //animate the new icon, then replace it with the old one at the end
-                                    animateSnapToEdge(true);
+                                    //animateSnapToEdge(true);
+
+                                    mCloneImage.animate().x((float) mWMParams.x).setDuration(750).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
+
+                                        @Override
+                                        public void onAnimationEnd(Animator animator) {
+
+                                            windowManager.updateViewLayout(mRelativeLayout, mWMParams);
+
+                                            mRLParams.leftMargin = -(int) (chatHead.getWidth() * 0.2);
+                                            mRLParams.rightMargin = (int) (chatHead.getWidth() * 0.2);
+
+                                            mRelativeLayout.updateViewLayout(chatHead, mRLParams);
+                                            mRelativeLayout.setVisibility(View.VISIBLE);
+                                            mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    windowManager.removeView(mCloneRL);
+                                                }
+                                            });
+                                        }
+                                    });
 
                                 } else if ((mWMParams.x > mScreenMetrics.widthPixels / 2 - chatHead.getWidth() / 2) && !inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
                                     mWMParams.x = mScreenMetrics.widthPixels - (int) (chatHead.getWidth() * 0.8);
-                                    animateSnapToEdge(false);
+                                    //animateSnapToEdge(false);
+
+                                    mCloneImage.animate().x((float) mWMParams.x).setDuration(750).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
+
+                                        @Override
+                                        public void onAnimationEnd(Animator animator) {
+
+                                            windowManager.updateViewLayout(mRelativeLayout, mWMParams);
+
+                                            mRLParams.leftMargin = (int) (chatHead.getWidth() * 0.2);
+                                            mRLParams.rightMargin = -(int) (chatHead.getWidth() * 0.2);
+
+                                            mRelativeLayout.updateViewLayout(chatHead, mRLParams);
+                                            mRelativeLayout.setVisibility(View.VISIBLE);
+                                            mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    windowManager.removeView(mCloneRL);
+                                                }
+                                            });
+                                        }
+                                    });
 
                                 } else if (inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
                                     //closing service, cleaning up
@@ -207,7 +269,9 @@ public class FloatingHead extends Service {
                                 mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
-                                        windowManager.removeView(mCloneRL);
+                                        if (mCloneRL.getParent() != null) {
+                                            windowManager.removeView(mCloneRL);
+                                        }
                                     }
                                 });
 
@@ -276,34 +340,6 @@ public class FloatingHead extends Service {
         }
     }
 
-    private void animateSnapToEdge(final boolean onTheLeft) {
-        //animate the new icon, then replace it with the old one at the end
-
-
-        mCloneImage.animate().x((float) mWMParams.x).setDuration(750).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-
-                windowManager.updateViewLayout(mRelativeLayout, mWMParams);
-                if (onTheLeft) {
-                    mRLParams.leftMargin = -(int) (chatHead.getWidth() * 0.2);
-                    mRLParams.rightMargin = (int) (chatHead.getWidth() * 0.2);
-                } else {
-                    mRLParams.leftMargin = (int) (chatHead.getWidth() * 0.2);
-                    mRLParams.rightMargin = -(int) (chatHead.getWidth() * 0.2);
-                }
-                mRelativeLayout.updateViewLayout(chatHead, mRLParams);
-                mRelativeLayout.setVisibility(View.VISIBLE);
-                mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        windowManager.removeView(mCloneRL);
-                    }
-                });
-            }
-        });
-    }
 
 
     private boolean inViewInBounds(View view, int x, int y) {
@@ -322,6 +358,33 @@ public class FloatingHead extends Service {
         super.onDestroy();
 
     }
+
+    private void createWaitingText() {
+        WindowManager.LayoutParams waitingParams = new WindowManager.LayoutParams(
+                (int) (140 * mScreenMetrics.density), (int) (85 * mScreenMetrics.density),
+                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+
+        waitingParams.gravity = Gravity.TOP | Gravity.LEFT;
+        waitingParams.x = 400;
+        waitingParams.y = 400;
+
+        mWaitingTextview = new TextView(this);
+        mWaitingTextview.setText("Sorry, processing....");
+        mWaitingTextview.setBackgroundColor(Color.parseColor("#F44336"));
+        mWaitingTextview.setTextColor(Color.parseColor("#FAFAFA"));
+        mWaitingTextview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.0f);
+        windowManager.addView(mWaitingTextview, waitingParams);
+
+    }
+
+    public static void removeWaitingText() {
+        if (mWaitingTextview!=null&&mWaitingTextview.getParent() != null) {
+            windowManager.removeView(mWaitingTextview);
+        }
+    }
+
 }
 
 
