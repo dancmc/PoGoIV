@@ -11,10 +11,12 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.support.v4.view.ViewCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -24,37 +26,53 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.activities.MainActivity;
 import com.dancmc.pogoiv.activities.OverlayActivity;
+import com.dancmc.pogoiv.utilities.LevelAngle;
+import com.dancmc.pogoiv.views.OverlayView;
 
-public class FloatingHead extends Service {
+public class FloatingHead extends Service  {
 
-    public static boolean mRunning;
+    public static String currentlyRunningServiceFragment;
+    public static boolean viewIsRunning;
+    public static final String OVERLAY_SERVICE = "OVERLAY_SERVICE";
+    public static final String IV_CALCULATOR_SERVICE = "IV_CALCULATOR_SERVICE";
+    public static final String ADD_POKEBOX_SERVICE = "ADD_POKEBOX_SERVICE";
+    public static final String ADD_VIEW_POKEBALL_SERVICE = "ADD_VIEW_POKEBALL_SERVICE";
+
     private static final String TAG = "FloatingHead";
     private static WindowManager windowManager;
     private ImageView chatHead;
     private Display display;
     private DisplayMetrics mScreenMetrics;
-    private RelativeLayout mRelativeLayout;
-    private Context mContext;
+    private static RelativeLayout mRelativeLayout;
+    private static Context mContext;
     private int mShortAnimationDuration;
     private FrameLayout mBottomZoneGradient;
     private int mFinalX;
     private int mFinalY;
 
+    private WindowManager.LayoutParams mWholeWindowParams;
     private WindowManager.LayoutParams mWMParams;
     private RelativeLayout.LayoutParams mRLParams;
     private Vibrator mVibrator;
 
     private long mSystemTimeOnDown;
     private static TextView mWaitingTextview;
+
+    private View mOverlayView;
+
+
 
 
     @Override
@@ -74,8 +92,8 @@ public class FloatingHead extends Service {
         mScreenMetrics = new DisplayMetrics();
         display.getMetrics(mScreenMetrics);
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        mContext = this;
 
+        mOverlayView = (new OverlayView(mContext)).getView();
 
         chatHead = new ImageView(this);
         chatHead.setImageResource(R.drawable.floating_head);
@@ -83,6 +101,12 @@ public class FloatingHead extends Service {
 
         mWMParams = new WindowManager.LayoutParams(
                 (int) (85 * mScreenMetrics.density), (int) (85 * mScreenMetrics.density),
+                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+
+        mWholeWindowParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
@@ -177,14 +201,22 @@ public class FloatingHead extends Service {
                             //handle click with negligible move
                             Log.d(TAG, "onTouch: " + totalDeltaMove);
                             if (Math.abs(totalDeltaMove) < 30f) {
-                                if (OverlayActivity.overlayIsRunning()) {
+                                //if (OverlayActivity.overlayIsRunning()) {
                                     if (System.currentTimeMillis() - mSystemTimeOnDown < 1000) {
-                                        Log.d(TAG, "onTouch: " + OverlayActivity.overlayIsRunning());
+                                        Log.d(TAG, "onTouch: " + OverlayService.isRunning);
 
-                                        OverlayActivity.mIsIntentionalShutdown = true;
-                                        sendBroadcast(new Intent().setAction("toggle overlay"));
+                                        if(currentlyRunningServiceFragment.equals(OVERLAY_SERVICE)){
+                                           if(mOverlayView.getParent()==null){
+                                               windowManager.addView(mOverlayView, mWholeWindowParams);
+
+
+                                           } else {
+                                               windowManager.removeView(mOverlayView);
+                                           }
+                                        }
+
                                     }
-                                } else {
+                                /*} else {
                                     Intent window = new Intent(mContext, OverlayActivity.class);
                                     window.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     OverlayActivity.mIsIntentionalCall = true;
@@ -192,7 +224,7 @@ public class FloatingHead extends Service {
                                     startActivity(window);
 
 
-                                }
+                                }*/
 
                             }
 
@@ -208,7 +240,8 @@ public class FloatingHead extends Service {
                                         @Override
                                         public void onAnimationEnd(Animator animator) {
 
-                                            windowManager.updateViewLayout(mRelativeLayout, mWMParams);
+                                            windowManager.removeView(mRelativeLayout);
+                                            windowManager.addView(mRelativeLayout, mWMParams);
 
                                             mRLParams.leftMargin = -(int) (chatHead.getWidth() * 0.2);
                                             mRLParams.rightMargin = (int) (chatHead.getWidth() * 0.2);
@@ -233,7 +266,8 @@ public class FloatingHead extends Service {
                                         @Override
                                         public void onAnimationEnd(Animator animator) {
 
-                                            windowManager.updateViewLayout(mRelativeLayout, mWMParams);
+                                            windowManager.removeView(mRelativeLayout);
+                                            windowManager.addView(mRelativeLayout, mWMParams);
 
                                             mRLParams.leftMargin = (int) (chatHead.getWidth() * 0.2);
                                             mRLParams.rightMargin = -(int) (chatHead.getWidth() * 0.2);
@@ -253,11 +287,17 @@ public class FloatingHead extends Service {
                                     //closing service, cleaning up
                                     if (chatHead != null) {
                                         windowManager.removeView(mRelativeLayout);
+                                        switch (currentlyRunningServiceFragment){
+                                            case OVERLAY_SERVICE :
+                                                if(viewIsRunning){
+                                                    windowManager.removeView(mOverlayView);
+                                                }
+                                        }
                                     }
                                     if (mCloneRL != null && mCloneRL.getParent() != null) {
                                         windowManager.removeView(mCloneRL);
                                     }
-                                    sendBroadcast(new Intent().setAction("stop overlay"));
+
                                     mVibrator.vibrate(10);
                                     stopSelf();
                                 }
@@ -265,6 +305,8 @@ public class FloatingHead extends Service {
                                 mBottomZoneGradient.removeView(closeButtonHalo);
                                 windowManager.removeView(mBottomZoneGradient);
                             } else {
+                                windowManager.removeView(mRelativeLayout);
+                                windowManager.addView(mRelativeLayout, mWMParams);
                                 mRelativeLayout.setVisibility(View.VISIBLE);
                                 mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
                                     @Override
@@ -274,6 +316,7 @@ public class FloatingHead extends Service {
                                         }
                                     }
                                 });
+
 
                             }
 
@@ -384,6 +427,17 @@ public class FloatingHead extends Service {
             windowManager.removeView(mWaitingTextview);
         }
     }
+
+    public static void setContext(Context context){
+        mContext = context;
+    }
+
+    public static void bringToFront(){
+        if(mRelativeLayout!=null){
+        mRelativeLayout.bringToFront();}
+        Log.d(TAG, "bringToFront: ");
+    }
+
 
 }
 

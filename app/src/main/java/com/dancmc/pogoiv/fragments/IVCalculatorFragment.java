@@ -26,6 +26,7 @@ import com.dancmc.pogoiv.activities.OverlayActivity;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.services.FloatingHead;
+import com.dancmc.pogoiv.services.OverlayService;
 import com.dancmc.pogoiv.utilities.Pokemon;
 
 import java.text.DecimalFormat;
@@ -113,13 +114,14 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if(item.getItemId() == R.id.start_floating_head){
+
+                        FloatingHead.setContext(getActivity());
+                        FloatingHead.viewIsRunning = true;
+                        FloatingHead.currentlyRunningServiceFragment = FloatingHead.OVERLAY_SERVICE;
                         getActivity().startService(new Intent(getActivity(), FloatingHead.class));
 
-                        Intent startOverlay = new Intent(getActivity(), OverlayActivity.class);
-                        startOverlay.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        OverlayActivity.mIsIntentionalCall = true;
-                        getActivity().startActivity(startOverlay);
-                        getActivity().finish();
+
+
                         return true;
                     }
                     return false;
