@@ -107,7 +107,7 @@ public class CompareSummaryFragment extends Fragment {
 
             imageView.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(pokeNumber), "drawable", getActivity().getPackageName()));
 
-            textView1.setText("Lvl 79 " + maxEvolved[i]);
+            textView1.setText("Lvl 40.0 " + maxEvolved[i]);
 
             if (mIVCombos.size() == 0) {
                 textView2.setText("--");

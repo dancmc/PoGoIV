@@ -35,20 +35,21 @@ public class FrameLayoutIntercept extends FrameLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK&&event.getAction() == MotionEvent.ACTION_UP){
             FloatingHead.onBackPressed();
+            Log.d(TAG, "dispatchKeyEvent: ");
             return true;
         }
 
-            return super.dispatchKeyEvent(event);
+            return false;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            Log.d(TAG, "onInterceptTouchEvent: "+this.getFocusedChild());
+        if (ev.getAction() == MotionEvent.ACTION_DOWN&&FloatingHead.currentlyRunningServiceFragment==FloatingHead.OVERLAY_SERVICE) {
+            //Log.d(TAG, "onInterceptTouchEvent: "+this.getFocusedChild());
             if (this.getFocusedChild()!=null) {
-
+                Log.d(TAG, "onInterceptTouchEvent: intercepted");
                 this.getFocusedChild().clearFocus();
                 InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(this.getWindowToken(), 0);

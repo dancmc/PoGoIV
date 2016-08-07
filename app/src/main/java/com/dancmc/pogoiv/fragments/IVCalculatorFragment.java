@@ -42,7 +42,6 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
     private EditText mStarDustInput;
     private EditText mLevelInput;
     private CheckBox mNotFreshMeatInput;
-    private StringBuilder mStringBuilder;
 
     private Pokemon mPokemon;
 
@@ -140,16 +139,14 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             mNotFreshMeatInput.setChecked(!mPokemon.getFreshMeat());
 
             ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
-            //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
             int lowestLevel = Collections.min(tempLevelRange);
             int highestLevel = Collections.max(tempLevelRange);
             mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
             mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
             mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
+            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + mDF.format((lowestLevel+1)/2.0) + "-" + mDF.format((highestLevel+1)/2.0) + "\n");
             mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
 
-            mOutputView.setText(mStringBuilder.toString());
         }
 
         //calculate button setup
@@ -157,19 +154,18 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mCalculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStringBuilder = new StringBuilder();
+
 
                 //hides keyboard
                 InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                mOutputView.setText("");
+
 
                 try {
                     createPokemonFromInput();
                 } catch (Exception e) {
-                    mOutputView.setText(e.getMessage());
-                    Toast.makeText(getActivity(), "Error calculating...check input", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), e.getMessage().toString(), Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
@@ -259,7 +255,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         int cp = parseIntInput(mCPInput);
         int hp = parseIntInput(mHPInput);
         int stardust = parseIntInput(mStarDustInput);
-        int level = parseIntInput(mLevelInput);
+        int level = parseLevelInput(mLevelInput);
         boolean freshMeat = !(mNotFreshMeatInput.isChecked());
 
         //throws exception if invalid/blank pokemon name, or invalid stardust
@@ -297,6 +293,14 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
 
         }
         return number;
+    }
+
+    private int parseLevelInput(EditText levelInput){
+        double input = Double.parseDouble(levelInput.getText().toString());
+        if(input<1.0||input>40.0||(input%0.5)!=0){
+            throw new IllegalArgumentException("Known level must be 1-40 at 0.5 intervals");
+        }
+        return ((int)(input*2.0-1.0));
     }
 
     public interface Contract {

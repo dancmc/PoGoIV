@@ -15,6 +15,7 @@ import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.utilities.Pokemon;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -64,11 +65,12 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
     private ArrayList<String> mListText;
     private AdapterView.OnItemLongClickListener mLongClickListener;
     private AdapterView.OnItemClickListener mClickListener;
+    private DecimalFormat mDF;
 
     public ViewPokeballRecyclerViewAdapter(Context context, int pokeballPosition){
         mContext = context;
         mPokeballPosition = pokeballPosition;
-
+        mDF = new DecimalFormat("0.0");
         updateAdapter();
 
     }
@@ -120,7 +122,7 @@ public class ViewPokeballRecyclerViewAdapter extends RecyclerView.Adapter<ViewPo
                 } else {
                     sb.append("Dust : nil  \n");
                 }
-                sb.append("Lvl : "+ Collections.min(mPokeball.get(i).getResultLevelRange())+"-"+Collections.max(mPokeball.get(i).getResultLevelRange())+"  ");
+                sb.append("Lvl : "+ mDF.format((Collections.min(mPokeball.get(i).getResultLevelRange())+1)/2.0)+"-"+mDF.format((Collections.max(mPokeball.get(i).getResultLevelRange())+1)/2.0)+"  ");
                 if (mPokeball.get(i).getFreshMeat()) {
                     sb.append("Not powered up");
                 } else {

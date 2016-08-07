@@ -141,8 +141,8 @@
                         <Button
                             android:id="@+id/iv_calc_more_info_button"
                             style="@style/Widget.AppCompat.Button.Colored"
-                            android:layout_width="110dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_below="@+id/textView2"
                             android:layout_centerHorizontal="true"
                             android:text="More Info"
@@ -206,7 +206,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="5"
                                 android:hint="Enter Pokemon Level If Known"
-                                android:inputType="number"
+                                android:inputType="numberDecimal"
                                 android:selectAllOnFocus="true"
                                 android:textSize="12sp" />
                         </LinearLayout>

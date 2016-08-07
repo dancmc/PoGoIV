@@ -19,11 +19,13 @@ public class IVAdapter extends ArrayAdapter<double[]> {
     DecimalFormat df = new DecimalFormat("0.0");
     ArrayList<double[]> ivCombos;
     Context context;
+    private DecimalFormat mDF;
 
     public IVAdapter(Context context, ArrayList<double[]> ivCombos) {
         super(context, R.layout.adapter_compare_summary_iv_listview, ivCombos);
         this.ivCombos = ivCombos;
         this.context = context;
+        mDF = new DecimalFormat("0.0");
     }
 
     @Override
@@ -48,7 +50,7 @@ public class IVAdapter extends ArrayAdapter<double[]> {
         if (ivCombos.get(position)[0] < 1) {
             column1.setText("-");
         } else {
-            column1.setText(String.valueOf((int) ivCombo[0]));
+            column1.setText(mDF.format((ivCombo[0]+1)/2.0));
         }
         column2.setText(String.valueOf((int)ivCombo[1]));
         column3.setText(String.valueOf((int) ivCombo[2]));

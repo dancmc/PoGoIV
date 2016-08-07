@@ -173,19 +173,7 @@ public class Pokemon implements Serializable {
         if (mNumberOfResults != 0) {
             mAverageIVPercent = calculateAverageIV();
             mAverageCPPercent = calculateAverageCPPercent();
-            /*sb.append("Level Range " + Collections.min(mResultLevelRange) + " to " + Collections.max(mResultLevelRange) + "\n");
-            sb.append("Average IV% is " + String.format(Locale.US, "%.1f", mAverageIVPercent) + "%, (range " + String.format(Locale.US, "%.1f", Collections.min(mIVPercentRange)) + " - " + String.format(Locale.US, "%.1f", Collections.max(mIVPercentRange)) + "%), " + mNumberOfResults + " possible combinations.\n\n");
-            int[] maxEvolved = MAX_EVOLUTION[mPokemonNumber];
-            for (int i = 0; i < maxEvolved.length; i++) {
-                double maxedCPPercent = calculateMaxLevelAverageCPPercent(mIVCombinationsArray, maxEvolved[i]);
-                sb.append("A max level " + POKEDEX[maxEvolved[i]] + " with this average IV% would have a CP of ~" + (int) (maxedCPPercent * (CPS_DIFFERENCE[maxEvolved[i]]) / 100.0 + MIN_CPS[maxEvolved[i]]) + " (" + String.format(Locale.US, "%.1f", maxedCPPercent) + "%), versus a max of " + MAX_CPS[maxEvolved[i]] + " and a min of " + MIN_CPS[maxEvolved[i]] + ".\n");
-            }
-            sb.append(" \n");
-            sb.append("Listed as Stamina/Attack/Defence\n");
-            for (int i = 0; i < mIVCombinationsArray.size(); i++) {
-                double[] tempArray = mIVCombinationsArray.get(i);
-                sb.append("Level " + (int) tempArray[0] + " : " + (int) tempArray[1] + "/" + (int) tempArray[2] + "/" + (int) tempArray[3] + "    " + String.format(Locale.US, "%.1f", tempArray[4]) + "%\n");
-            }*/
+
         } else {
             sb.append("There were no combinations found.");
         }
@@ -323,6 +311,14 @@ public class Pokemon implements Serializable {
 
     public ArrayList<Integer> getResultLevelRange() {
         return mResultLevelRange;
+    }
+
+    public ArrayList<Double> getResultLevelRangeConverted(){
+        ArrayList<Double> tempArray = new ArrayList<>();
+        for(Integer level:mResultLevelRange){
+            tempArray.add((level+1)/2.0);
+        }
+        return tempArray;
     }
 
     public static String[] getMaxEvolved(int pokemonNumber) {

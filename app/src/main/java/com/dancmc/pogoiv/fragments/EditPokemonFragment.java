@@ -319,7 +319,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
             mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
             mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
             mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
+            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + mDF.format((lowestLevel+1)/2.0) + "-" + mDF.format((highestLevel+1)/2.0) + "\n");
             mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
 
         }
@@ -402,7 +402,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         int cp = parseIntInput(mCPInput);
         int hp = parseIntInput(mHPInput);
         int stardust = parseIntInput(mStarDustInput);
-        int level = parseIntInput(mLevelInput);
+        int level = parseLevelInput(mLevelInput);
         boolean freshMeat = !(mNotFreshMeatInput.isChecked());
 
         //throws exception if invalid/blank pokemon name, or invalid stardust
@@ -423,22 +423,30 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
             if (textInput == mCPInput)
                 throw new IllegalArgumentException("You must enter a CP value.");
             else if (textInput == mStarDustInput) {
-                //mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n\n");
+
             } else if (textInput == mHPInput) {
-                //mStringBuilder.append("Note : You did not enter a HP value. All values calculated\n\n");
+
             }
             return -1;
         } else {
             try {
                 number = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                throw new NumberFormatException("You have to enter whole numbers.");
+                throw new NumberFormatException("You have to enter whole numbers for CP/HP/Dust.");
             }
             if (number < 1)
                 throw new NumberFormatException("You have to enter positive numbers.");
 
         }
         return number;
+    }
+
+    private int parseLevelInput(EditText levelInput){
+        double input = Double.parseDouble(levelInput.getText().toString());
+        if(input<1.0||input>40.0||(input%0.5)!=0){
+            throw new IllegalArgumentException("Known level must be 1-40 at 0.5 intervals");
+        }
+        return ((int)(input*2.0-1.0));
     }
 
     public interface Contract {

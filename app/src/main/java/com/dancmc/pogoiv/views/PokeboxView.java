@@ -27,6 +27,7 @@ import com.dancmc.pogoiv.adapters.PokeboxRecyclerViewAdapter;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.services.FloatingHead;
 import com.dancmc.pogoiv.utilities.CustomDialog;
+import com.dancmc.pogoiv.utilities.CustomToast;
 import com.dancmc.pogoiv.utilities.Pokeball;
 import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.utilities.Pokemon;
@@ -39,11 +40,8 @@ public class PokeboxView extends GenericServiceView {
     private PokeboxRecyclerViewAdapter mAdapter;
     private GridLayoutManager mGridLayoutManager;
     private PokeballsDataSource mDataSource;
-    private Toolbar mToolbar;
-    private LinearLayout mToolbarContainer;
     private FloatingActionButton mAddButton;
-    private RelativeLayout mMainLayout;
-    private FrameLayout mFrameLayout;
+    private FrameLayoutIntercept mFrameLayout;
 
 
     public PokeboxView(Context context) {
@@ -85,10 +83,9 @@ public class PokeboxView extends GenericServiceView {
 
         // Inflate the layout for this fragment
         LayoutInflater vi = (LayoutInflater) mContext.getApplicationContext().getSystemService(mContext.LAYOUT_INFLATER_SERVICE);
-        mMainLayout = (RelativeLayout) v.findViewById(R.id.overlay_pokeball_grid);
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.overlay_pokebox_recyclerview);
         mAddButton = (FloatingActionButton) v.findViewById(R.id.overlay_add_to_new_pokeball_fab);
-        mFrameLayout = (FrameLayout) v.findViewById(R.id.overlay_main_layout_pokebox);
+        mFrameLayout = (FrameLayoutIntercept) v.findViewById(R.id.overlay_main_layout_pokebox);
 
 
         mDataSource = new PokeballsDataSource(mContext);
@@ -121,9 +118,8 @@ public class PokeboxView extends GenericServiceView {
                                 }.execute();
                                 Pokeballs.getPokeballsInstance().remove(position);
                                 mAdapter.notifyDataSetChanged();
-                                Toast.makeText(mContext, "Pokeball deleted", Toast.LENGTH_LONG)
-                                        .show();
                                 mFrameLayout.removeView(dialog1.getView());
+                                CustomToast.makeToast(mContext).setMessage("Pokeball deleted").show();
 
                             }
                         })

@@ -294,11 +294,12 @@ public class OverlayView extends GenericServiceView {
                     newPokemon = new Pokemon(mPokemonNameDisplay.getText().toString(), mHPInput, mCPInput, -1, false, mPokemonLevel);
                 } catch(Exception e){
                     CustomToast.makeToast(mContext).setMessage(e.getMessage().toString()).show();
-
+                    return;
                 }
 
                 if(newPokemon!=null&&newPokemon.getNumberOfResults()==0){
                     CustomToast.makeToast(mContext).setMessage("No combinations found!").show();
+                    return;
 
                 } else if (newPokemon!=null){
                     FloatingHead.floatingPokemonToAdd = newPokemon;
@@ -366,8 +367,7 @@ public class OverlayView extends GenericServiceView {
                         mPokemonNameDisplay.setTextColor(Color.parseColor("#EF5350"));
                         mPokemonNameDisplay.setBackgroundColor(Color.parseColor("#FFEB3B"));
                     } else if (Pokemon.getPokemonNumberFromName(nickname) == 0) {
-                        Toast.makeText(mContext, "Invalid Pokemon Name", Toast.LENGTH_SHORT)
-                                .show();
+                        CustomToast.makeToast(mContext).setMessage("Invalid Pokemon Name").show();
                         mPokemonNameDisplay.setText("Enter Pokemon Name");
                         mPokemonNameDisplay.setTextColor(Color.parseColor("#EF5350"));
                         mPokemonNameDisplay.setBackgroundColor(Color.parseColor("#FFEB3B"));
@@ -381,7 +381,8 @@ public class OverlayView extends GenericServiceView {
                         alterCPHPBars();
                     }
                     mPokemonNameInput.setVisibility(View.INVISIBLE);
-
+                    InputMethodManager inputManager = (InputMethodManager) ((Activity)mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
 
             }
@@ -390,39 +391,6 @@ public class OverlayView extends GenericServiceView {
             mPokemonNameDisplay.setBackgroundColor(Color.parseColor("#FFEB3B"));
         }
 
-        /*mBottomView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "onTouch: poo");
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d(TAG, "onTouch: ");
-                    if (!(v instanceof EditText)) {
-                        mPokemonNameInput.clearFocus();
-                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        mMainLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "onTouch: poo");
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d(TAG, "onTouch: ");
-                    if (!(v instanceof EditText)) {
-                        mPokemonNameInput.clearFocus();
-                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });*/
 
     }
 

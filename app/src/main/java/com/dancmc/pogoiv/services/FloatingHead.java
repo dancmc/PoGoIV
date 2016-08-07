@@ -39,6 +39,7 @@ public class FloatingHead extends Service {
     public static Pokemon floatingPokemonToAdd;
     public static Context serviceContext;
 
+    private boolean pressedDown;
     public static String currentlyRunningServiceFragment;
     public static boolean viewIsRunning;
     public static boolean viewMode;
@@ -173,12 +174,25 @@ public class FloatingHead extends Service {
                             initialTouchX = event.getRawX();
                             initialTouchY = event.getRawY();
                             totalDeltaMove = 0;
+                            pressedDown = true;
 
                             //button pressed animation
                             chatHead.setImageResource(R.drawable.inset_floating_head);
                             chatHead.setAlpha(0.75f);
 
                             mSystemTimeOnDown = System.currentTimeMillis();
+
+                            if(viewIsRunning&&currentlyRunningServiceFragment==OVERLAY_SERVICE){
+                                mOverlayView.findViewById(R.id.overlayview_bottom).animate().alpha(0.4f).setStartDelay(200).setDuration(400).setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        if(!pressedDown){
+                                            mOverlayView.findViewById(R.id.overlayview_bottom).setAlpha(1.0f);
+                                        }
+                                    }
+                                });
+                                Log.d(TAG, "onTouch: alpha");
+                            }
 
                             break;
 
@@ -188,6 +202,11 @@ public class FloatingHead extends Service {
                             final float rawY = event.getRawY();
                             mFinalX = mWMParams.x;
                             mFinalY = mWMParams.y;
+                            pressedDown = false;
+
+                            if(viewIsRunning&&currentlyRunningServiceFragment==OVERLAY_SERVICE){
+                                mOverlayView.findViewById(R.id.overlayview_bottom).setAlpha(1.0f);
+                            }
 
                             chatHead.setImageResource(R.drawable.floating_head);
                             chatHead.setAlpha(1.0f);
@@ -212,7 +231,7 @@ public class FloatingHead extends Service {
                             Log.d(TAG, "onTouch: " + totalDeltaMove);
                             if (Math.abs(totalDeltaMove) < 30f) {
 
-                                if (System.currentTimeMillis() - mSystemTimeOnDown < 1000) {
+                                if ((System.currentTimeMillis() - mSystemTimeOnDown )< 500) {
 
                                     toggleServiceView();
                                 }
@@ -446,6 +465,7 @@ public class FloatingHead extends Service {
                 windowManager.addView(mOverlayView, mWholeWindowParams);
                 break;
             case (IV_CALCULATOR_SERVICE):
+                Log.d(TAG, "switchService: "+mCalcCompareView.getClass().toString());
                 windowManager.addView(newCalcCompareView(), mWholeWindowParams);
                 break;
             case (ADD_POKEBOX_SERVICE):
@@ -515,13 +535,19 @@ public class FloatingHead extends Service {
                     return;
                 case(ADD_POKEBOX_SERVICE):
                     if(viewMode) {
+                        Log.d(TAG, "onBackPressed: "+currentlyRunningServiceFragment);
+                        Log.d(TAG, "onBackPressed: "+ viewMode);
                         switchService(OVERLAY_SERVICE);
+
                     }else{
+                        Log.d(TAG, "onBackPressed: "+currentlyRunningServiceFragment);
+                        Log.d(TAG, "onBackPressed: "+ viewMode);
                         switchService(IV_CALCULATOR_SERVICE);
                     }
                     return;
                 case(ADD_VIEW_POKEBALL_SERVICE):
                     switchService(ADD_POKEBOX_SERVICE);
+                    return;
             } ;
         }
 

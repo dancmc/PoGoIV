@@ -34,6 +34,7 @@ import com.dancmc.pogoiv.adapters.ViewPokeballViewRecyclerViewAdapter;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.services.FloatingHead;
 import com.dancmc.pogoiv.utilities.CustomDialog;
+import com.dancmc.pogoiv.utilities.CustomToast;
 import com.dancmc.pogoiv.utilities.Pokeball;
 import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.utilities.Pokemon;
@@ -156,8 +157,8 @@ public class ViewPokeballView extends GenericServiceView {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow((null == ((Activity) mContext).getCurrentFocus()) ? null : ((Activity) mContext).getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    InputMethodManager inputManager = (InputMethodManager) ((Activity)mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     mEditNickname.clearFocus();
                     return true;
                 }
@@ -234,8 +235,7 @@ public class ViewPokeballView extends GenericServiceView {
                                     }
                                 }.execute();
 
-                                Toast.makeText(mContext, "Pokemon deleted", Toast.LENGTH_LONG)
-                                        .show();
+                                CustomToast.makeToast(mContext).setMessage("Pokemon deleted").show();
 
                                 //stop before gets to notifyadapter if there is no pokemon left
                                 if (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size() == 0) {
@@ -294,8 +294,7 @@ public class ViewPokeballView extends GenericServiceView {
                                 //handle scenario when already added pokemon
                                 for (int i = 0; i < pokeball.size(); i++) {
                                     if (pokeball.get(i).customEquals(mPokemon)) {
-                                        Toast.makeText(mContext, "You have added the same Pokemon before!", Toast.LENGTH_LONG)
-                                                .show();
+                                        CustomToast.makeToast(mContext).setMessage("You have added the same Pokemon before!").show();
                                         return;
                                     }
                                 }
@@ -304,8 +303,7 @@ public class ViewPokeballView extends GenericServiceView {
                                 for (int i = 0; i < pokeball.size(); i++) {
                                     if (!(pokeball.get(i).getPokemonFamily().equals(mPokemon.getPokemonFamily()))) {
                                         Log.d(TAG, "onClick: " + pokeball.get(i).getPokemonFamily() + " " + mPokemon.getPokemonFamily());
-                                        Toast.makeText(mContext, "These Pokemon are from different families!", Toast.LENGTH_LONG)
-                                                .show();
+                                        CustomToast.makeToast(mContext).setMessage("These Pokemon are from different families!").show();
                                         return;
                                     }
                                 }
@@ -313,8 +311,7 @@ public class ViewPokeballView extends GenericServiceView {
                                 //handle scenario when different evolution paths (need to change code later on to handle Wurmple)
                                 for (int i = 0; i < pokeball.size(); i++) {
                                     if ((pokeball.get(i).getEvolutionTier() == mPokemon.getEvolutionTier() && (pokeball.get(i).getPokemonNumber() != mPokemon.getPokemonNumber()))) {
-                                        Toast.makeText(mContext, "These Pokemon are from different evolution paths!", Toast.LENGTH_LONG)
-                                                .show();
+                                        CustomToast.makeToast(mContext).setMessage("These Pokemon are from different evolution paths!").show();
                                         return;
                                     }
                                 }

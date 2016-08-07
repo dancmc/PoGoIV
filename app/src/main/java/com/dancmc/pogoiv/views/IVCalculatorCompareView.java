@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.adapters.IVAdapter;
 import com.dancmc.pogoiv.services.FloatingHead;
+import com.dancmc.pogoiv.utilities.CustomToast;
 import com.dancmc.pogoiv.utilities.Pokemon;
 
 import java.util.ArrayList;
@@ -61,16 +62,16 @@ public class IVCalculatorCompareView extends GenericServiceView {
 
         if (mPokemon != null && mPokemon.getNumberOfResults() != 0) {
             ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
-            //ArrayList<Double> tempCpRange = Pokemon.getCpPercentRangeFromIVS(mPokemon.getIVCombinationsArray(), mPokemon.getPokemonNumber());
             int lowestLevel = Collections.min(tempLevelRange);
             int highestLevel = Collections.max(tempLevelRange);
             mPokemonImage.setImageResource(mContext.getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", mContext.getPackageName()));
             mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
             mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
-            mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
-            Toast.makeText(mContext, "Calculated!", Toast.LENGTH_SHORT)
-                    .show();
+            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + mDF.format((lowestLevel+1)/2.0) + "-" + mDF.format((highestLevel+1)/2.0) + "\n");
+            mAverageCPPercentDesc.setText("Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+
+            CustomToast.makeToast(mContext).setMessage("Calculated!").show();
+
         }
         insertPoint1.addView(top, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -92,7 +93,7 @@ public class IVCalculatorCompareView extends GenericServiceView {
 
             imageView.setImageResource(mContext.getResources().getIdentifier(Pokemon.getPngFileName(pokeNumber), "drawable", mContext.getPackageName()));
 
-            textView1.setText("Lvl 79 " + maxEvolved[i]);
+            textView1.setText("Lvl 40.0 " + maxEvolved[i]);
 
             if (mIVCombos.size() == 0) {
                 textView2.setText("--");
@@ -124,6 +125,8 @@ public class IVCalculatorCompareView extends GenericServiceView {
                 ViewGroup insertPoint2 = (ViewGroup) header.findViewById(R.id.summary_linear_layout2);
                 insertPoint2.addView(w, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
+        } else{
+            header.findViewById(R.id.summary_textview1).setVisibility(View.GONE);
         }
 
 

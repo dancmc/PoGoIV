@@ -1,7 +1,10 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.dancmc.pogoiv.views.FrameLayoutIntercept xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/overlay_frame_layout_viewpokeball"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <LinearLayout
         android:id="@+id/overlay_insertpoint_viewpokeball"
@@ -217,4 +220,4 @@
         </RelativeLayout>
     </LinearLayout>
 
-</FrameLayout>
+</com.dancmc.pogoiv.views.FrameLayoutIntercept>

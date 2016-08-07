@@ -76,6 +76,7 @@
                         android:imeOptions="actionDone"
                         android:inputType="textAutoComplete"
                         android:selectAllOnFocus="true"
+                        android:dropDownHeight="200dp"
                         android:textAlignment="center"
                         android:textSize="18dp"
                         android:textStyle="bold" />
