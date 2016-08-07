@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<RelativeLayout
+    android:id="@+id/calc_display"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    android:layout_alignParentTop="true"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity">
+
+    <com.example.daniel.material.RatioLayout
+        android:id="@+id/view"
+        app:ratio="1"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:id="@+id/iv_calc_pokemon_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/circle_background_white"
+            android:src="@drawable/pokeball" />
+    </com.example.daniel.material.RatioLayout>
+
+
+    <TextView
+        android:id="@+id/iv_calc_ivpercent_text"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="70dp"
+        android:layout_marginLeft="70dp"
+        android:background="@drawable/circle_background_white"
+        android:gravity="center"
+        android:text="--%"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/iv_calc_ivpercent_text_desc"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="175dp"
+        android:gravity="center_horizontal|top"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/iv_calc_cppercent_text"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="70dp"
+        android:layout_marginRight="70dp"
+        android:background="@drawable/circle_background_white"
+        android:gravity="center"
+        android:text="--%"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/iv_calc_cppercent_text_desc"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="45dp"
+        android:layout_marginTop="175dp"
+        android:gravity="center_horizontal|top"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+    <TextView
+
+        android:id="@+id/textView2"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/iv_calc_ivpercent_text"
+        android:gravity="center"
+        android:text="IV%"
+        android:textColor="@android:color/white"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <TextView
+
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/iv_calc_cppercent_text"
+        android:gravity="center"
+        android:text="CP%"
+        android:textColor="@android:color/white"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>
+
+</LinearLayout>

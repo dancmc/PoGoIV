@@ -86,7 +86,6 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
     private ViewPokeballRecyclerViewAdapter mAdapter;
     private RelativeLayout mMainLayout;
     private DecimalFormat mDF;
-    private boolean asyncIsRunning;
 
 
     @Override
@@ -95,13 +94,12 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_view_pokeball, container, false);
 
-        //everything that is affected by an edit async goes in an update method, everything based on Pokeballs.getInstance stays here
+        //everything that is affected by an edit async goes in an update method to be called on database finish, everything based on Pokeballs.getInstance stays here
         mPokeballNumber = getArguments().getInt("pokeballNumber");
 
         //updated immediately by edit pokemon, not involved in database, only comparison stuff is. Basically anything that comes after compareAllPokemon is called
         mPokeball = Pokeballs.getPokeballsInstance().get(mPokeballNumber);
         mDF = new DecimalFormat("0.0");
-        asyncIsRunning = false;
 
         mPokemonImage = (ImageView) v.findViewById(R.id.pokeball_view_image);
         mNickname = (TextView) v.findViewById(R.id.pokeball_view_nickname);
@@ -121,6 +119,9 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
         mMainLayout = (RelativeLayout) v.findViewById(R.id.view_pokeball_main_layout) ;
         mToolbar.setTitle("Viewing Pokeball");
+
+        FloatingActionButton fab = (FloatingActionButton)v.findViewById(R.id.back_button_viewpokeball);
+        fab.setVisibility(View.GONE);
 
         if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
             mToolbarContainer.setVisibility(View.GONE);
@@ -232,6 +233,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
                                 //delete from SINGLETON
                                 Pokeballs.getPokeballsInstance().get(mPokeballNumber).remove(position);
+                                final int pokeballSize = Pokeballs.getPokeballsInstance().get(mPokeballNumber).size();
 
                                 //delete from DATABASE
                                 new AsyncTask<Void, Void, Void>() {
@@ -243,7 +245,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
                                     @Override
                                     protected void onPostExecute(Void aVoid) {
-                                        if (getActivity() != null) {
+                                        if (getActivity() != null&&pokeballSize!=0) {
                                             updateBasedOnCompare();
                                         }
                                     }
@@ -380,9 +382,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
 
     public void editAsyncFinished() {
-        Log.d(TAG, "step 5");
         updateBasedOnCompare();
-        Log.d(TAG, "step 6");
         mComparison.setEnabled(true);
     }
 }

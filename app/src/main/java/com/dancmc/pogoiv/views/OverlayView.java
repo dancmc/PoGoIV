@@ -1,41 +1,41 @@
 package com.dancmc.pogoiv.views;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.preference.PreferenceManager;
-import android.support.v4.view.ViewGroupCompat;
-import android.util.DisplayMetrics;
+import android.graphics.Rect;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.services.FloatingHead;
+import com.dancmc.pogoiv.utilities.CustomToast;
 import com.dancmc.pogoiv.utilities.LevelAngle;
 import com.dancmc.pogoiv.utilities.Pokemon;
 
 /**
  * Created by Daniel on 6/08/2016.
  */
-public class OverlayView {
-    private static final String TAG = "OverlayService";
+public class OverlayView extends GenericServiceView {
+    private static final String TAG = "OverlayView";
+    private FrameLayout mMainLayout;
     private LevelAngle mLevelAngleView;
     private AutoCompleteTextView mPokemonNameInput;
     private TextView mPokemonNameDisplay;
@@ -67,31 +67,17 @@ public class OverlayView {
     private int mHPMin;
     private int mHPMax;
     private Button mCalculateButton;
+    private Button mPokeboxButton;
+    private final LinearLayout mBottomView;
 
-    public View v;
-
-
-    public Display display;
-    public DisplayMetrics mScreenMetrics;
-    public SharedPreferences sp;
-    public SharedPreferences.Editor ed;
-    public static String currentlyRunningServiceFragment;
-    public static final String OVERLAY_SERVICE = "OVERLAY_SERVICE";
-    public static final String IV_CALCULATOR_SERVICE = "IV_CALCULATOR_SERVICE";
-    public static final String ADD_POKEBOX_SERVICE = "ADD_POKEBOX_SERVICE";
-    public static final String ADD_VIEW_POKEBALL_SERVICE = "ADD_VIEW_POKEBALL_SERVICE";
-
-    private static Context mContext;
-    public static boolean isRunning;
 
     public OverlayView(Context context) {
+        //standard setup. Must call a super method GenericServiceView has no default constructor
+        super(context);
+        v = View.inflate(context, R.layout.view_service_overlay, null);
 
-        mContext=context;
-        v = View.inflate(context, R.layout.fragment_overlay, null);
-
-        //standard setup
-        FloatingHead.currentlyRunningServiceFragment = OVERLAY_SERVICE;
-
+        mMainLayout = (FrameLayout) v.findViewById(R.id.overlay_service_main_layout);
+        mBottomView = (LinearLayout)v.findViewById(R.id.overlayview_bottom);
 
         mLevelAngleView = (LevelAngle) v.findViewById(R.id.level_angle_display);
         mPokemonNameInput = (AutoCompleteTextView) v.findViewById(R.id.enter_pokemon_name);
@@ -115,17 +101,15 @@ public class OverlayView {
         mCPBar = (SeekBar) v.findViewById(R.id.seekbar_cp);
         mHPBar = (SeekBar) v.findViewById(R.id.seekbar_hp);
         mCalculateButton = (Button) v.findViewById(R.id.overlay_calculate_button);
-
-        sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        ed = sp.edit();
+        mPokeboxButton = (Button) v.findViewById(R.id.overlay_to_pokebox);
 
 
-        mTrainerLevel = sp.getInt("OverlayService_TrainerLevel", 11);
-        mPokemonLevel = sp.getInt("OverlayService_PokemonLevel", 10);
-        mPokemonNumber = sp.getInt("OverlayService_PokemonNumber", 0);
-        mCPInput = sp.getInt("OverlayService_CPInput", 1);
-        mHPInput = sp.getInt("OverlayService_HPInput", 1);
-        mPokemonNameDisplay.setText(sp.getString("OverlayService_PokemonName", "Enter Pokemon Name"));
+        mTrainerLevel = sp.getInt("OverlayView_TrainerLevel", 11);
+        mPokemonLevel = sp.getInt("OverlayView_PokemonLevel", 10);
+        mPokemonNumber = sp.getInt("OverlayView_PokemonNumber", 0);
+        mCPInput = sp.getInt("OverlayView_CPInput", 1);
+        mHPInput = sp.getInt("OverlayView_HPInput", 1);
+        mPokemonNameDisplay.setText(sp.getString("OverlayView_PokemonName", "Enter Pokemon Name"));
 
         //Autocomplete textview setup
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
@@ -157,7 +141,7 @@ public class OverlayView {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mTrainerLevel = progress + 1;
-                ed.putInt("OverlayService_TrainerLevel", mTrainerLevel).apply();
+                ed.putInt("OverlayView_TrainerLevel", mTrainerLevel).apply();
                 if (mTrainerLevel < 39) {
                     mPokemonLevelBar.setMax(mTrainerLevel * 2 + 1);
                 } else {
@@ -200,7 +184,7 @@ public class OverlayView {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mPokemonLevelText.setText("Pokemon Level : " + (progress * 0.5 + 1));
                 mPokemonLevel = progress + 1;
-                ed.putInt("OverlayService_PokemonLevel", (mPokemonLevel + 1) / 2).apply();
+                ed.putInt("OverlayView_PokemonLevel", (mPokemonLevel + 1) / 2).apply();
                 alterCPHPBars();
                 mLevelAngleView.setPokemonLevel(progress * 0.5f + 1);
                 Log.d(TAG, "pokemon level " + mPokemonLevel);
@@ -239,11 +223,13 @@ public class OverlayView {
         mCPBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
+
+
                     mCPInput = mCPMin + progress;
-                    ed.putInt("OverlayService_CPInput", mCPInput).apply();
+
+                    ed.putInt("OverlayView_CPInput", mCPInput).apply();
                     mCPText.setText("CP : " + mCPInput);
-                }
+
             }
 
             @Override
@@ -279,11 +265,11 @@ public class OverlayView {
         mHPBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
+
                     mHPInput = mHPMin + progress;
-                    ed.putInt("OverlayService_HPInput", mHPInput).apply();
+                    ed.putInt("OverlayView_HPInput", mHPInput).apply();
                     mHPText.setText("HP : " + mHPInput);
-                }
+
             }
 
             @Override
@@ -299,6 +285,42 @@ public class OverlayView {
         Log.d(TAG, "onCreateView: Overlay Service");
         alterCPHPBars();
 
+        mCalculateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Pokemon newPokemon = null;
+
+                try{
+                    newPokemon = new Pokemon(mPokemonNameDisplay.getText().toString(), mHPInput, mCPInput, -1, false, mPokemonLevel);
+                } catch(Exception e){
+                    CustomToast.makeToast(mContext).setMessage(e.getMessage().toString()).show();
+
+                }
+
+                if(newPokemon!=null&&newPokemon.getNumberOfResults()==0){
+                    CustomToast.makeToast(mContext).setMessage("No combinations found!").show();
+
+                } else if (newPokemon!=null){
+                    FloatingHead.floatingPokemonToAdd = newPokemon;
+                    FloatingHead.viewMode = false;
+                    FloatingHead.switchService(IV_CALCULATOR_SERVICE);
+                }
+            }
+        });
+
+        mPokeboxButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloatingHead.switchService(ADD_POKEBOX_SERVICE);
+            }
+        });
+
+        v.setClickable(true);
+        v.setFocusable(true);
+        v.setFocusableInTouchMode(true);
+
+
+
 
     }
 
@@ -311,10 +333,12 @@ public class OverlayView {
                 mPokemonNameInput.setVisibility(View.VISIBLE);
                 mPokemonNameInput.setText(mPokemonNameDisplay.getText().toString());
                 mPokemonNameDisplay.setVisibility(View.INVISIBLE);
-                InputMethodManager imm = (InputMethodManager) ((Activity)mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(mPokemonNameInput, InputMethodManager.SHOW_IMPLICIT);
                 mPokemonNameInput.requestFocus();
                 mPokemonNameInput.selectAll();
+                InputMethodManager imm = (InputMethodManager) ((Activity)mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(mPokemonNameInput, InputMethodManager.SHOW_IMPLICIT);
+
+
             }
         });
 
@@ -323,7 +347,7 @@ public class OverlayView {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     InputMethodManager inputManager = (InputMethodManager) ((Activity)mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow((null == ((Activity)mContext).getCurrentFocus()) ? null : ((Activity)mContext).getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     mPokemonNameInput.clearFocus();
                     return true;
                 }
@@ -340,17 +364,20 @@ public class OverlayView {
                     if (nickname.trim().equals("")) {
                         mPokemonNameDisplay.setText("Enter Pokemon Name");
                         mPokemonNameDisplay.setTextColor(Color.parseColor("#EF5350"));
+                        mPokemonNameDisplay.setBackgroundColor(Color.parseColor("#FFEB3B"));
                     } else if (Pokemon.getPokemonNumberFromName(nickname) == 0) {
                         Toast.makeText(mContext, "Invalid Pokemon Name", Toast.LENGTH_SHORT)
                                 .show();
                         mPokemonNameDisplay.setText("Enter Pokemon Name");
                         mPokemonNameDisplay.setTextColor(Color.parseColor("#EF5350"));
+                        mPokemonNameDisplay.setBackgroundColor(Color.parseColor("#FFEB3B"));
                     }else {
                         mPokemonNameDisplay.setText(nickname);
                         mPokemonNameDisplay.setTextColor(Color.parseColor("#0277BD"));
+                        mPokemonNameDisplay.setBackgroundColor(Color.parseColor("#FFFFFF"));
                         mPokemonNumber=Pokemon.getPokemonNumberFromName(nickname);
-                        ed.putInt("OverlayService_PokemonNumber", mPokemonNumber).apply();
-                        ed.putString("OverlayService_PokemonName", mPokemonNameDisplay.getText().toString()).apply();
+                        ed.putInt("OverlayView_PokemonNumber", mPokemonNumber).apply();
+                        ed.putString("OverlayView_PokemonName", mPokemonNameDisplay.getText().toString()).apply();
                         alterCPHPBars();
                     }
                     mPokemonNameInput.setVisibility(View.INVISIBLE);
@@ -359,12 +386,51 @@ public class OverlayView {
 
             }
         });
+        if(Pokemon.getPokemonNumberFromName(mPokemonNameDisplay.getText().toString())==0){
+            mPokemonNameDisplay.setBackgroundColor(Color.parseColor("#FFEB3B"));
+        }
+
+        /*mBottomView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "onTouch: poo");
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Log.d(TAG, "onTouch: ");
+                    if (!(v instanceof EditText)) {
+                        mPokemonNameInput.clearFocus();
+                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        mMainLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "onTouch: poo");
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Log.d(TAG, "onTouch: ");
+                    if (!(v instanceof EditText)) {
+                        mPokemonNameInput.clearFocus();
+                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });*/
+
     }
 
     private void alterCPHPBars(){
         mCPMax = Pokemon.calculateMaxCPAtLevel(mPokemonNumber,mPokemonLevel);
+        Log.d(TAG, "alterCPHPBars: calculate");
         mCPMin = Pokemon.calculateMinCPAtLevel(mPokemonNumber,mPokemonLevel);
-        mCPBar.setMax(mCPMax-mCPMin);
+
 
         if(mCPInput>=mCPMin&&mCPInput<=mCPMax){
             mCPBar.setProgress(mCPInput-mCPMin);
@@ -375,12 +441,13 @@ public class OverlayView {
             mCPBar.setProgress(0);
             mCPInput = mCPMin;
         }
+        mCPBar.setMax(mCPMax-mCPMin);
         mCPText.setText("CP : "+ mCPInput);
-        ed.putInt("OverlayService_CPInput", mCPInput).apply();
+        ed.putInt("OverlayView_CPInput", mCPInput).apply();
 
         mHPMax = Pokemon.calculateMaxHPAtLevel(mPokemonNumber,mPokemonLevel);
         mHPMin = Pokemon.calculateMinHPAtLevel(mPokemonNumber,mPokemonLevel);
-        mHPBar.setMax(mHPMax-mHPMin);
+
 
         if(mHPInput>=mHPMin&&mHPInput<=mHPMax){
             mHPBar.setProgress(mHPInput-mHPMin);
@@ -391,16 +458,11 @@ public class OverlayView {
             mHPBar.setProgress(0);
             mHPInput = mHPMin;
         }
+        mHPBar.setMax(mHPMax-mHPMin);
         mHPText.setText("HP : "+ mHPInput);
-        ed.putInt("OverlayService_HPInput", mHPInput).apply();
+        ed.putInt("OverlayView_HPInput", mHPInput).apply();
     }
 
-    public static void setContext(Context context){
-        mContext = context;
-    }
 
-    public View getView(){
-        return v;
-    }
 
 }

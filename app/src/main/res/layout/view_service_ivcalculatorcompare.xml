@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.dancmc.pogoiv.views.FrameLayoutIntercept xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:id="@+id/overlay_ivcalc_mainlayout"
+    tools:context=".activities.MainActivity"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/compare_summary_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_button"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:elevation="8dp"
+        android:focusable="true"
+        android:src="@drawable/ic_add_white_24px" />
+</RelativeLayout>
+</com.dancmc.pogoiv.views.FrameLayoutIntercept>

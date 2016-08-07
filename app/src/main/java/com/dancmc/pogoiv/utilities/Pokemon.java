@@ -3,6 +3,7 @@ package com.dancmc.pogoiv.utilities;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -65,6 +66,7 @@ public class Pokemon implements Serializable {
     private int mGoBaseAtk;
     private int mGoBaseDef;
 
+    private DecimalFormat mDF;
 
     public Pokemon(String pokemonName, int hp, int cp, int stardust, boolean freshMeat, int knownLevel) {
 
@@ -80,6 +82,7 @@ public class Pokemon implements Serializable {
         //hp/stardust will be -1 if no input
         hasHP = (hp >= 0);
         hasStardust = (stardust >= 0);
+        mDF = new DecimalFormat("0.0");
 
         mUniqueID = UUID.randomUUID().hashCode();
         mHP = hp;
@@ -441,6 +444,10 @@ public class Pokemon implements Serializable {
 
     public int getKnownLevel() {
         return mKnownLevel;
+    }
+
+    public String getKnownLevelConverted(){
+        return mDF.format((mKnownLevel+1.0)/2.0);
     }
 
     public int getEvolutionTier() {

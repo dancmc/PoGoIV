@@ -56,7 +56,10 @@ public class PokeboxFragment extends ContractFragment<PokeboxFragment.Contract> 
         mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
 
 
-        //in AddActivity, remove the toolbar + shadow, and insert a new button
+        FloatingActionButton fab = (FloatingActionButton)v.findViewById(R.id.back_button_pokebox);
+        fab.setVisibility(View.GONE);
+
+        //in AddActivity, remove the toolbar + shadow
         if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
             mToolbarContainer.setVisibility(View.GONE);
 

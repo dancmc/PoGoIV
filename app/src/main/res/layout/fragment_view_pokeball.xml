@@ -1,7 +1,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/frame_layout_viewpokeball">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/white">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -10,7 +16,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:orientation="vertical"
-        tools:context=".activities.MainActivity">
+        tools:context=".activities.MainActivity"
+        android:background="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -196,6 +203,18 @@
         </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/back_button_viewpokeball"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="100dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="8dp"
+            android:focusable="true"
+            android:src="@drawable/ic_arrow_back_white_48px" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_to_existing_pokeball_fab"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
@@ -206,6 +225,6 @@
             android:focusable="true"
             android:src="@drawable/ic_add_white_24px" />
     </RelativeLayout>
-
+    </LinearLayout>
     <include layout="@layout/layout_toolbar_shadow" />
 </FrameLayout>

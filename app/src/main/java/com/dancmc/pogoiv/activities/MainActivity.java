@@ -1,9 +1,15 @@
 package com.dancmc.pogoiv.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.location.SettingInjectorService;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +21,7 @@ import android.widget.Toast;
 
 import com.dancmc.pogoiv.fragments.CompareSummaryFragment;
 import com.dancmc.pogoiv.fragments.IVCalculatorFragment;
+import com.dancmc.pogoiv.services.FloatingHead;
 import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.fragments.PokeboxFragment;
@@ -41,6 +48,39 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     private boolean mEditAsyncIsRunning;
     private SaveAsyncTask mSaveAsyncTask;
 
+    public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
+
+    @Override
+    public void overlayRequested() {
+
+        if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
+            Log.d(TAG, "onCreate: no permission");
+            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+            builder2.setTitle("Overlay Permissions Request")
+                    .setMessage("To use the floating window feature, you need to enable the overlay permission in the next window.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                            startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+                        }
+                    })
+                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+            AlertDialog dialog2 = builder2.create();
+            dialog2.show();
+        } else if (Build.VERSION.SDK_INT<23||(Build.VERSION.SDK_INT >= 23 && Settings.canDrawOverlays(this))) {
+            FloatingHead.setContext(this);
+            FloatingHead.viewIsRunning = false;
+            FloatingHead.currentlyRunningServiceFragment = FloatingHead.OVERLAY_SERVICE;
+            this.startService(new Intent(this, FloatingHead.class));
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -63,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
         Log.d(TAG, "onCreate: " + Pokemon.calculateCPPercentAtLevel(7, 5, 14, 9, 79) + " " + Pokemon.calculateCPPercentAtLevel(7, 5, 1, 9, 79));
 
+
         //normal flow without adding : calculateIV -> pokebox -> viewpokemon
         if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
             mCalcFragment = new IVCalculatorFragment();
@@ -73,10 +114,9 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
         }
 
 
-
     }
 
-    public void setUpWindow(){
+    public void setUpWindow() {
 
     }
 
@@ -95,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(new Intent(this, FloatingHead.class));
     }
 
     @Override
@@ -278,4 +319,12 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
+            if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
+
+            }
+        }
+    }
 }

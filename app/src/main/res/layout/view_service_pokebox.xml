@@ -1,7 +1,7 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.dancmc.pogoiv.views.FrameLayoutIntercept xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout_pokebox"
+    android:id="@+id/overlay_main_layout_pokebox"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,37 +9,26 @@
 
 
     <LinearLayout
+        android:id="@+id/overlay_insertpoint_pokebox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/pokeball_grid"
+            android:id="@+id/overlay_pokeball_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"
             android:background="@android:color/white">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/pokebox_recyclerview"
+                android:id="@+id/overlay_pokebox_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/back_button_pokebox"
-                android:layout_width="@dimen/fab_size"
-                android:layout_height="@dimen/fab_size"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="16dp"
-                android:layout_marginRight="100dp"
-                android:elevation="8dp"
-                android:focusable="true"
-                android:src="@drawable/ic_arrow_back_white_48px" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/add_to_new_pokeball_fab"
+                android:id="@+id/overlay_add_to_new_pokeball_fab"
                 android:layout_width="@dimen/fab_size"
                 android:layout_height="@dimen/fab_size"
                 android:layout_alignParentBottom="true"
@@ -51,6 +40,6 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <include layout="@layout/layout_toolbar_shadow" />
 
-</FrameLayout>
+
+</com.dancmc.pogoiv.views.FrameLayoutIntercept>

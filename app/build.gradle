@@ -7,9 +7,9 @@ android {
     defaultConfig {
         applicationId "com.dancmc.pogoiv"
         minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 3
-        versionName "0.3"
+        targetSdkVersion 23
+        versionCode 4
+        versionName "0.4"
         resConfigs "en"
     }
     buildTypes {

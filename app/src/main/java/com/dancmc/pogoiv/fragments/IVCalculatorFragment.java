@@ -22,11 +22,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dancmc.pogoiv.activities.OverlayActivity;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.services.FloatingHead;
-import com.dancmc.pogoiv.services.OverlayService;
 import com.dancmc.pogoiv.utilities.Pokemon;
 
 import java.text.DecimalFormat;
@@ -45,6 +43,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
     private EditText mLevelInput;
     private CheckBox mNotFreshMeatInput;
     private StringBuilder mStringBuilder;
+
     private Pokemon mPokemon;
 
     private ImageView mPokemonImage;
@@ -102,6 +101,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mPokemonNameInput = (AutoCompleteTextView) v.findViewById(R.id.enter_pokemon_name);
         mPokemonNameInput.setAdapter(adapter);
 
+        //Toolbar setup
         if(getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
             mToolbarContainer.setVisibility(View.GONE);
 
@@ -115,12 +115,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 public boolean onMenuItemClick(MenuItem item) {
                     if(item.getItemId() == R.id.start_floating_head){
 
-                        FloatingHead.setContext(getActivity());
-                        FloatingHead.viewIsRunning = true;
-                        FloatingHead.currentlyRunningServiceFragment = FloatingHead.OVERLAY_SERVICE;
-                        getActivity().startService(new Intent(getActivity(), FloatingHead.class));
 
-
+                        getContract().overlayRequested();
 
                         return true;
                     }
@@ -309,6 +305,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         public void pokeboxButtonPressed();
 
         public void moreInfoButtonPressed(Pokemon pokemon);
+
+        public void overlayRequested();
     }
 
 }
