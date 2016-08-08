@@ -2,10 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/start_floating_head"
-        android:title="Floater"
+    <item android:id="@+id/tutorial"
+        android:title="Help"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/pokeball"/>
+        android:icon="@drawable/ic_help_white_48px"/>
+
+
+
+    <item android:id="@+id/start_floating_head"
+        android:title="Overlay"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/floating_head"/>
 
 </menu>

@@ -13,7 +13,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".activities.MainActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustPan">
@@ -26,7 +26,8 @@
         <activity
             android:name=".activities.AddPokemonActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTop"/>
 
         <service
             android:name=".services.FloatingHead"

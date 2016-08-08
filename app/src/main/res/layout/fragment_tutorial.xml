@@ -1,0 +1,85 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity"
+    android:id="@+id/tutorial_main_layout"
+  >
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:title="HELP!"></android.support.v7.widget.Toolbar>
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:id="@+id/tutorial_contents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tutorial_contents_whatareivs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="What are IVs and why should I care?"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            android:gravity="center"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="56dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/tutorial_contents_whatdoesappdo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="What does this app do?"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            android:gravity="center"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="56dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/tutorial_contents_howtouse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="How to use"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

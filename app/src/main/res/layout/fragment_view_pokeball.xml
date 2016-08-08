@@ -202,17 +202,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/back_button_viewpokeball"
-            android:layout_width="@dimen/fab_size"
-            android:layout_height="@dimen/fab_size"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="100dp"
-            android:layout_marginBottom="16dp"
-            android:elevation="8dp"
-            android:focusable="true"
-            android:src="@drawable/ic_arrow_back_white_48px" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_to_existing_pokeball_fab"

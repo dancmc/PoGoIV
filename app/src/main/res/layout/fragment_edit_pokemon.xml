@@ -222,6 +222,7 @@
                     android:layout_height="wrap_content"
                     android:text="Calculate!"
                     android:textSize="16sp"
+                    android:theme="@style/AppTheme.GreyButton"
                     android:textStyle="bold" />
 
                 <TextView

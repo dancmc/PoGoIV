@@ -123,7 +123,7 @@ public class FloatingHead extends Service {
 
         mWMParams.gravity = Gravity.TOP | Gravity.LEFT;
         mWMParams.x = 0;
-        mWMParams.y = mScreenMetrics.heightPixels / 2;
+        mWMParams.y = (mScreenMetrics.heightPixels / 4);
 
         mRelativeLayout = new RelativeLayout(this);
         windowManager.addView(mRelativeLayout, mWMParams);
@@ -380,7 +380,6 @@ public class FloatingHead extends Service {
             // TODO: handle exception
         }
 
-        toggleServiceView();
 
         mOverlayView.requestFocus();
 

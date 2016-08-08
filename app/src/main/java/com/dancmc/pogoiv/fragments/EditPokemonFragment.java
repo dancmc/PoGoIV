@@ -39,7 +39,6 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
 
     //Views and utility stuff
     private AutoCompleteTextView mPokemonNameInput;
-    private TextView mOutputView;
     private EditText mCPInput;
     private EditText mHPInput;
     private EditText mStarDustInput;
@@ -283,7 +282,6 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         mStarDustInput = (EditText) v.findViewById(R.id.edit_enter_stardust);
         mLevelInput = (EditText) v.findViewById(R.id.edit_enter_known_level);
         mNotFreshMeatInput = (CheckBox) v.findViewById(R.id.edit_checkbox_powerup);
-        mOutputView = (TextView) v.findViewById(R.id.edit_output);
 
         mPokemonImage = (ImageView) v.findViewById(R.id.edit_iv_calc_pokemon_image);
         mAverageIVPercent = (TextView) v.findViewById(R.id.edit_iv_calc_ivpercent_text);
@@ -336,18 +334,16 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                 InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                mOutputView.setText("");
 
                 try {
                     createPokemonFromInput();
                 } catch (Exception e) {
-                    mOutputView.setText(e.getMessage());
-                    Toast.makeText(getActivity(), "Error calculating...check input", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
 
-                //mOutputView.setText(mStringBuilder.toString());
+
 
                 if (mPokemon != null && mPokemon.getNumberOfResults() != 0) {
                     ArrayList<Integer> tempLevelRange = mPokemon.getResultLevelRange();
@@ -441,12 +437,16 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
         return number;
     }
 
-    private int parseLevelInput(EditText levelInput){
-        double input = Double.parseDouble(levelInput.getText().toString());
-        if(input<1.0||input>40.0||(input%0.5)!=0){
+    private int parseLevelInput(EditText levelInput) {
+        String input = levelInput.getText().toString();
+        if (input.equals("")) {
+            return -1;
+        }
+        double level = Double.parseDouble(input);
+        if (level < 1.0 || level > 40.0 || (level % 0.5) != 0) {
             throw new IllegalArgumentException("Known level must be 1-40 at 0.5 intervals");
         }
-        return ((int)(input*2.0-1.0));
+        return ((int) (level * 2.0 - 1.0));
     }
 
     public interface Contract {

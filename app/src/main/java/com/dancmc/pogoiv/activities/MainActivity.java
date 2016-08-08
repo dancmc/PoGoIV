@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.dancmc.pogoiv.fragments.CompareSummaryFragment;
 import com.dancmc.pogoiv.fragments.IVCalculatorFragment;
+import com.dancmc.pogoiv.fragments.TutorialFragment;
 import com.dancmc.pogoiv.services.FloatingHead;
 import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     private boolean mEditAsyncIsRunning;
     private SaveAsyncTask mSaveAsyncTask;
+    private TutorialFragment mTutorialFragment;
 
     public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
 
@@ -83,9 +85,11 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        setUpWindow();
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "onCreate: this");
+
+
 
         setContentView(R.layout.activity_main);
 
@@ -116,9 +120,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     }
 
-    public void setUpWindow() {
 
-    }
 
 
     @Override
@@ -218,6 +220,16 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                 .commit();
     }
 
+    @Override
+    public void tutorial() {
+        if (mTutorialFragment==null) {
+            mTutorialFragment = new TutorialFragment();
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mTutorialFragment).addToBackStack(null)
+                .commit();
+    }
+
     /**
      * TODO : add methods for saving edited pokemon, and for adding new pokemon, based on fragment information
      * when editing, need to move from ViewPokemonFragment to EditPokemonFragment, sending the pokeball and position as an argument
@@ -241,7 +253,9 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                 mToast.show();
                 mLastPressed = currentTime;
             }
-        } else {
+        } else if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof TutorialFragment) {
+                mTutorialFragment.goBack();
+        } else{
             super.onBackPressed();
         }
     }
@@ -317,6 +331,10 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
             }
         }
 
+    }
+
+    public void goBack(){
+        super.onBackPressed();
     }
 
     @Override

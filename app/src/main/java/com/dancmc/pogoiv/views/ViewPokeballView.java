@@ -146,10 +146,10 @@ public class ViewPokeballView extends GenericServiceView {
                 mEditNickname.setVisibility(View.VISIBLE);
                 mEditNickname.setText(mNickname.getText().toString());
                 mNickname.setVisibility(View.INVISIBLE);
-                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(mEditNickname, InputMethodManager.SHOW_IMPLICIT);
                 mEditNickname.requestFocus();
                 mEditNickname.selectAll();
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(mEditNickname, InputMethodManager.SHOW_IMPLICIT);
             }
         });
 

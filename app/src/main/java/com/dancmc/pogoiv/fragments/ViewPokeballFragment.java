@@ -120,8 +120,6 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mMainLayout = (RelativeLayout) v.findViewById(R.id.view_pokeball_main_layout) ;
         mToolbar.setTitle("Viewing Pokeball");
 
-        FloatingActionButton fab = (FloatingActionButton)v.findViewById(R.id.back_button_viewpokeball);
-        fab.setVisibility(View.GONE);
 
         if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
             mToolbarContainer.setVisibility(View.GONE);

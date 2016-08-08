@@ -93,7 +93,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
         mToolbar.setTitle("IV Calculator");
         mToolbarContainer = (LinearLayout) v.findViewById(R.id.toolbar_container);
-        mMainLayout = (RelativeLayout)v.findViewById(R.id.iv_calc_main_layout);
+        mMainLayout = (RelativeLayout) v.findViewById(R.id.iv_calc_main_layout);
 
         //Autocomplete textview setup
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, Pokemon.getPokedex());
@@ -101,40 +101,41 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         mPokemonNameInput.setAdapter(adapter);
 
         //Toolbar setup
-        if(getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
+        if (getActivity().getClass().getSimpleName().equals("AddPokemonActivity")) {
             mToolbarContainer.setVisibility(View.GONE);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)mMainLayout.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mMainLayout.getLayoutParams();
             params.topMargin = 0;
             mMainLayout.setLayoutParams(params);
-        } else{
+        } else {
             mToolbar.inflateMenu(R.menu.menu_iv_calculator);
             mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    if(item.getItemId() == R.id.start_floating_head){
-
-
-                        getContract().overlayRequested();
-
-                        return true;
+                    switch (item.getItemId()) {
+                        case (R.id.start_floating_head):
+                            getContract().overlayRequested();
+                            return true;
+                        case (R.id.tutorial):
+                            getContract().tutorial();
+                            return true;
                     }
                     return false;
                 }
             });
         }
 
-        if (mPokemon!=null&&mPokemon.getNumberOfResults()!=0) {
+        if (mPokemon != null && mPokemon.getNumberOfResults() != 0) {
             mPokemonNameInput.setText(mPokemon.getPokemonName());
-            mCPInput.setText(mPokemon.getCP()+"");
-            if(mPokemon.getHP()>0){
-                mHPInput.setText(mPokemon.getHP()+"");
+            mCPInput.setText(mPokemon.getCP() + "");
+            if (mPokemon.getHP() > 0) {
+                mHPInput.setText(mPokemon.getHP() + "");
             }
-            if(mPokemon.getStardust()>0){
-                mHPInput.setText(mPokemon.getStardust()+"");
+            if (mPokemon.getStardust() > 0) {
+                mHPInput.setText(mPokemon.getStardust() + "");
             }
-            if(mPokemon.getKnownLevel()>0){
-                mLevelInput.setText(mPokemon.getKnownLevel()+"");
+            if (mPokemon.getKnownLevel() > 0) {
+                mLevelInput.setText(mPokemon.getKnownLevel() + "");
             }
             mNotFreshMeatInput.setChecked(!mPokemon.getFreshMeat());
 
@@ -144,8 +145,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
             mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
             mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + mDF.format((lowestLevel+1)/2.0) + "-" + mDF.format((highestLevel+1)/2.0) + "\n");
-            mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + mDF.format((lowestLevel + 1) / 2.0) + "-" + mDF.format((highestLevel + 1) / 2.0) + "\n");
+            mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
 
         }
 
@@ -161,7 +162,6 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
 
-
                 try {
                     createPokemonFromInput();
                 } catch (Exception e) {
@@ -169,7 +169,6 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                             .show();
                     return;
                 }
-
 
 
                 if (mPokemon != null && mPokemon.getNumberOfResults() != 0) {
@@ -180,12 +179,12 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     mPokemonImage.setImageResource(getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", getActivity().getPackageName()));
                     mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
                     mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-                    mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n"+"Level " + lowestLevel + "-" + highestLevel + "\n");
-                    mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n"+"Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
+                    mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + lowestLevel + "-" + highestLevel + "\n");
+                    mAverageCPPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getCPPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getCPPercentRange())) + "%)\n" + "Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
                     Toast.makeText(getActivity(), "Calculated!", Toast.LENGTH_SHORT)
                             .show();
                 }
-                if(mPokemon!=null&&mPokemon.getNumberOfResults()==0){
+                if (mPokemon != null && mPokemon.getNumberOfResults() == 0) {
                     Toast.makeText(getActivity(), "No combinations found!", Toast.LENGTH_SHORT)
                             .show();
                 }
@@ -233,7 +232,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                     Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
                             .show();
                     return;
-                } else if(mPokemon.getNumberOfResults()==0) {
+                } else if (mPokemon.getNumberOfResults() == 0) {
                     Toast.makeText(getActivity(), "There are no combinations!", Toast.LENGTH_SHORT)
                             .show();
                     return;
@@ -243,8 +242,6 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
 
             }
         });
-
-
         return v;
     }
 
@@ -277,8 +274,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                 throw new IllegalArgumentException("You must enter a CP value.");
             else if (textInput == mStarDustInput) {
                 //mStringBuilder.append("Note : You did not enter a stardust value. All levels calculated.\n\n");
-            }
-            else if (textInput == mHPInput) {
+            } else if (textInput == mHPInput) {
                 //StringBuilder.append("Note : You did not enter a HP value. All values calculated\n\n");
             }
             return -1;
@@ -295,12 +291,16 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         return number;
     }
 
-    private int parseLevelInput(EditText levelInput){
-        double input = Double.parseDouble(levelInput.getText().toString());
-        if(input<1.0||input>40.0||(input%0.5)!=0){
+    private int parseLevelInput(EditText levelInput) {
+        String input = levelInput.getText().toString();
+        if (input.equals("")) {
+            return -1;
+        }
+        double level = Double.parseDouble(input);
+        if (level < 1.0 || level > 40.0 || (level % 0.5) != 0) {
             throw new IllegalArgumentException("Known level must be 1-40 at 0.5 intervals");
         }
-        return ((int)(input*2.0-1.0));
+        return ((int) (level * 2.0 - 1.0));
     }
 
     public interface Contract {
@@ -311,6 +311,8 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
         public void moreInfoButtonPressed(Pokemon pokemon);
 
         public void overlayRequested();
+
+        public void tutorial();
     }
 
 }

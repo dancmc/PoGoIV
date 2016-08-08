@@ -6,4 +6,74 @@
     <string name="compare_summary">Max Evolution/IV List</string>
     <string name="edit_pokemon_fragment_edit">Edit Pokemon</string>
     <string name="edit_pokemon_fragment_add">Add Pokemon</string>
+
+    <string name="what_are_ivs"><![CDATA[
+"<h3><strong>What are Individual Values (IVs)?</strong></h3>
+<p>All visible values of a Pokemon (what you see - HP, CP, Stardust needed for next level) are calculated from hidden values (  <b><font color='#3366ff'>Stamina</font></b> ,   <b><font color='#3366ff'>Attack</font></b> ,   <b><font color='#3366ff'>Defence</font></b> ,   <b><font color='#3366ff'>Level </font></b>).</p>
+<p> <b><font color ='#3366ff'> Stamina</font></b> ,  <b><font color='#3366ff'> Attack</font></b> , and  <b><font color='#3366ff'> Defence</font></b>  are each made up of two parts - the fixed  <b><font color= '#339966'><u>base stat </font></b></u>for that Pokemon species, and a random  <b><font color='#ff9900'><u>IV</font></b></u>.</p>
+<p>Your Bulbasaur's Stamina is made up of a Bulbasaur's fixed  <b><font color='#339966'>base stamina</font></b> (90) + a random  <b><font color='#ff9900'>stamina IV</font></b> from 0-15.</p>
+<p>All Pokemon you catch have fixed base stamina/attack/defence for their species, and also stamina/attack/defence IVs.</p>
+<p>&nbsp;</p>
+<h3><strong>Why do IVs matter?</strong></h3>
+<p>IVs are the only thing random about a particular Pokemon. &nbsp;Without them,&nbsp;all level 15 Bulbasaurs would be the same. &nbsp;</p>
+<p>IVs are what&nbsp;make your Pokemon a unique little snowflake, and determine their genetic potential.&nbsp;</p>
+<p>A Pikachu with IVs of 15/15/15 would thus be the best Pikachu you could ever find, and would have the most HP/CP at a given level that a Pikachu could ever have.&nbsp;</p>
+<p>&nbsp;</p>
+<h3><strong>What are levels?</strong></h3>
+<p>Pokemon all have a hidden level, which is separate&nbsp;from your Trainer level. &nbsp;Everytime you power up your Pokemon, its level increases by 0.5. &nbsp;The maximum level a Pokemon can be is your current Trainer level plus 1.5.</p>
+<p>The  <b><font color='#0000ff'> <b><font color='#ff0000'>semicircle indicator</font></b></font></b> above your Pokemon in the info screen indicates&nbsp;its&nbsp;level out of your&nbsp;current maximum (the indicator is not linear).</p>
+<p>So at Trainer level 10, a level 11.5 Charmander or Blastoise would fill the whole bar, but if you increased your Trainer level to 20, you'd see the indicator move to somewhere in the middle.</p>
+<p>&nbsp;</p>
+<h3><strong>Does this mean my 15/15/15 Horsea&nbsp;can stomp all over a 0/0/0 Mewtwo?</strong></h3>
+<p>Mostly, no. Your Pokemon level and species base stats also affect your HP/CP. &nbsp;Battles also take into account your move power and types. &nbsp;So while a level 40 Horsea will probably win a level 2 Mewtwo, a level 40 Mewtwo would almost definitely tear it apart.&nbsp;</p>
+<p>&nbsp;</p>
+<h3><strong>Why should I care about IVs then?</strong></h3>
+<p>If&nbsp;you're powering up and evolving your Pokemon, you've definitely caught more than one of that species to get the necessary candies. &nbsp;With 100 Magikarps, how would you choose which one to keep and invest your hard earned stardust and candies in? &nbsp;You'd clearly want the one which would make the best level 20 or whatever Gyarados, and that would be the one with the highest IVs (*see question about CP below).</p>
+<p>&nbsp;</p>
+<h3><strong>Does this mean that my Pokemon with IVs of 2/2/2 is useless?</strong></h3>
+<p>Of course not! &nbsp;Pokemon are ?living creatures with feelings too ok, they're all of equal worth (BUT&nbsp;some are more equal than others, and yes, a 15/15/15 level 40 Dragonite is probably going to squash a 0/0/0 level 40 Dragonite mercilessly.) &nbsp;</p>
+<p>Also, most Pokemon aren't at either extreme, so the difference in CP/HP between your 11/10/12 Squirtle and your friend's 7/9/8 Squirtle likely doesn't matter too much.</p>
+<p>&nbsp;</p>
+<h3>Can you change your IVs?</h3>
+<p>No, they are set randomly when a Pokemon first spawns.</p>
+<p>&nbsp;</p>
+<h3>What is IV%?</h3>
+<p>It's your Pokemon's total IVs out of a total maximum of 15/15/15, and gives you an indication of how "perfect" a specimen it is.&nbsp;</p>
+<p>&nbsp;</p>
+<h3>What is CP% and why is it &nbsp;different from IV%?</h3>
+<p>CP% is your Pokemon's CP out of the theoretical maximum FOR ITS CURRENT LEVEL (ie a Pokemon with 15/15/15).</p>
+<p>When calculating CP, attack is weighted more than stamina or defence. &nbsp;A Jynx with Sta 0 / Atk 15 / Def 15 would have a higher CP than one of an equal level with Sta 15 / Atk 0 / Def 15, even though both have total IVs of 30 and the same IV%.</p>
+<p>On a side note, your HP is purely dependent on your stamina.</p>
+<p>&nbsp;</p>
+<h3>Which should I look at?</h3>
+<p>You should probably make sure both are reasonably high. &nbsp;Actually, CP% and HP% would be a better indicator while ignoring IV%, I'll be adding HP% in the future.</p>
+<p>For now, just have a quick look at the possible stamina IVs and make sure they aren't terrible.</p>
+<p>&nbsp;</p>" ]]></string>
+
+    <string name="whatappdoes"><![CDATA["<h3><strong>What does this app do?</strong></h3>
+<p>Basically, the main calculator&nbsp;uses the visible values (HP, CP, Stardust needed) and works backwards to generate all the possible combinations of hidden IVs &amp; levels which would produce them.</p>
+<p>Ideally, you'd want to narrow down to the one true combination for your Pokemon.</p>
+<p>The overlay version uses your Trainer level and the semicircle indicator above the Pokemon to work out the exact Pokemon level, which narrows down the number of possible IV combinations.</p>
+<p>&nbsp;</p>
+<p>Why is there a range of levels with the normal calculator?</p>
+<p>A given Stardust value spans 4 Pokemon half levels, while the overlay calculator can find the exact level.</p>
+<p>&nbsp;</p>
+<h3><strong>What are all the other functions for?</strong></h3>
+<p>By powering up your Pokemon, or evolving it, your HP/CP/Stardust changes, which means another set of possible IV combinations can be calculated.</p>
+<p>The combinations which are only found in either the old or new set are clearly not possible, and can be eliminated.</p>
+<p>This helps narrow down the possibilities to the leftover combinations which overlap between sets.</p>
+<p>Eg, your particular Squirtle has 3 possibilities of :<br />13/10/15<br />10/15/5<br />7/15/15</p>
+<p>and after powering up has 3 possibilities of :<br />13/10/15<br />7/15/15<br />10/9/14</p>
+<p>clearly, only :<br />13/10/15<br />7/15/15</p>
+<p>have a chance of being the one real combination, so we have narrowed down the number of possibilities to 2.</p>
+<p>We can do this with any number of power ups or evolutions, which would hopefully eventually narrow it down to one possibility.</p>
+<p>You can save unlimited <strong>snapshots</strong> of your Pokemon in a "<strong>Pokeball</strong>" at different levels of powerups and even after evolution, and they will all be automatically compared for overlaps.</p>
+<p>&nbsp;</p>
+<h3><strong>Why is there a range for IV% and CP%?</strong></h3>
+<p>The Squirtle in the example above has three possible combinations which lead to the same HP/CP values, but clearly not all the combinations have the same IV% (total IVs out of 15/15/15), leading to a range of IV% values.</p>
+<p>Because the CP% shows your current CP out of the maximum CP for your level for a Pokemon with 15/15/15, a range of possible levels leads to a range of CP%.</p>
+<p>Of course, since the overlay gets an exact Pokemon level, the CP% will be exact and there is no range.</p>
+<p>(Side note for geeky people : you'd think that knowing your exact Pokemon level and an exact CP% means that this CP% would always hold true, but rounding in the CP formula means that the combinations that all produce a CP of 700 now will not all produce the same CP at level 40, but the variation is minimal)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>" ]]></string>
 </resources>

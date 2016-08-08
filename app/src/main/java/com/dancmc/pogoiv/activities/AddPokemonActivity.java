@@ -2,6 +2,7 @@ package com.dancmc.pogoiv.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -90,8 +91,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
         mAddCardCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Pokeballs.getPokeballsInstance().remove(Pokeballs.getPokeballsInstance().size() - 1);
-                finish();
+                startActivity(new Intent(AddPokemonActivity.this, MainActivity.class));
                 //TODO : ?add a confirmation dialog?
             }
         });
@@ -142,7 +142,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                                 return null;
                             }
                         }.execute();
-                        finish();
+                        startActivity(new Intent(AddPokemonActivity.this, MainActivity.class));
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -218,7 +218,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                                 return null;
                             }
                         }.execute();
-                        finish();
+                        startActivity(new Intent(AddPokemonActivity.this, MainActivity.class));
 
                         //goes back to IV calc, so no need to refresh view
                     }
@@ -240,7 +240,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
         if (getSupportFragmentManager().findFragmentById(R.id.add_activity_fragment_container) instanceof PokeboxFragment) {
             finish();
         } else {
-            super.onBackPressed();
+            getSupportFragmentManager().popBackStack();
         }
         //TODO : are you sure you want to exit
 

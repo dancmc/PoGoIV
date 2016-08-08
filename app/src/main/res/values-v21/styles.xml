@@ -6,4 +6,10 @@
         <item name="android:textColor">@android:color/white</item>
 
     </style>
+
+    <style name="AppTheme.GreyButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@color/grey</item>
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
 </resources>

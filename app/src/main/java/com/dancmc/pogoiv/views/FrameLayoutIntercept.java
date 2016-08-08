@@ -46,8 +46,8 @@ public class FrameLayoutIntercept extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN&&FloatingHead.currentlyRunningServiceFragment==FloatingHead.OVERLAY_SERVICE) {
-            //Log.d(TAG, "onInterceptTouchEvent: "+this.getFocusedChild());
+        if (ev.getAction() == MotionEvent.ACTION_DOWN&&(FloatingHead.currentlyRunningServiceFragment==FloatingHead.OVERLAY_SERVICE||FloatingHead.currentlyRunningServiceFragment==FloatingHead.ADD_VIEW_POKEBALL_SERVICE)) {
+            Log.d(TAG, "onInterceptTouchEvent: "+this.getFocusedChild());
             if (this.getFocusedChild()!=null) {
                 Log.d(TAG, "onInterceptTouchEvent: intercepted");
                 this.getFocusedChild().clearFocus();
