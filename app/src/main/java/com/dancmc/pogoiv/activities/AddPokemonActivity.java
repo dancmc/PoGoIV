@@ -122,8 +122,8 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
     @Override
     public void addNewPokeball() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add Pokemon")
-                .setMessage("Do you want to add the Pokemon to a new Pokeball?")
+        builder.setTitle("Add Snapshot")
+                .setMessage("Do you want to add this snapshot to a new Pokeball?")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
@@ -160,8 +160,8 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
     @Override
     public void addToExistingPokeball(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add Pokemon")
-                .setMessage("Do you want to add the Pokemon to this existing Pokeball?")
+        builder.setTitle("Add Snapshot")
+                .setMessage("Do you want to add this Snapshot to this existing Pokeball?")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
@@ -171,7 +171,7 @@ public class AddPokemonActivity extends AppCompatActivity implements PokeboxFrag
                         //handle scenario when already added pokemon
                         for (int i = 0; i < pokeball.size(); i++) {
                             if (pokeball.get(i).customEquals(mPokemonToAdd)) {
-                                Toast.makeText(AddPokemonActivity.this, "You have added the same Pokemon before!", Toast.LENGTH_LONG)
+                                Toast.makeText(AddPokemonActivity.this, "You have added the same snapshot before!", Toast.LENGTH_LONG)
                                         .show();
                                 return;
                             }

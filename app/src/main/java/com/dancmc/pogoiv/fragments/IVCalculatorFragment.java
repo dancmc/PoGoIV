@@ -207,13 +207,13 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             public void onClick(View v) {
 
                 if (mPokemon == null) {
-                    Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), "You have not calculated a snapshot yet", Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
 
                 if (mPokemon.getNumberOfResults() == 0) {
-                    Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), "Sorry, you can't add a snapshot with no combinations.", Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
@@ -229,7 +229,7 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
             public void onClick(View v) {
 
                 if (mPokemon == null) {
-                    Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), "You have not calculated a snapshot yet", Toast.LENGTH_SHORT)
                             .show();
                     return;
                 } else if (mPokemon.getNumberOfResults() == 0) {

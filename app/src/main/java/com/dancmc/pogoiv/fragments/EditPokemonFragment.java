@@ -139,14 +139,14 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                     if (item.getItemId() == R.id.save_edit_pokemon) {
 
                         if (mPokemon == null) {
-                            Toast.makeText(getActivity(), "You have not calculated a Pokemon yet", Toast.LENGTH_SHORT)
+                            Toast.makeText(getActivity(), "You have not calculated a snapshot yet", Toast.LENGTH_SHORT)
                                     .show();
                             return true;
                         }
 
 
                         if (mPokemon.getNumberOfResults() == 0) {
-                            Toast.makeText(getActivity(), "Sorry, you can't add Pokemon with no combinations.", Toast.LENGTH_SHORT)
+                            Toast.makeText(getActivity(), "Sorry, you can't add snapshots with no combinations.", Toast.LENGTH_SHORT)
                                     .show();
                             return true;
                         }
@@ -179,7 +179,7 @@ public class EditPokemonFragment extends ContractFragment<EditPokemonFragment.Co
                             //handle scenario when already added pokemon
                             for (int i = 0; i < pokeball.size(); i++) {
                                 if (pokeball.get(i).customEquals(mPokemon)) {
-                                    Toast.makeText(getActivity(), "You have added the same Pokemon before!", Toast.LENGTH_SHORT)
+                                    Toast.makeText(getActivity(), "You have added the same snapshot before!", Toast.LENGTH_SHORT)
                                             .show();
                                     return true;
                                 }

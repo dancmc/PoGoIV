@@ -141,7 +141,7 @@ public class PokeboxView extends GenericServiceView {
 
         final CustomDialog dialog2 = new CustomDialog(mContext);
         dialog2.setTitle("Add Pokemon")
-                .setMessage("Do you want to add the Pokemon to a new Pokeball?")
+                .setMessage("Do you want to add the snapshot to a new Pokeball?")
                 .setPositiveButton("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

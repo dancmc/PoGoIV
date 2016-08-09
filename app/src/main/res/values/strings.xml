@@ -4,8 +4,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="compare_summary">Max Evolution/IV List</string>
-    <string name="edit_pokemon_fragment_edit">Edit Pokemon</string>
-    <string name="edit_pokemon_fragment_add">Add Pokemon</string>
+    <string name="edit_pokemon_fragment_edit">Edit Snapshot</string>
+    <string name="edit_pokemon_fragment_add">Add Snapshot</string>
 
     <string name="what_are_ivs"><![CDATA[
 "<h3><strong>What are Individual Values (IVs)?</strong></h3>

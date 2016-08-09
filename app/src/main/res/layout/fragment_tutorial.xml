@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.MainActivity"
-    android:id="@+id/tutorial_main_layout"
+
   >
 
     <android.support.v7.widget.Toolbar
@@ -13,7 +13,10 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:title="HELP!"></android.support.v7.widget.Toolbar>
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/tutorial_main_layout">
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:id="@+id/tutorial_contents"
@@ -68,10 +71,10 @@
             android:background="@android:color/darker_gray"/>
 
         <TextView
-            android:id="@+id/tutorial_contents_howtouse"
+            android:id="@+id/tutorial_contents_howtousenormal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="How to use"
+            android:text="How to use - Normal View"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginLeft="16dp"
@@ -80,6 +83,29 @@
             android:paddingTop="12dp"
             android:gravity="center"/>
 
-    </LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="56dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@android:color/darker_gray"/>
 
+        <TextView
+            android:id="@+id/tutorial_contents_howtouseoverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="How to use - Overlay View"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            android:gravity="center"/>
+
+
+    </LinearLayout>
+</RelativeLayout>
 </LinearLayout>

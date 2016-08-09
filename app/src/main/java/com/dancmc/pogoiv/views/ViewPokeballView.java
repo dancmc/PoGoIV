@@ -209,7 +209,7 @@ public class ViewPokeballView extends GenericServiceView {
                 final CustomDialog dialog1 = new CustomDialog(mContext);
                 dialog1.setTitle("Delete")
                         .setTitle("Delete")
-                        .setMessage("Do you want to delete this Pokemon?")
+                        .setMessage("Do you want to delete this snapshot?")
                         .setPositiveButton("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -235,7 +235,7 @@ public class ViewPokeballView extends GenericServiceView {
                                     }
                                 }.execute();
 
-                                CustomToast.makeToast(mContext).setMessage("Pokemon deleted").show();
+                                CustomToast.makeToast(mContext).setMessage("Snapshot deleted").show();
 
                                 //stop before gets to notifyadapter if there is no pokemon left
                                 if (Pokeballs.getPokeballsInstance().get(mPokeballNumber).size() == 0) {
@@ -284,7 +284,7 @@ public class ViewPokeballView extends GenericServiceView {
 
                 final CustomDialog dialog2 = new CustomDialog(mContext);
                 dialog2.setTitle("Add Pokemon")
-                        .setMessage("Do you want to add the Pokemon to this existing Pokeball?")
+                        .setMessage("Do you want to add the snapshot to this existing Pokeball?")
                         .setPositiveButton("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -294,7 +294,7 @@ public class ViewPokeballView extends GenericServiceView {
                                 //handle scenario when already added pokemon
                                 for (int i = 0; i < pokeball.size(); i++) {
                                     if (pokeball.get(i).customEquals(mPokemon)) {
-                                        CustomToast.makeToast(mContext).setMessage("You have added the same Pokemon before!").show();
+                                        CustomToast.makeToast(mContext).setMessage("You have added the same snapshot before!").show();
                                         return;
                                     }
                                 }
@@ -370,7 +370,7 @@ public class ViewPokeballView extends GenericServiceView {
         mNickname.setText(mPokeball.get(0).getNickname());
 
         if (mResult.size() == 0) {
-            mSummary.setText("There were no overlapping combinations found, are these the same pokemon? (You can try editing all Pokemon to 'powered up'.)");
+            mSummary.setText("There were no overlapping combinations found, are these the same pokemon? (You can try editing all snapshots to 'powered up'.)");
             mIVPercent.setText("--%");
             mIVPercentDesc.setText("IV%\n" + ("--"));
             mCPPercent.setText("--%");

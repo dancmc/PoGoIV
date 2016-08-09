@@ -224,7 +224,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
 
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
                 builder2.setTitle("Delete")
-                        .setMessage("Do you want to delete this Pokemon?")
+                        .setMessage("Do you want to delete this snapshot?")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -249,7 +249,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
                                     }
                                 }.execute();
 
-                                Toast.makeText(getActivity(), "Pokemon deleted", Toast.LENGTH_LONG)
+                                Toast.makeText(getActivity(), "Snapshot deleted", Toast.LENGTH_LONG)
                                         .show();
 
                                 //stop before gets to notifyadapter if there is no pokemon left
@@ -337,7 +337,7 @@ public class ViewPokeballFragment extends ContractFragment<ViewPokeballFragment.
         mNickname.setText(mPokeball.get(0).getNickname());
 
         if (mResult.size() == 0) {
-            mSummary.setText("There were no overlapping combinations found, are these the same pokemon? (You can try editing all Pokemon to 'powered up'.)");
+            mSummary.setText("There were no overlapping combinations found, are these the same Pokemon? (You can try editing all snapshots to 'powered up'.)");
             mIVPercent.setText("--%");
             mIVPercentDesc.setText("IV%\n" + ("--"));
             mCPPercent.setText("--%");
