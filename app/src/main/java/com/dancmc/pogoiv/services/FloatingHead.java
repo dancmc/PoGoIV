@@ -121,6 +121,8 @@ public class FloatingHead extends Service {
                 0,
                 PixelFormat.TRANSLUCENT);
 
+
+
         mWMParams.gravity = Gravity.TOP | Gravity.LEFT;
         mWMParams.x = 0;
         mWMParams.y = (mScreenMetrics.heightPixels / 4);

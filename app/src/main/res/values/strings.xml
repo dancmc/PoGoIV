@@ -55,7 +55,7 @@
 <p>Ideally, you'd want to narrow down to the one true combination for your Pokemon.</p>
 <p>The overlay version uses your Trainer level and the semicircle indicator above the Pokemon to work out the exact Pokemon level, which narrows down the number of possible IV combinations.</p>
 <p>&nbsp;</p>
-<p>Why is there a range of levels with the normal calculator?</p>
+<h3><strong>Why is there a range of levels with the normal calculator?</strong></h3>
 <p>A given Stardust value spans 4 Pokemon half levels, while the overlay calculator can find the exact level.</p>
 <p>&nbsp;</p>
 <h3><strong>What are all the other functions for?</strong></h3>
@@ -76,4 +76,30 @@
 <p>(Side note for geeky people : you'd think that knowing your exact Pokemon level and an exact CP% means that this CP% would always hold true, but rounding in the CP formula means that the combinations that all produce a CP of 700 now will not all produce the same CP at level 40, but the variation is minimal)</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>" ]]></string>
+
+    <string name="tutorial_normal_text_00a">Calculator gives you an average estimate of the perfection level of your Pokemon’s hidden stats</string>
+    <string name="tutorial_normal_text_00b">You can add multiple ’snapshots’ of the <b>SAME</b> Pokemon to one Pokeball after powerups/evolution</string>
+    <string name="tutorial_normal_text_00c">More snapshots = more accurate estimate, shown by a decrease in the range of the estimate</string>
+    <string name="tutorial_normal_text_01">1 : <b>OVERLAY BUTTON</b>, ignore for now\n\n2 : <b>POKEBOX BUTTON</b>, takes you to your stored snapshots.\n\n3 : Lets you <b>ADD</b> a snapshot to storage after calculating.\n\n</string>
+    <string name="tutorial_normal_text_02">1 : Fill in your Pokemon name, CP, HP, and Stardust needed.  Tick the box if you have ever used a power up on your Pokemon.  Ignore the Level if you don’t know what it does.\n\n2 : Press <b>CALCULATE!</b>  If you’re successful, your Pokemon will appear in the circle above, otherwise an error message will popup.\n\n3 : <b>IV%</b> - average estimated hidden stat total out of a max of 15 stamina/15 attack/15 defence.  Below is the range of the estimates, and your Pokemon’s estimated level.\n\n4 : <b>CP%</b> - your CP out of the maximum for your Pokemon level. There will be a range if your Pokemon level can’t be estimated exactly.\n\n5 : <b>MORE INFO BUTTON</b>, takes you to….more info. Swipe to next tutorial page.\n\n\n</string>
+    <string name="tutorial_normal_text_03">1 : Tells you your expected CP at max level and max evolution. <b>Worst</b> is a max level Pokemon with IVs of 0/0/0, <b>Perfect</b> is 15/15/15.\n\n2 : Tells you your <b>predicted HP/CP</b> if you evolve your Pokemon right this moment. Will only see this if you select a single snapshot to view.\n\n3 : Number of possible <b>IV/Level combinations</b> which would produce the exact CP/HP/Stardust you entered.\n\n\n</string>
+    <string name="tutorial_normal_text_04a">If you press the <b>ADD BUTTON</b> on the main page, you end up here</string>
+    <string name="tutorial_normal_text_04b">1 : Either press the <b>ADD BUTTON</b> on this page to add your snapshot to an entirely new Pokeball, or\n\n2 : Press an existing <b>POKEBALL</b> to explore it.\n\n\n</string>
+    <string name="tutorial_normal_text_05a">If you chose to add to a new Pokeball, you’ll see this screen.</string>
+    <string name="tutorial_normal_text_05b">Once you’ve confirmed, you can navigate back to your Pokebox to see that a new Pokeball has been created.</string>
+    <string name="tutorial_normal_text_06a">If you pressed an existing Pokeball, you’ll see this screen.</string>
+    <string name="tutorial_normal_text_06b">Press the <b>ADD BUTTON</b> to add to this Pokeball.\n\nYou should only add snapshots of the <b>SAME POKEMON</b> (after powerups/evolutions).</string>
+    <string name="tutorial_normal_text_06c">If you navigate back afterwards, you’ll see :\n\n1 : A new snapshot added.\n\n2 : The number of <b>OVERLAPPING COMBINATIONS</b> (increases accuracy of IV% estimate).</string>
+    <string name="tutorial_normal_text_07a">Speaking of the View Pokeball page, </string>
+    <string name="tutorial_normal_text_07b">1 : Change your Pokemon’s <b>NICKNAME</b> by clicking here.\n\n2 : Edit your snapshot data by pressing this.</string>
+    <string name="tutorial_normal_text_07c">The <b>EDIT SNAPSHOT</b> page is the same as the main screen, just alter your values and press the tick to save.</string>
+    <string name="tutorial_normal_text_08">Long press on a Pokeball/snapshot in the Pokebox or Pokeball view to <b>DELETE</b>.</string>
+    <string name="tutorial_normal_text_09">When browsing your Pokebox/Pokeballs normally, you can also press the <b>ADD BUTTON</b> to add a new Pokeball/snapshot directly without having to start at the main screen.</string>
+    
+    <string name="tutorial_overlay_text_01a">The special <b>OVERLAY VIEW!</b>  A different way of adding Pokemon conveniently while playing Pokemon Go.\n\nPress the <b>BUTTON</b> on the home screen to start the overlay. You may have to grant permissions to draw on your screen.</string>
+    <string name="tutorial_overlay_text_01b">If you’re familiar with the Facebook chat head at all, the same functionality has been replicated here.\n\nYou can drag the <b>POKEBALL BUTTON</b> all over the screen, and it will stay on top. Pressing it will bring up the overlay.</string>
+    <string name="tutorial_overlay_text_02a">Make sure the horizontal line is touching the end of the semicircle arc. If you can’t make it align, shoot me an email at pogoiv2016@gmail.com or leave a comment.\n\nPress the <b>CALCULATE BUTTON</b>, and you can access a mini version of the regular app, which allows you to save your Pokemon/snapshots.</string>
+    <string name="tutorial_overlay_text_02b">You can hold down the <b>POKEBALL BUTTON</b> to make the window transparent so you can see the HP/other stats.</string>
+
+
 </resources>

@@ -6,4 +6,6 @@
     <color name="fab_shadow">#4000</color>
     <color name="transparent">#00000000</color>
     <color name="grey">#BDBDBD</color>
+    <color name="dark_grey">#616161</color>
+    <color name="tutorial_title">#546E7A</color>
 </resources>

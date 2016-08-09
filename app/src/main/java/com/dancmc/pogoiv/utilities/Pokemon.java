@@ -394,7 +394,7 @@ public class Pokemon implements Serializable {
     public static ArrayList<Double> getCpPercentRangeFromIVS(ArrayList<double[]> ivCombos, int pokemonNumber) {
         ArrayList<Double> newList = new ArrayList<>();
         for (double[] ivCombo:ivCombos){
-            double workingCP = Math.max(10.0, Math.floor((ATKS[pokemonNumber] + ivCombo[2]) * Math.pow((DEFS[pokemonNumber] + ivCombo[3]), 0.5) * Math.pow((STAMINAS[pokemonNumber] + ivCombo[1]), 0.5) * Math.pow(CP_MULTIPLIERS[29], 2) / 10));
+            double workingCP = Math.max(10.0, Math.floor((ATKS[pokemonNumber] + ivCombo[2]) * Math.pow((DEFS[pokemonNumber] + ivCombo[3]), 0.5) * Math.pow((STAMINAS[pokemonNumber] + ivCombo[1]), 0.5) * Math.pow(CP_MULTIPLIERS[79], 2) / 10));
             double cpPercent = (workingCP - MIN_CPS[pokemonNumber]) / (CPS_DIFFERENCE[pokemonNumber])*100.0;
             newList.add(cpPercent);
         }

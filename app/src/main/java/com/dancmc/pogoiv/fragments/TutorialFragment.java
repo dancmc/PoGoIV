@@ -6,8 +6,8 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.activities.MainActivity;
 import com.dancmc.pogoiv.adapters.CustomViewPagerAdapter;
-import com.dancmc.pogoiv.services.FloatingHead;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +40,7 @@ public class TutorialFragment extends Fragment {
     private ViewPager mViewPager;
     private CustomViewPagerAdapter mAdapter;
 
-    private ArrayList<View> mViewList;
+    private ArrayList<Integer> mViewList;
 
     public TutorialFragment() {
         // Required empty public constructor
@@ -75,9 +74,11 @@ public class TutorialFragment extends Fragment {
             }
         });
 
+
         //Manually setting the contents page onclick behaviour cos too few to bother with adapter
         setOnClickForText(R.id.tutorial_contents_whatareivs, R.string.what_are_ivs);
         setOnClickForText(R.id.tutorial_contents_whatdoesappdo, R.string.whatappdoes);
+
 
         //sets a viewpager when the how to use is pressed
         mMainView.findViewById(R.id.tutorial_contents_howtousenormal).setOnClickListener(new View.OnClickListener() {
@@ -88,7 +89,16 @@ public class TutorialFragment extends Fragment {
                 mViewLevel = 1;
 
                 mViewList = new ArrayList<>();
-                mViewList.addAll(Arrays.asList(new View[]{newView(R.layout.tutorial_howtouse_1)}));
+                mViewList.addAll(Arrays.asList(new Integer[]{R.layout.tutorial_normal_00,
+                        R.layout.tutorial_normal_01,
+                        R.layout.tutorial_normal_02,
+                        R.layout.tutorial_normal_03,
+                        R.layout.tutorial_normal_04,
+                        R.layout.tutorial_normal_05,
+                        R.layout.tutorial_normal_06,
+                        R.layout.tutorial_normal_07,
+                        R.layout.tutorial_normal_08,
+                        R.layout.tutorial_normal_09}));
 
                 //set params for adding the viewpager, instantiate the adapter, set the adapter, add the viewpager
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -106,13 +116,14 @@ public class TutorialFragment extends Fragment {
                 mViewLevel = 1;
 
                 mViewList = new ArrayList<>();
-                mViewList.addAll(Arrays.asList(new View[]{newView(R.layout.tutorial_howtouse_1)}));
+                mViewList.addAll(Arrays.asList(new Integer[]{R.layout.tutorial_overlay_01,
+                        R.layout.tutorial_overlay_02}));
 
                 //set params for adding the viewpager, instantiate the adapter, set the adapter, add the viewpager
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 mAdapter = new CustomViewPagerAdapter(getActivity(), mViewList);
                 mViewPager.setAdapter(mAdapter);
-                mMainView.addView(mViewPager);
+                mMainView.addView(mViewPager,params);
             }
         });
 

@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
         Log.d(TAG, "onCreate: this");
 
-
-
         setContentView(R.layout.activity_main);
 
         mDataSource = new PokeballsDataSource(this);

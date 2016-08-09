@@ -60,13 +60,21 @@ public class ViewPagerDots {
         ImageView image = new ImageView(mContext);
         image.setImageResource(R.drawable.viewpager_dot_empty);
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        layout.addView(image, new LinearLayout.LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f,mContext.getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f,mContext.getResources().getDisplayMetrics())));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f,mContext.getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f,mContext.getResources().getDisplayMetrics()));
+        params.leftMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,mContext.getResources().getDisplayMetrics());
+        params.rightMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,mContext.getResources().getDisplayMetrics());
+        layout.addView(image,params);
     }
 
     private void addFilledDot() {
         ImageView image = new ImageView(mContext);
         image.setImageResource(R.drawable.viewpager_dot_filled);
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        layout.addView(image, new LinearLayout.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f, mContext.getResources().getDisplayMetrics()), (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f, mContext.getResources().getDisplayMetrics())));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f,mContext.getResources().getDisplayMetrics()), (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f,mContext.getResources().getDisplayMetrics()));
+        params.leftMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,mContext.getResources().getDisplayMetrics());
+        params.rightMargin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f,mContext.getResources().getDisplayMetrics());
+        layout.addView(image,params);
     }
 }
