@@ -1,25 +1,20 @@
 <com.dancmc.pogoiv.views.FrameLayoutIntercept xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/overlay_service_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@null"
     android:orientation="vertical"
+    android:id="@+id/overlay_service_main_layout"
     tools:context=".activities.MainActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@null">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/adview_overlay"
             android:background="@null"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:layout_marginTop="35dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    app:ratio="0.60673">
+                    app:ratio="0.640432">
 
                     <com.dancmc.pogoiv.utilities.LevelAngle
                         android:id="@+id/level_angle_display"
@@ -46,8 +41,9 @@
                     android:id="@+id/overlayview_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/white"
-                    android:orientation="vertical">
+                    android:layout_weight="18"
+                    android:orientation="vertical"
+                    android:background="@android:color/white">
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
@@ -80,6 +76,7 @@
                             android:imeOptions="actionDone"
                             android:inputType="textAutoComplete"
                             android:selectAllOnFocus="true"
+                            android:dropDownHeight="200dp"
                             android:textAlignment="center"
                             android:textSize="18dp"
                             android:textStyle="bold" />
@@ -93,8 +90,8 @@
                             android:gravity="center"
                             android:text="Enter Pokemon Name"
                             android:textAlignment="center"
-                            android:textColor="#EF5350"
                             android:textSize="18dp"
+                            android:textColor="#EF5350"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -104,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:padding="4dp">
+                        android:padding="2dp">
 
 
                         <TextView
@@ -117,18 +114,20 @@
 
                         <ImageButton
                             android:id="@+id/button_minus_trainer_level"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_remove_circle_outline_black_48px" />
 
                         <ImageButton
                             android:id="@+id/button_plus_trainer_level"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:layout_marginLeft="10dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_add_circle_outline_black_48px" />
                     </LinearLayout>
@@ -138,14 +137,14 @@
                         android:layout_width="370dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:focusable="true" />
+                        android:focusable="true"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:padding="4dp">
+                        android:padding="2dp">
 
                         <TextView
                             android:id="@+id/textview_pokemon_level"
@@ -157,18 +156,20 @@
 
                         <ImageButton
                             android:id="@+id/button_minus_pokemon_level"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_remove_circle_outline_black_48px" />
 
                         <ImageButton
                             android:id="@+id/button_plus_pokemon_level"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:layout_marginLeft="10dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_add_circle_outline_black_48px" />
                     </LinearLayout>
@@ -184,7 +185,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:padding="4dp">
+                        android:padding="2dp">
 
                         <TextView
                             android:id="@+id/textview_cp"
@@ -196,18 +197,20 @@
 
                         <ImageButton
                             android:id="@+id/button_minus_cp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_remove_circle_outline_black_48px" />
 
                         <ImageButton
                             android:id="@+id/button_plus_cp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:layout_marginLeft="10dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_add_circle_outline_black_48px" />
                     </LinearLayout>
@@ -223,7 +226,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:padding="4dp">
+                        android:padding="2dp">
 
                         <TextView
                             android:id="@+id/textview_hp"
@@ -235,18 +238,20 @@
 
                         <ImageButton
                             android:id="@+id/button_minus_hp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_remove_circle_outline_black_48px" />
 
                         <ImageButton
                             android:id="@+id/button_plus_hp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:layout_marginLeft="10dp"
                             android:background="@null"
+                            android:padding="2dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_add_circle_outline_black_48px" />
                     </LinearLayout>
@@ -263,15 +268,15 @@
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="10dp"
                         android:focusable="true"
                         android:text="Calculate!"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-
                     <Button
                         android:id="@+id/overlay_to_pokebox"
+                        android:theme="@style/AppTheme.BlueButton"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -279,8 +284,7 @@
                         android:focusable="true"
                         android:text="Pokebox"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:theme="@style/AppTheme.BlueButton" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -290,16 +294,6 @@
             </LinearLayout>
         </ScrollView>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@id/adview_overlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            ads:adSize="BANNER"
-            android:background="@android:color/white"
-            ads:adUnitId="@string/banner_ad_unit_id_test" />
-    </RelativeLayout>
 </com.dancmc.pogoiv.views.FrameLayoutIntercept>
 
 

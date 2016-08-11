@@ -95,11 +95,12 @@
     <string name="tutorial_normal_text_07c">The <b>EDIT SNAPSHOT</b> page is the same as the main screen, just alter your values and press the tick to save.</string>
     <string name="tutorial_normal_text_08">Long press on a Pokeball/snapshot in the Pokebox or Pokeball view to <b>DELETE</b>.</string>
     <string name="tutorial_normal_text_09">When browsing your Pokebox/Pokeballs normally, you can also press the <b>ADD BUTTON</b> to add a new Pokeball/snapshot directly without having to start at the main screen.</string>
-    
+
     <string name="tutorial_overlay_text_01a">The special <b>OVERLAY VIEW!</b>  A different way of adding Pokemon conveniently while playing Pokemon Go.\n\nPress the <b>BUTTON</b> on the home screen to start the overlay. You may have to grant permissions to draw on your screen.</string>
     <string name="tutorial_overlay_text_01b">If you’re familiar with the Facebook chat head at all, the same functionality has been replicated here.\n\nYou can drag the <b>POKEBALL BUTTON</b> all over the screen, and it will stay on top. Pressing it will bring up the overlay.</string>
-    <string name="tutorial_overlay_text_02a">Make sure the horizontal line is touching the end of the semicircle arc. If you can’t make it align, shoot me an email at pogoiv2016@gmail.com or leave a comment.\n\nPress the <b>CALCULATE BUTTON</b>, and you can access a mini version of the regular app, which allows you to save your Pokemon/snapshots.</string>
+    <string name="tutorial_overlay_text_02a">Make sure the horizontal line is touching the end of the semicircle arc. If it’s too low, just scroll up. If it’s too high, go to Settings, and tick the Adjust Overlay, then drag the floating button off the screen to close, and restart it.\n\nPress the <b>CALCULATE BUTTON</b>, and you can access a mini version of the regular app, which allows you to save your Pokemon/snapshots.</string>
     <string name="tutorial_overlay_text_02b">You can hold down the <b>POKEBALL BUTTON</b> to make the window transparent so you can see the HP/other stats.</string>
 
+    <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
 
 </resources>

@@ -2,26 +2,26 @@ package com.dancmc.pogoiv.services;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -33,11 +33,14 @@ import com.dancmc.pogoiv.views.IVCalculatorCompareView;
 import com.dancmc.pogoiv.views.OverlayView;
 import com.dancmc.pogoiv.views.PokeboxView;
 import com.dancmc.pogoiv.views.ViewPokeballView;
+import com.example.daniel.material.RatioLayout;
 
 public class FloatingHead extends Service {
 
     public static Pokemon floatingPokemonToAdd;
     public static Context serviceContext;
+
+    public BroadcastReceiver mBroadcastReceiver;
 
     private boolean pressedDown;
     public static String currentlyRunningServiceFragment;
@@ -53,8 +56,8 @@ public class FloatingHead extends Service {
     private static final String TAG = "FloatingHead";
     private static WindowManager windowManager;
     private ImageView chatHead;
-    private Display display;
-    private DisplayMetrics mScreenMetrics;
+    private static Display mDisplay;
+    private static DisplayMetrics mScreenMetrics;
     private static RelativeLayout mRelativeLayout;
     private static Context mContext;
     private int mShortAnimationDuration;
@@ -73,6 +76,9 @@ public class FloatingHead extends Service {
     private static View mCalcCompareView;
     private static View mPokeboxView;
     private static View mViewPokeballView;
+    private RelativeLayout.LayoutParams mCloneRLParams;
+    private ImageView mCloneImage;
+    private RelativeLayout mCloneRL;
 
 
     @Override
@@ -88,11 +94,20 @@ public class FloatingHead extends Service {
 
         serviceContext = this;
 
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                stop();
+            }
+        };
+
+        registerReceiver(mBroadcastReceiver, new IntentFilter("STOP_FLOATING_HEAD"));
+
         mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        display = windowManager.getDefaultDisplay();
+        mDisplay = windowManager.getDefaultDisplay();
         mScreenMetrics = new DisplayMetrics();
-        display.getMetrics(mScreenMetrics);
+        mDisplay.getMetrics(mScreenMetrics);
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         floatingPokemonToAdd = new Pokemon("bulbasaur", -1, 300, -1, false, -1);
@@ -115,12 +130,12 @@ public class FloatingHead extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
+
         mWholeWindowParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 0,
                 PixelFormat.TRANSLUCENT);
-
 
 
         mWMParams.gravity = Gravity.TOP | Gravity.LEFT;
@@ -162,10 +177,6 @@ public class FloatingHead extends Service {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
 
-                    final RelativeLayout.LayoutParams mCloneRLParams;
-                    final ImageView mCloneImage;
-                    final RelativeLayout mCloneRL;
-
                     switch (event.getAction()) {
 
                         case MotionEvent.ACTION_DOWN:
@@ -184,11 +195,11 @@ public class FloatingHead extends Service {
 
                             mSystemTimeOnDown = System.currentTimeMillis();
 
-                            if(viewIsRunning&&currentlyRunningServiceFragment==OVERLAY_SERVICE){
+                            if (viewIsRunning && currentlyRunningServiceFragment == OVERLAY_SERVICE) {
                                 mOverlayView.findViewById(R.id.overlayview_bottom).animate().alpha(0.4f).setStartDelay(200).setDuration(400).setListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
-                                        if(!pressedDown){
+                                        if (!pressedDown) {
                                             mOverlayView.findViewById(R.id.overlayview_bottom).setAlpha(1.0f);
                                         }
                                     }
@@ -206,7 +217,7 @@ public class FloatingHead extends Service {
                             mFinalY = mWMParams.y;
                             pressedDown = false;
 
-                            if(viewIsRunning&&currentlyRunningServiceFragment==OVERLAY_SERVICE){
+                            if (viewIsRunning && currentlyRunningServiceFragment == OVERLAY_SERVICE) {
                                 mOverlayView.findViewById(R.id.overlayview_bottom).setAlpha(1.0f);
                             }
 
@@ -233,7 +244,7 @@ public class FloatingHead extends Service {
                             Log.d(TAG, "onTouch: " + totalDeltaMove);
                             if (Math.abs(totalDeltaMove) < 30f) {
 
-                                if ((System.currentTimeMillis() - mSystemTimeOnDown )< 500) {
+                                if ((System.currentTimeMillis() - mSystemTimeOnDown) < 500) {
 
                                     toggleServiceView();
                                 }
@@ -295,15 +306,9 @@ public class FloatingHead extends Service {
 
                                 } else if (inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
                                     //CLOSE ENTIRE SERVICE AND CLEAN UP VIEWS
-                                    if (chatHead != null) {
-                                        removeAllViews();
-                                    }
-                                    if (mCloneRL != null && mCloneRL.getParent() != null) {
-                                        windowManager.removeView(mCloneRL);
-                                    }
-
                                     mVibrator.vibrate(10);
-                                    stopSelf();
+                                    stop();
+
                                 }
                                 //clean up bottom zone on finger up
                                 mBottomZoneGradient.removeView(closeButtonHalo);
@@ -417,6 +422,15 @@ public class FloatingHead extends Service {
         switch (currentlyRunningServiceFragment) {
             case OVERLAY_SERVICE:
                 v = mOverlayView;
+                if (mScreenMetrics.heightPixels / mScreenMetrics.widthPixels > 16 / 9) {
+                } else {
+                    //set height of the level angle semicircle
+                    final Point size = new Point();
+                    mDisplay.getSize(size);
+                    float ratio = 0.3566f / (float) mScreenMetrics.widthPixels / 0.95f * size.y;
+                    ((RatioLayout) v.findViewById(R.id.level_ratio_layout)).setRatio(ratio);
+                    v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                }
                 break;
             case IV_CALCULATOR_SERVICE:
                 v = mCalcCompareView;
@@ -429,8 +443,6 @@ public class FloatingHead extends Service {
                 break;
         }
 
-        Log.d(TAG, "toggleServiceView: " + mOverlayView);
-        Log.d(TAG, "toggleServiceView: " + v);
         if (viewIsRunning) {
             InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -438,6 +450,7 @@ public class FloatingHead extends Service {
             viewIsRunning = false;
         } else {
             windowManager.addView(v, mWholeWindowParams);
+
             viewIsRunning = true;
             refreshFloatingHead();
         }
@@ -466,7 +479,7 @@ public class FloatingHead extends Service {
                 windowManager.addView(mOverlayView, mWholeWindowParams);
                 break;
             case (IV_CALCULATOR_SERVICE):
-                Log.d(TAG, "switchService: "+mCalcCompareView.getClass().toString());
+                Log.d(TAG, "switchService: " + mCalcCompareView.getClass().toString());
                 windowManager.addView(newCalcCompareView(), mWholeWindowParams);
                 break;
             case (ADD_POKEBOX_SERVICE):
@@ -524,6 +537,18 @@ public class FloatingHead extends Service {
         }
     }
 
+    private void stop() {
+        if (chatHead != null) {
+            removeAllViews();
+        }
+        if (mCloneRL != null && mCloneRL.getParent() != null) {
+            windowManager.removeView(mCloneRL);
+        }
+
+        unregisterReceiver(mBroadcastReceiver);
+        stopSelf();
+    }
+
     public static void onBackPressed() {
         if (viewIsRunning) {
             switch (currentlyRunningServiceFragment) {
@@ -531,25 +556,26 @@ public class FloatingHead extends Service {
                     toggleServiceView();
                     return;
                 case (IV_CALCULATOR_SERVICE):
-                    FloatingHead.viewMode=true;
+                    FloatingHead.viewMode = true;
                     switchService(OVERLAY_SERVICE);
                     return;
-                case(ADD_POKEBOX_SERVICE):
-                    if(viewMode) {
-                        Log.d(TAG, "onBackPressed: "+currentlyRunningServiceFragment);
-                        Log.d(TAG, "onBackPressed: "+ viewMode);
+                case (ADD_POKEBOX_SERVICE):
+                    if (viewMode) {
+                        Log.d(TAG, "onBackPressed: " + currentlyRunningServiceFragment);
+                        Log.d(TAG, "onBackPressed: " + viewMode);
                         switchService(OVERLAY_SERVICE);
 
-                    }else{
-                        Log.d(TAG, "onBackPressed: "+currentlyRunningServiceFragment);
-                        Log.d(TAG, "onBackPressed: "+ viewMode);
+                    } else {
+                        Log.d(TAG, "onBackPressed: " + currentlyRunningServiceFragment);
+                        Log.d(TAG, "onBackPressed: " + viewMode);
                         switchService(IV_CALCULATOR_SERVICE);
                     }
                     return;
-                case(ADD_VIEW_POKEBALL_SERVICE):
+                case (ADD_VIEW_POKEBALL_SERVICE):
                     switchService(ADD_POKEBOX_SERVICE);
                     return;
-            } ;
+            }
+            ;
         }
 
     }

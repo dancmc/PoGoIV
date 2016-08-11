@@ -16,7 +16,6 @@
         android:scrollbars="vertical">
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -24,16 +23,19 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="210dp"
                 android:layout_alignParentTop="true"
                 android:background="@color/colorPrimary"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="20dp">
 
                 <com.example.daniel.material.RatioLayout
+                    android:id="@+id/view2"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="16dp"
                     app:ratio="1">
 
                     <ImageView
@@ -46,13 +48,39 @@
 
 
                 <TextView
+
+                    android:id="@+id/textView3"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@+id/view2"
+                    android:gravity="center"
+                    android:text="IV%"
+                    android:textColor="@android:color/white"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/view2"
+                    android:gravity="center"
+                    android:text="CP%"
+                    android:textColor="@android:color/white"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
                     android:id="@+id/edit_iv_calc_ivpercent_text"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="70dp"
-                    android:layout_marginLeft="70dp"
+                    android:layout_below="@id/textView3"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_background_white"
                     android:gravity="center"
                     android:text="--%"
@@ -64,9 +92,8 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="45dp"
-                    android:layout_marginTop="175dp"
+                    android:layout_below="@id/edit_iv_calc_ivpercent_text"
+                    android:layout_marginTop="10dp"
                     android:gravity="center_horizontal|top"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
@@ -75,10 +102,9 @@
                     android:id="@+id/edit_iv_calc_cppercent_text"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginBottom="70dp"
-                    android:layout_marginRight="70dp"
+                    android:layout_below="@id/textView4"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_background_white"
                     android:gravity="center"
                     android:text="--%"
@@ -90,48 +116,22 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="45dp"
-                    android:layout_marginTop="175dp"
+                    android:layout_below="@id/edit_iv_calc_cppercent_text"
+                    android:layout_marginTop="10dp"
                     android:gravity="center_horizontal|top"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
 
-                <TextView
-
-                    android:id="@+id/textView"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignTop="@+id/edit_iv_calc_ivpercent_text"
-                    android:gravity="center"
-                    android:text="IV%"
-                    android:textColor="@android:color/white"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
-
-                <TextView
-
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignTop="@+id/edit_iv_calc_cppercent_text"
-                    android:gravity="center"
-                    android:text="CP%"
-                    android:textColor="@android:color/white"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/edit_iv_calc_more_info_button"
                     style="@style/Base.Widget.AppCompat.Button.Colored"
-                    android:layout_width="110dp"
-                    android:layout_height="50dp"
-                    android:layout_below="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view2"
                     android:layout_centerHorizontal="true"
-                    android:text="More Info"
+                    android:layout_marginTop="10dp"
+                    android:text="Details"
                     android:textSize="16sp" />
             </RelativeLayout>
 
@@ -182,6 +182,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
                         android:hint="Enter Stardust"
+                        android:imeOptions="actionDone"
                         android:inputType="number"
                         android:selectAllOnFocus="true"
                         android:textSize="12dp" />
@@ -222,13 +223,13 @@
                     android:layout_height="wrap_content"
                     android:text="Calculate!"
                     android:textSize="16sp"
-                    android:theme="@style/AppTheme.GreyButton"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:theme="@style/AppTheme.GreyButton" />
 
                 <TextView
                     android:id="@+id/edit_output"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="200dp"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
         </LinearLayout>

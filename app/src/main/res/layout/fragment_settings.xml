@@ -1,0 +1,118 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Settings" />
+
+    <LinearLayout
+        android:id="@+id/settings_remove_ads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingTop="8dp">
+
+        <ImageView
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+
+            android:src="@drawable/ic_not_interested_black_48px" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_vertical_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Remove Ads"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/list_twoline_primary_text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Be ad free, for less than an incubator costs"
+                android:textSize="@dimen/list_twoline_secondary_text_size" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="72dp"
+        android:background="@color/grey" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingTop="8dp">
+
+        <ImageView
+            android:id="@+id/settings_adjust_overlay_image"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_downward_black_48px" />
+
+        <LinearLayout
+            android:id="@+id/settings_adjust_overlay_text"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/settings_adjust_overlay_checkbox"
+            android:layout_toRightOf="@id/settings_adjust_overlay_image"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_vertical_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Adjust Overlay Position"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/list_twoline_primary_text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Move overlay down if can't align arc"
+                android:textSize="@dimen/list_twoline_secondary_text_size" />
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@id/settings_adjust_overlay_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="72dp"
+        android:background="@color/grey" />
+
+</LinearLayout>

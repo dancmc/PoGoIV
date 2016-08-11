@@ -41,7 +41,7 @@ public class LevelAngle extends View {
         float width = (float) getWidth();
         float height = (float) getHeight();
 
-        float scale = 0.9f * height;
+        float scale = 0.95f * height;
         float centre = width / 2.0f;
         float diameter = width * 0.9f;
 

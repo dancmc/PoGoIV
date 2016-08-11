@@ -17,6 +17,8 @@ import com.dancmc.pogoiv.adapters.IVAdapter;
 import com.dancmc.pogoiv.services.FloatingHead;
 import com.dancmc.pogoiv.utilities.CustomToast;
 import com.dancmc.pogoiv.utilities.Pokemon;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +44,21 @@ public class IVCalculatorCompareView extends GenericServiceView {
     public IVCalculatorCompareView(Context context) {
         //standard setup. Must call a super method GenericServiceView has no default constructor
         super(context);
-        v = View.inflate(mContext, R.layout.view_service_ivcalculatorcompare, null);
+
+        boolean adFree = sp.getBoolean("Adfree", false);
+
+        if (adFree) {
+            v = View.inflate(mContext, R.layout.view_service_ivcalculatorcompare_adfree, null);
+
+        } else {
+            v = View.inflate(mContext, R.layout.view_service_ivcalculatorcompare, null);
+            AdView mAdView = (AdView) v.findViewById(R.id.adview_overlay_ivcalc);
+            AdRequest request = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                    .addTestDevice("ABDC8E5277217A63DADF93CFCE6B47DB") // An example device ID
+                    .build();
+            mAdView.loadAd(request);
+        }
 
 
         mListView = (ListView) v.findViewById(R.id.compare_summary_listview);
@@ -67,10 +83,9 @@ public class IVCalculatorCompareView extends GenericServiceView {
             mPokemonImage.setImageResource(mContext.getResources().getIdentifier(Pokemon.getPngFileName(mPokemon.getPokemonNumber()), "drawable", mContext.getPackageName()));
             mAverageIVPercent.setText((int) mPokemon.getAverageIVPercent() + "%");
             mAverageCPPercent.setText((int) mPokemon.getAverageCPPercent() + "%");
-            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + mDF.format((lowestLevel+1)/2.0) + "-" + mDF.format((highestLevel+1)/2.0) + "\n");
+            mAverageIVPercentDesc.setText("(" + mDF.format(Collections.min(mPokemon.getIVPercentRange())) + " - " + mDF.format(Collections.max(mPokemon.getIVPercentRange())) + "%)\n" + "Level " + mDF.format((lowestLevel + 1) / 2.0) + "-" + mDF.format((highestLevel + 1) / 2.0) + "\n");
             mAverageCPPercentDesc.setText("Worst CP " + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMinCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)) + "\nPerfect CP " + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), lowestLevel)) + "-" + (int) (Pokemon.calculateMaxCPAtLevel(mPokemon.getPokemonNumber(), highestLevel)));
 
-            CustomToast.makeToast(mContext).setMessage("Calculated!").show();
 
         }
         insertPoint1.addView(top, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -125,7 +140,7 @@ public class IVCalculatorCompareView extends GenericServiceView {
                 ViewGroup insertPoint2 = (ViewGroup) header.findViewById(R.id.summary_linear_layout2);
                 insertPoint2.addView(w, -1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
-        } else{
+        } else {
             header.findViewById(R.id.summary_textview1).setVisibility(View.GONE);
         }
 

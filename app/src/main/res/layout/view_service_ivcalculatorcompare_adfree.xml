@@ -14,9 +14,6 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -42,15 +39,6 @@
                 android:src="@drawable/ic_add_white_24px" />
         </RelativeLayout>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@id/adview_overlay_ivcalc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/white"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id_test" />
-    </RelativeLayout>
+
 
 </com.dancmc.pogoiv.views.FrameLayoutIntercept>

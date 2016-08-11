@@ -119,6 +119,9 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
                         case (R.id.tutorial):
                             getContract().tutorial();
                             return true;
+                        case (R.id.app_settings):
+                            getContract().appSettings();
+                            return true;
                     }
                     return false;
                 }
@@ -304,15 +307,17 @@ public class IVCalculatorFragment extends ContractFragment<IVCalculatorFragment.
     }
 
     public interface Contract {
-        public void addButtonPressed(Pokemon pokemon);
+        void addButtonPressed(Pokemon pokemon);
 
-        public void pokeboxButtonPressed();
+        void pokeboxButtonPressed();
 
-        public void moreInfoButtonPressed(Pokemon pokemon);
+        void moreInfoButtonPressed(Pokemon pokemon);
 
-        public void overlayRequested();
+        void overlayRequested();
 
-        public void tutorial();
+        void tutorial();
+
+        void appSettings();
     }
 
 }

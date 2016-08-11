@@ -38,6 +38,8 @@ import com.dancmc.pogoiv.utilities.CustomToast;
 import com.dancmc.pogoiv.utilities.Pokeball;
 import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.utilities.Pokemon;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,9 +75,11 @@ public class ViewPokeballView extends GenericServiceView {
     public ViewPokeballView(Context context) {
         //standard setup. Must call a super method GenericServiceView has no default constructor
         super(context);
+
         v = View.inflate(mContext, R.layout.view_service_view_pokeball, null);
 
-        if(!FloatingHead.viewMode) {
+
+        if (!FloatingHead.viewMode) {
             //setting up persistent Add Card at the top of screen
             View cardView = View.inflate(mContext, R.layout.adhoc_overlay_addpokemon_cardview, null);
             ImageView addCardImage = (ImageView) cardView.findViewById(R.id.overlay_add_pokemon_card_image);
@@ -157,7 +161,7 @@ public class ViewPokeballView extends GenericServiceView {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager inputManager = (InputMethodManager) ((Activity)mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager inputManager = (InputMethodManager) ((Activity) mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     mEditNickname.clearFocus();
                     return true;
@@ -228,7 +232,7 @@ public class ViewPokeballView extends GenericServiceView {
 
                                     @Override
                                     protected void onPostExecute(Void aVoid) {
-                                        if (mContext != null&&pokeballSize!=0) {
+                                        if (mContext != null && pokeballSize != 0) {
 
                                             updateBasedOnCompare();
                                         }
@@ -295,6 +299,7 @@ public class ViewPokeballView extends GenericServiceView {
                                 for (int i = 0; i < pokeball.size(); i++) {
                                     if (pokeball.get(i).customEquals(mPokemon)) {
                                         CustomToast.makeToast(mContext).setMessage("You have added the same snapshot before!").show();
+                                        mFrameLayout.removeView(dialog2.getView());
                                         return;
                                     }
                                 }
@@ -304,6 +309,7 @@ public class ViewPokeballView extends GenericServiceView {
                                     if (!(pokeball.get(i).getPokemonFamily().equals(mPokemon.getPokemonFamily()))) {
                                         Log.d(TAG, "onClick: " + pokeball.get(i).getPokemonFamily() + " " + mPokemon.getPokemonFamily());
                                         CustomToast.makeToast(mContext).setMessage("These Pokemon are from different families!").show();
+                                        mFrameLayout.removeView(dialog2.getView());
                                         return;
                                     }
                                 }
@@ -312,6 +318,7 @@ public class ViewPokeballView extends GenericServiceView {
                                 for (int i = 0; i < pokeball.size(); i++) {
                                     if ((pokeball.get(i).getEvolutionTier() == mPokemon.getEvolutionTier() && (pokeball.get(i).getPokemonNumber() != mPokemon.getPokemonNumber()))) {
                                         CustomToast.makeToast(mContext).setMessage("These Pokemon are from different evolution paths!").show();
+                                        mFrameLayout.removeView(dialog2.getView());
                                         return;
                                     }
                                 }

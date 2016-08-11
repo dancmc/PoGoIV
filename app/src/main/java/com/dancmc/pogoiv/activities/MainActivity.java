@@ -3,11 +3,13 @@ package com.dancmc.pogoiv.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.location.SettingInjectorService;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,12 +17,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dancmc.pogoiv.fragments.CompareSummaryFragment;
 import com.dancmc.pogoiv.fragments.IVCalculatorFragment;
+import com.dancmc.pogoiv.fragments.SettingsFragment;
 import com.dancmc.pogoiv.fragments.TutorialFragment;
 import com.dancmc.pogoiv.services.FloatingHead;
 import com.dancmc.pogoiv.utilities.Pokeballs;
@@ -30,10 +34,13 @@ import com.dancmc.pogoiv.utilities.Pokemon;
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.fragments.ViewPokeballFragment;
 import com.dancmc.pogoiv.fragments.EditPokemonFragment;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract, ViewPokeballFragment.Contract, EditPokemonFragment.Contract {
+public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract, ViewPokeballFragment.Contract, EditPokemonFragment.Contract, SettingsFragment.Contract {
 
     private static final String TAG = "MainActivity";
     private IVCalculatorFragment mCalcFragment;
@@ -41,12 +48,12 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     private ViewPokeballFragment mViewPokeballFragment;
     private CompareSummaryFragment mCompareSummaryFragment;
     private EditPokemonFragment mEditPokemonFragment;
+    private SettingsFragment mSettingsFragment;
 
     private Toast mToast;
     private long mLastPressed;
     private PokeballsDataSource mDataSource;
 
-    private boolean mEditAsyncIsRunning;
     private SaveAsyncTask mSaveAsyncTask;
     private TutorialFragment mTutorialFragment;
 
@@ -75,21 +82,32 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                     });
             AlertDialog dialog2 = builder2.create();
             dialog2.show();
-        } else if (Build.VERSION.SDK_INT<23||(Build.VERSION.SDK_INT >= 23 && Settings.canDrawOverlays(this))) {
+        } else if (Build.VERSION.SDK_INT < 23 || (Build.VERSION.SDK_INT >= 23 && Settings.canDrawOverlays(this))) {
             FloatingHead.setContext(this);
             FloatingHead.viewIsRunning = false;
             FloatingHead.currentlyRunningServiceFragment = FloatingHead.OVERLAY_SERVICE;
             this.startService(new Intent(this, FloatingHead.class));
         }
+        Log.d(TAG, "overlayRequested: ");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: "+PreferenceManager.getDefaultSharedPreferences(this).getBoolean("Adfree", false));
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("Adfree", false)) {
+            setContentView(R.layout.activity_main_adfree);
+        } else {
+            setContentView(R.layout.activity_main);
+            MobileAds.initialize(getApplicationContext(), "ca-app-pub-7691928644284038~9762759909");
+            AdView mAdView = (AdView) findViewById(R.id.adview_main_activity);
+            AdRequest request = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                    .addTestDevice("ABDC8E5277217A63DADF93CFCE6B47DB") // An example device ID
+                    .build();
+            mAdView.loadAd(request);
+        }
 
-        Log.d(TAG, "onCreate: this");
-
-        setContentView(R.layout.activity_main);
 
         mDataSource = new PokeballsDataSource(this);
 
@@ -117,8 +135,6 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
 
     }
-
-
 
 
     @Override
@@ -220,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     @Override
     public void tutorial() {
-        if (mTutorialFragment==null) {
+        if (mTutorialFragment == null) {
             mTutorialFragment = new TutorialFragment();
         }
         getSupportFragmentManager().beginTransaction()
@@ -228,17 +244,17 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                 .commit();
     }
 
-    /**
-     * TODO : add methods for saving edited pokemon, and for adding new pokemon, based on fragment information
-     * when editing, need to move from ViewPokemonFragment to EditPokemonFragment, sending the pokeball and position as an argument
-     * EditPokemonFragment should be like calculator, but fixed pokemon field, and a save button - save button checks that number of results >1, and that not the same (customEquals) as any pokemon in the pokeball.
-     * Also needs to clone the uniqueID and nickname
-     * When saving, delete data at that pokeball/position, and resave with new pokemon object. And then move back to ViewPokemonFragment by sending the pokeball number
-     * <p/>
-     * When adding pokemon, also add advice to remove known Level if no combis
-     */
+    @Override
+    public void appSettings() {
+        if (mSettingsFragment == null) {
+            mSettingsFragment = new SettingsFragment();
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, mSettingsFragment).addToBackStack(null)
+                .commit();
+    }
 
-    //TODO probably need an async loading bar for the initial boot where loading from database
+
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof IVCalculatorFragment) {
@@ -252,8 +268,8 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                 mLastPressed = currentTime;
             }
         } else if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) instanceof TutorialFragment) {
-                mTutorialFragment.goBack();
-        } else{
+            mTutorialFragment.goBack();
+        } else {
             super.onBackPressed();
         }
     }
@@ -331,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
 
     }
 
-    public void goBack(){
+    public void goBack() {
         super.onBackPressed();
     }
 
