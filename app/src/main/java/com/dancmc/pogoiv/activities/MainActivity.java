@@ -17,9 +17,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dancmc.pogoiv.fragments.CompareSummaryFragment;
@@ -27,6 +29,10 @@ import com.dancmc.pogoiv.fragments.IVCalculatorFragment;
 import com.dancmc.pogoiv.fragments.SettingsFragment;
 import com.dancmc.pogoiv.fragments.TutorialFragment;
 import com.dancmc.pogoiv.services.FloatingHead;
+import com.dancmc.pogoiv.util.IabHelper;
+import com.dancmc.pogoiv.util.IabResult;
+import com.dancmc.pogoiv.util.Inventory;
+import com.dancmc.pogoiv.util.Purchase;
 import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.database.PokeballsDataSource;
 import com.dancmc.pogoiv.fragments.PokeboxFragment;
@@ -43,6 +49,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements IVCalculatorFragment.Contract, PokeboxFragment.Contract, ViewPokeballFragment.Contract, EditPokemonFragment.Contract, SettingsFragment.Contract {
 
     private static final String TAG = "MainActivity";
+    private static final int REQUEST_ADFREE = 101;
+    private static final String SKU_ADFREE = "sku_adfree";
     private IVCalculatorFragment mCalcFragment;
     private PokeboxFragment mPokeboxFragment;
     private ViewPokeballFragment mViewPokeballFragment;
@@ -54,8 +62,12 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     private long mLastPressed;
     private PokeballsDataSource mDataSource;
 
+
+
     private SaveAsyncTask mSaveAsyncTask;
     private TutorialFragment mTutorialFragment;
+    private IabHelper mHelper;
+    private SharedPreferences mSharedPrefs;
 
     public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
 
@@ -94,8 +106,13 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: "+PreferenceManager.getDefaultSharedPreferences(this).getBoolean("Adfree", false));
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("Adfree", false)) {
+
+        String key1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzBKehj4IFluzNYZysVM7netJim+FFIdUuCCbuiPaQzChPPx+sGhVeFpITIByvyXoB8I3Lvek4XkpRp6RCSh18hy2pqgDc260r/KaclA5NF3jynMJGSholsvwLH5l4XrdHlZ7m/cqHCl/AocV5j2uwHh6r";
+        String key2 = "BAQADIwq+O1v9rvFbtbbAmvnYzkhfKjXNlWWNG49TyuFcHluO63Czd/sYcfsJYZ0/EE3xUzB/3v41QVbKA8xlB9QNhl5+vkta0/5S4Y6Ay3KPHfT0Y05i9iAG5N4rNW40yleUbrziKlhUOPEIEhw+RklCBF1F25XKQNcspZv5kSb/SAPcppP03T9NLXGtc3G2TO";
+
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (mSharedPrefs.getBoolean("Adfree", false)) {
             setContentView(R.layout.activity_main_adfree);
         } else {
             setContentView(R.layout.activity_main);
@@ -106,7 +123,26 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                     .addTestDevice("ABDC8E5277217A63DADF93CFCE6B47DB") // An example device ID
                     .build();
             mAdView.loadAd(request);
+            Log.d(TAG, "onCreate: ads loaded");
         }
+
+        Log.d(TAG, "onCreate: sharedprefs"+mSharedPrefs.getBoolean("Adfree", false));
+        Log.d(TAG, "onCreate: adview" + findViewById(R.id.adview_main_activity));
+
+
+        mHelper = new IabHelper(this, key1 + encrypt(key2));
+
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    Log.d(TAG, "Problem setting up In-app Billing: " + result);
+                } else{
+                    checkPurchases();
+                }
+            }
+        });
+
+
 
 
         mDataSource = new PokeballsDataSource(this);
@@ -121,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
             }
         }.execute();
 
-        Log.d(TAG, "onCreate: " + Pokemon.calculateCPPercentAtLevel(7, 5, 14, 9, 79) + " " + Pokemon.calculateCPPercentAtLevel(7, 5, 1, 9, 79));
 
 
         //normal flow without adding : calculateIV -> pokebox -> viewpokemon
@@ -132,10 +167,44 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
                     .add(R.id.main_fragment_container, mCalcFragment, "calcFragment")
                     .commit();
         }
-
-
     }
 
+    private String encrypt(String s) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(s);
+        sb = sb.reverse();
+        return sb.toString();
+    }
+
+    @Override
+    public void purchaseAdFree() {
+        IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
+                = new IabHelper.OnIabPurchaseFinishedListener() {
+            public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+                if (result.isFailure()) {
+                    Toast.makeText(MainActivity.this, "Error purchasing", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                } else if (purchase.getSku().equals(SKU_ADFREE) && purchase.getDeveloperPayload().equals("EeRFdADEsaHCrUP")) {
+                    mSharedPrefs.edit().putBoolean("Adfree", true).apply();
+                    AdView adview = (AdView) findViewById(R.id.adview_main_activity);
+                    if (adview != null && adview.getParent() != null) {
+                        ((ViewGroup) adview.getParent()).removeView(adview);
+                    }
+                    Toast.makeText(MainActivity.this, "Please close and restart the overlay to remove ads.", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        };
+
+
+        try {
+            mHelper.launchPurchaseFlow(this, SKU_ADFREE, IabHelper.ITEM_TYPE_INAPP, null, REQUEST_ADFREE, mPurchaseFinishedListener, "EeRFdADEsaHCrUP");
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            Toast.makeText(this, "Another async operation in progress..", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -152,6 +221,13 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     protected void onDestroy() {
         super.onDestroy();
         stopService(new Intent(this, FloatingHead.class));
+        if (mHelper != null) {
+            mHelper.disposeWhenFinished();
+            mHelper = null;
+        }
+        if(findViewById(R.id.adview_main_activity)!= null){
+            ((AdView)findViewById(R.id.adview_main_activity)).destroy();
+        }
     }
 
     @Override
@@ -357,6 +433,46 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
             if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
 
             }
+        }
+    }
+
+    private void checkPurchases() {
+        IabHelper.QueryInventoryFinishedListener mGotInventoryListener
+                = new IabHelper.QueryInventoryFinishedListener() {
+            public void onQueryInventoryFinished(IabResult result,
+                                                 Inventory inventory) {
+                if (result.isFailure()) {
+
+                } else {
+
+                    if(inventory.hasPurchase(SKU_ADFREE)){
+                        mSharedPrefs.edit().putBoolean("Adfree", true).apply();
+                    } else{
+                       mSharedPrefs.edit().putBoolean("Adfree", false).apply();
+                    }
+                }
+            }
+        };
+        try {
+            mHelper.queryInventoryAsync(mGotInventoryListener);
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            Log.d(TAG, "checkPurchases: AsyncException");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(findViewById(R.id.adview_main_activity)!= null ){
+            ((AdView)findViewById(R.id.adview_main_activity)).pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(findViewById(R.id.adview_main_activity)!= null  ){
+            ((AdView)findViewById(R.id.adview_main_activity)).resume();
         }
     }
 }

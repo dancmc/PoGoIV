@@ -21,8 +21,10 @@ import android.widget.Toast;
 
 import com.dancmc.pogoiv.R;
 import com.dancmc.pogoiv.services.FloatingHead;
+import com.dancmc.pogoiv.util.IabHelper;
 import com.dancmc.pogoiv.utilities.Pokeballs;
 import com.dancmc.pogoiv.utilities.Pokemon;
+import com.google.android.gms.ads.AdView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +38,7 @@ public class SettingsFragment extends ContractFragment<SettingsFragment.Contract
     private LinearLayout mRemoveAdsButton;
     public SharedPreferences sp;
     public SharedPreferences.Editor ed;
+
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -62,6 +65,8 @@ public class SettingsFragment extends ContractFragment<SettingsFragment.Contract
             @Override
             public void onClick(View v) {
 
+              //getContract().purchaseAdFree();
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Test")
                         .setMessage("")
@@ -69,6 +74,10 @@ public class SettingsFragment extends ContractFragment<SettingsFragment.Contract
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ed.putBoolean("Adfree", true).apply();
+                                AdView adview = (AdView) getActivity().findViewById(R.id.adview_main_activity);
+                                if (adview != null && adview.getParent() != null) {
+                                    ((ViewGroup) adview.getParent()).removeView(adview);
+                                }
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -109,6 +118,8 @@ public class SettingsFragment extends ContractFragment<SettingsFragment.Contract
 
     public interface Contract {
         void overlayRequested();
+
+        void purchaseAdFree();
     }
 
 }

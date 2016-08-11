@@ -407,6 +407,11 @@ public class FloatingHead extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        try {
+            unregisterReceiver(mBroadcastReceiver);
+        }catch (Exception e){
+
+        }
         //TODO : remove all views if parent not null
 
     }
@@ -545,7 +550,11 @@ public class FloatingHead extends Service {
             windowManager.removeView(mCloneRL);
         }
 
-        unregisterReceiver(mBroadcastReceiver);
+        try {
+            unregisterReceiver(mBroadcastReceiver);
+        }catch (Exception e){
+
+        }
         stopSelf();
     }
 

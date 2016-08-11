@@ -102,5 +102,8 @@
     <string name="tutorial_overlay_text_02b">You can hold down the <b>POKEBALL BUTTON</b> to make the window transparent so you can see the HP/other stats.</string>
 
     <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_mainactivity">ca-app-pub-7691928644284038/5192959500</string>
+    <string name="banner_ad_unit_overlayservice">ca-app-pub-7691928644284038/4883405100</string>
+    <string name="banner_ad_unit_overlayivcalc">ca-app-pub-7691928644284038/7836871506</string>
 
 </resources>
