@@ -76,9 +76,7 @@ public class FloatingHead extends Service {
     private static View mCalcCompareView;
     private static View mPokeboxView;
     private static View mViewPokeballView;
-    private RelativeLayout.LayoutParams mCloneRLParams;
-    private ImageView mCloneImage;
-    private RelativeLayout mCloneRL;
+
 
 
     @Override
@@ -118,6 +116,17 @@ public class FloatingHead extends Service {
         mPokeboxView = (new PokeboxView(mContext).getView());
         mViewPokeballView = (new ViewPokeballView(mContext).getView());
 
+        //adjust height of CP arc depending on available screen area (cos Pokemon Go resizes based on nav bar, but draws under status bar
+        if (mScreenMetrics.heightPixels / mScreenMetrics.widthPixels > 16 / 9) {
+        } else {
+            //set height of the level angle semicircle
+            final Point size = new Point();
+            mDisplay.getSize(size);
+            float ratio = 0.3566f / (float) mScreenMetrics.widthPixels / 0.95f * size.y;
+            //((RatioLayout) v.findViewById(R.id.level_ratio_layout)).setRatio(ratio);
+            ((RatioLayout)mOverlayView.findViewById(R.id.level_ratio_layout)).setRatio(ratio);
+            mOverlayView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
 
         chatHead = new ImageView(this);
         chatHead.setImageResource(R.drawable.floating_head);
@@ -176,6 +185,9 @@ public class FloatingHead extends Service {
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    final RelativeLayout.LayoutParams cloneRLParams;
+                    final ImageView cloneImage;
+                    final RelativeLayout cloneRL;
 
                     switch (event.getAction()) {
 
@@ -196,7 +208,7 @@ public class FloatingHead extends Service {
                             mSystemTimeOnDown = System.currentTimeMillis();
 
                             if (viewIsRunning && currentlyRunningServiceFragment == OVERLAY_SERVICE) {
-                                mOverlayView.findViewById(R.id.overlayview_bottom).animate().alpha(0.4f).setStartDelay(200).setDuration(400).setListener(new AnimatorListenerAdapter() {
+                                mOverlayView.findViewById(R.id.overlayview_bottom).animate().alpha(0.25f).setStartDelay(200).setDuration(400).setListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
                                         if (!pressedDown) {
@@ -226,16 +238,16 @@ public class FloatingHead extends Service {
 
                             //create a new cloned icon with a match parent relativelayout so icon can bounce outside bounds
                             //Adding new Relative Layout to WindowManager
-                            mCloneRL = new RelativeLayout(mContext);
-                            windowManager.addView(mCloneRL, new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT));
+                            cloneRL = new RelativeLayout(mContext);
+                            windowManager.addView(cloneRL, new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT));
                             //Adding new ImageView to Relative Layout
-                            mCloneImage = new ImageView(mContext);
-                            mCloneImage.setImageResource(R.drawable.floating_head);
-                            mCloneRLParams = new RelativeLayout.LayoutParams((int) (85 * mScreenMetrics.density), (int) (85 * mScreenMetrics.density));
+                            cloneImage = new ImageView(mContext);
+                            cloneImage.setImageResource(R.drawable.floating_head);
+                            cloneRLParams = new RelativeLayout.LayoutParams((int) (85 * mScreenMetrics.density), (int) (85 * mScreenMetrics.density));
 
-                            mCloneRL.addView(mCloneImage, mCloneRLParams);
-                            mCloneImage.setTranslationX(mFinalX);
-                            mCloneImage.setTranslationY(mFinalY);
+                            cloneRL.addView(cloneImage, cloneRLParams);
+                            cloneImage.setTranslationX(mFinalX);
+                            cloneImage.setTranslationY(mFinalY);
 
                             //hide dragged main icon, only cloned one visible
                             mRelativeLayout.setVisibility(View.INVISIBLE);
@@ -258,7 +270,7 @@ public class FloatingHead extends Service {
                                     //animate the new icon, then replace it with the old one at the end
                                     //animateSnapToEdge(true);
 
-                                    mCloneImage.animate().x((float) mWMParams.x).setDuration(750).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
+                                    cloneImage.animate().x((float) mWMParams.x).setDuration(750).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
 
                                         @Override
                                         public void onAnimationEnd(Animator animator) {
@@ -270,10 +282,10 @@ public class FloatingHead extends Service {
 
                                             mRelativeLayout.updateViewLayout(chatHead, mRLParams);
                                             mRelativeLayout.setVisibility(View.VISIBLE);
-                                            mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
+                                            cloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
                                                 @Override
                                                 public void onAnimationEnd(Animator animation) {
-                                                    windowManager.removeView(mCloneRL);
+                                                    windowManager.removeView(cloneRL);
                                                 }
                                             });
                                         }
@@ -283,7 +295,7 @@ public class FloatingHead extends Service {
                                     mWMParams.x = mScreenMetrics.widthPixels - (int) (chatHead.getWidth() * 0.8);
                                     //animateSnapToEdge(false);
 
-                                    mCloneImage.animate().x((float) mWMParams.x).setDuration(750).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
+                                    cloneImage.animate().x((float) mWMParams.x).setDuration(750).setInterpolator(new OvershootInterpolator(2.0f)).setListener(new AnimatorListenerAdapter() {
 
                                         @Override
                                         public void onAnimationEnd(Animator animator) {
@@ -295,10 +307,10 @@ public class FloatingHead extends Service {
 
                                             mRelativeLayout.updateViewLayout(chatHead, mRLParams);
                                             mRelativeLayout.setVisibility(View.VISIBLE);
-                                            mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
+                                            cloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
                                                 @Override
                                                 public void onAnimationEnd(Animator animation) {
-                                                    windowManager.removeView(mCloneRL);
+                                                    windowManager.removeView(cloneRL);
                                                 }
                                             });
                                         }
@@ -307,6 +319,9 @@ public class FloatingHead extends Service {
                                 } else if (inViewInBounds(mBottomZoneGradient, (int) rawX, (int) rawY)) {
                                     //CLOSE ENTIRE SERVICE AND CLEAN UP VIEWS
                                     mVibrator.vibrate(10);
+                                    if (cloneRL != null && cloneRL.getParent() != null) {
+                                        windowManager.removeView(cloneRL);
+                                    }
                                     stop();
 
                                 }
@@ -315,11 +330,11 @@ public class FloatingHead extends Service {
                                 windowManager.removeView(mBottomZoneGradient);
                             } else {
                                 mRelativeLayout.setVisibility(View.VISIBLE);
-                                mCloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
+                                cloneRL.animate().alpha(0.0f).setDuration(mShortAnimationDuration).setListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
-                                        if (mCloneRL.getParent() != null) {
-                                            windowManager.removeView(mCloneRL);
+                                        if (cloneRL.getParent() != null) {
+                                            windowManager.removeView(cloneRL);
                                         }
                                     }
                                 });
@@ -427,15 +442,6 @@ public class FloatingHead extends Service {
         switch (currentlyRunningServiceFragment) {
             case OVERLAY_SERVICE:
                 v = mOverlayView;
-                if (mScreenMetrics.heightPixels / mScreenMetrics.widthPixels > 16 / 9) {
-                } else {
-                    //set height of the level angle semicircle
-                    final Point size = new Point();
-                    mDisplay.getSize(size);
-                    float ratio = 0.3566f / (float) mScreenMetrics.widthPixels / 0.95f * size.y;
-                    ((RatioLayout) v.findViewById(R.id.level_ratio_layout)).setRatio(ratio);
-                    v.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-                }
                 break;
             case IV_CALCULATOR_SERVICE:
                 v = mCalcCompareView;
@@ -484,7 +490,6 @@ public class FloatingHead extends Service {
                 windowManager.addView(mOverlayView, mWholeWindowParams);
                 break;
             case (IV_CALCULATOR_SERVICE):
-                Log.d(TAG, "switchService: " + mCalcCompareView.getClass().toString());
                 windowManager.addView(newCalcCompareView(), mWholeWindowParams);
                 break;
             case (ADD_POKEBOX_SERVICE):
@@ -545,9 +550,6 @@ public class FloatingHead extends Service {
     private void stop() {
         if (chatHead != null) {
             removeAllViews();
-        }
-        if (mCloneRL != null && mCloneRL.getParent() != null) {
-            windowManager.removeView(mCloneRL);
         }
 
         try {

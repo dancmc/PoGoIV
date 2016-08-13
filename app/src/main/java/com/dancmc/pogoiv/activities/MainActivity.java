@@ -43,6 +43,7 @@ import com.dancmc.pogoiv.fragments.EditPokemonFragment;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.winsontan520.wversionmanager.library.WVersionManager;
 
 import java.util.ArrayList;
 
@@ -106,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements IVCalculatorFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WVersionManager versionManager  = new WVersionManager(this);
+        versionManager.setVersionContentUrl("http://bit.ly/pogoivjson");
+        versionManager.checkVersion();
+        versionManager.setUpdateUrl("http://yahoo.com");
 
         String key1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzBKehj4IFluzNYZysVM7netJim+FFIdUuCCbuiPaQzChPPx+sGhVeFpITIByvyXoB8I3Lvek4XkpRp6RCSh18hy2pqgDc260r/KaclA5NF3jynMJGSholsvwLH5l4XrdHlZ7m/cqHCl/AocV5j2uwHh6r";
         String key2 = "BAQADIwq+O1v9rvFbtbbAmvnYzkhfKjXNlWWNG49TyuFcHluO63Czd/sYcfsJYZ0/EE3xUzB/3v41QVbKA8xlB9QNhl5+vkta0/5S4Y6Ay3KPHfT0Y05i9iAG5N4rNW40yleUbrziKlhUOPEIEhw+RklCBF1F25XKQNcspZv5kSb/SAPcppP03T9NLXGtc3G2TO";

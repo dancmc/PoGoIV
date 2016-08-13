@@ -407,8 +407,7 @@ public class OverlayView extends GenericServiceView {
                         alterCPHPBars();
                     }
                     mPokemonNameInput.setVisibility(View.INVISIBLE);
-                    InputMethodManager inputManager = (InputMethodManager) ((Activity) mContext).getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
                 }
 
             }
