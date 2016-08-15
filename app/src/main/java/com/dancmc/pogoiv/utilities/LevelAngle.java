@@ -41,8 +41,8 @@ public class LevelAngle extends View {
         float width = (float) getWidth();
         float height = (float) getHeight();
 
-        float scale = 0.95f * height;
-        float centre = width / 2.0f;
+        float centreY = 0.952f * height;
+        float centreX = width / 2.0f;
         float diameter = width * 0.9f;
 
         mRect.set(0.0f, 0.0f, width, height * 2.0f);
@@ -53,9 +53,9 @@ public class LevelAngle extends View {
         }
 
 
-        canvas.drawLine(centre - (diameter / 2.0f), scale, centre, scale, mPaint);
-        canvas.rotate(Math.min(x+y,180.0f), centre, scale);
-        canvas.drawLine(centre - (diameter / 2.0f), scale, centre, scale, mPaint);
+        canvas.drawLine(centreX - (diameter / 2.0f), centreY, centreX, centreY, mPaint);
+        canvas.rotate(Math.min(x+y,180.0f), centreX, centreY);
+        canvas.drawLine(centreX - (diameter / 2.0f), centreY, centreX, centreY, mPaint);
     }
 
 

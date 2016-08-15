@@ -57,8 +57,10 @@ public class Pokemon implements Serializable {
 
     private ArrayList<Double> mIVPercentRange;
     private ArrayList<Double> mCPPercentRange;
+    private ArrayList<Double> mHPPercentRange;
     private double mAverageIVPercent;
     private double mAverageCPPercent;
+    private double mAverageHPPercent;
     private String mStringOutput;
 
     //PoGo recalculated base stats (direct from table)
@@ -102,6 +104,7 @@ public class Pokemon implements Serializable {
         mIVCombinationsArray = new ArrayList<double[]>();
         mIVPercentRange = new ArrayList<Double>();
         mCPPercentRange = new ArrayList<Double>();
+        mHPPercentRange = new ArrayList<Double>();
 
         if (knownLevel > 0) {
             mLevelRange.add(knownLevel);
@@ -111,7 +114,7 @@ public class Pokemon implements Serializable {
 
         generateIV();
         //in case of the rare even leveled pokemon caught
-        if (mNumberOfResults == 0) {
+        if (mNumberOfResults == 0&&mKnownLevel<0) {
             mFreshMeat = false;
             getLevelsFromStardust(mStardust, false);
             generateIV();
@@ -125,7 +128,6 @@ public class Pokemon implements Serializable {
 
         for (int i = 0; i < mLevelRange.size(); i++) {
             int level = mLevelRange.get(i);
-            //double cpMHolding = CP_MULTIPLIERS[level];
 
             for (int staIV = 0; staIV <= 15; staIV++) {
                 int hp = calculateHPFromStamina(mGoBaseStamina, staIV, level);
@@ -142,14 +144,16 @@ public class Pokemon implements Serializable {
 
                                 double ivPercent = (double) (staIV + atkIV + defIV) / 45 * 100;
                                 mIVPercentRange.add(ivPercent);
-                                double cpPercent = calculateCPPercentAtLevel(staIV,atkIV,defIV,mPokemonNumber,level);
+                                double cpPercent = (cpHolding - calculateMinCPAtLevel(mPokemonNumber, level)) *100.0 / (calculateMaxCPAtLevel(mPokemonNumber, level) - calculateMinCPAtLevel(mPokemonNumber, level));
+                                Log.d(TAG, "generateIV: "+cpPercent);
                                 mCPPercentRange.add(cpPercent);
+                                double hpPercent = (hp-calculateMinHPAtLevel(mPokemonNumber, level)) * 100.0 / (calculateMaxHPAtLevel(mPokemonNumber, level)- calculateMinHPAtLevel(mPokemonNumber, level));
+                                mHPPercentRange.add(hpPercent);
+
                                 mResultLevelRange.add(level);
 
                                 double[] ivArrayTemp = {level, staIV, atkIV, defIV, ivPercent};
                                 mIVCombinationsArray.add(ivArrayTemp);
-
-
 
                             } else if (cpHolding > mCP)
                                 break;
@@ -173,7 +177,7 @@ public class Pokemon implements Serializable {
         if (mNumberOfResults != 0) {
             mAverageIVPercent = calculateAverageIV();
             mAverageCPPercent = calculateAverageCPPercent();
-
+            mAverageHPPercent = calculateAverageHPPercent();
         } else {
             sb.append("There were no combinations found.");
         }
@@ -384,11 +388,7 @@ public class Pokemon implements Serializable {
         double workingCP = CPS_DIFFERENCE[pokemonNumber]*cpPercent/100.0+(double)MIN_CPS[pokemonNumber];
         return workingCP;
     }
-    public static double calculateCPPercentAtLevel(int sta, int atk, int def, int pokemonNumber, int level){
-        double workingCP = Math.max(10.0, Math.floor((ATKS[pokemonNumber] + atk) * Math.pow((DEFS[pokemonNumber] + def), 0.5) * Math.pow((STAMINAS[pokemonNumber] + sta), 0.5) * Math.pow(CP_MULTIPLIERS[level], 2) / 10));
-        double cpPercent = (workingCP - calculateMinCPAtLevel(pokemonNumber, level)) / (calculateMaxCPAtLevel(pokemonNumber, level) - calculateMinCPAtLevel(pokemonNumber, level)) *100.0;
-        return cpPercent;
-    }
+
 
     //public static method to generate a CP percent range at lvl 79 from an array of IV combos. Used for comparison sets because no levels
     public static ArrayList<Double> getCpPercentRangeFromIVS(ArrayList<double[]> ivCombos, int pokemonNumber) {
@@ -468,6 +468,18 @@ public class Pokemon implements Serializable {
 
     public double getAverageCPPercent(){
         return mAverageCPPercent;
+    }
+
+    public double calculateAverageHPPercent(){
+        double a = 0.0;
+        for(double hpPercent:mHPPercentRange){
+            a+=hpPercent;
+        }
+        return a/(double)mNumberOfResults;
+    }
+
+    public double getAverageHPPercent(){
+        return mAverageHPPercent;
     }
 
     public static int calculateMaxCPAtLevel(int pokemonNumber, int level) {

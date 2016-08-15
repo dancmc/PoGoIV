@@ -35,12 +35,18 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import java.text.DecimalFormat;
+import java.util.Collections;
+
 /**
  * Created by Daniel on 6/08/2016.
  */
 public class OverlayView extends GenericServiceView {
     private static final String TAG = "OverlayView";
     private FrameLayout mMainLayout;
+    private TextView mHudIV;
+    private TextView mHudCP;
+    private TextView mHudHP;
     private LevelAngle mLevelAngleView;
     private AutoCompleteTextView mPokemonNameInput;
     private TextView mPokemonNameDisplay;
@@ -73,6 +79,9 @@ public class OverlayView extends GenericServiceView {
     private int mHPMax;
     private Button mCalculateButton;
     private Button mPokeboxButton;
+
+    private DecimalFormat mDF;
+    private boolean isTouchingSeekBar;
 
 
     public OverlayView(Context context) {
@@ -107,6 +116,10 @@ public class OverlayView extends GenericServiceView {
         mMainLayout = (FrameLayout) v.findViewById(R.id.overlay_service_main_layout);
 
         mLevelAngleView = (LevelAngle) v.findViewById(R.id.level_angle_display);
+        mHudIV = (TextView) v.findViewById(R.id.overlay_hud_IVtext);
+        mHudCP = (TextView) v.findViewById(R.id.overlay_hud_CPtext);
+        mHudHP = (TextView) v.findViewById(R.id.overlay_hud_HPtext);
+        mDF = new DecimalFormat("0.0");
         mPokemonNameInput = (AutoCompleteTextView) v.findViewById(R.id.enter_pokemon_name);
         mTrainerLevelText = (TextView) v.findViewById(R.id.textview_trainer_level);
         mPokemonLevelText = (TextView) v.findViewById(R.id.textview_pokemon_level);
@@ -135,6 +148,7 @@ public class OverlayView extends GenericServiceView {
         mPokemonLevel = sp.getInt("OverlayView_PokemonLevel", 10);
         mPokemonNumber = sp.getInt("OverlayView_PokemonNumber", 0);
         mCPInput = sp.getInt("OverlayView_CPInput", 1);
+        Log.d(TAG, "onProgressChanged: " + mCPInput);
         mHPInput = sp.getInt("OverlayView_HPInput", 1);
         mPokemonNameDisplay.setText(sp.getString("OverlayView_PokemonName", "Enter Pokemon Name"));
 
@@ -212,10 +226,11 @@ public class OverlayView extends GenericServiceView {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mPokemonLevelText.setText("Pokemon Level : " + (progress * 0.5 + 1));
                 mPokemonLevel = progress + 1;
-                ed.putInt("OverlayView_PokemonLevel", (mPokemonLevel + 1) / 2).apply();
+                ed.putInt("OverlayView_PokemonLevel", mPokemonLevel).apply();
+
                 alterCPHPBars();
                 mLevelAngleView.setPokemonLevel(progress * 0.5f + 1);
-                Log.d(TAG, "pokemon level " + mPokemonLevel);
+                Log.d(TAG, "pokemon level " + mPokemonLevel + " " + (mPokemonLevel + 1) / 2);
             }
 
             @Override
@@ -228,7 +243,8 @@ public class OverlayView extends GenericServiceView {
 
             }
         });
-        mPokemonLevelBar.setProgress((int) ((mPokemonLevel - 1) / 0.5));
+        mPokemonLevelBar.setProgress(mPokemonLevel - 1);
+
 
         //SETUP CP bar
         mCPBar.setMax(1);
@@ -252,21 +268,39 @@ public class OverlayView extends GenericServiceView {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-
                 mCPInput = mCPMin + progress;
-
                 ed.putInt("OverlayView_CPInput", mCPInput).apply();
+                Log.d(TAG, "onProgressChanged: " + mCPInput);
                 mCPText.setText("CP : " + mCPInput);
 
+                try {
+                    Pokemon tempPokemon = new Pokemon(mPokemonNameDisplay.getText().toString(), mHPInput, mCPInput, -1, false, mPokemonLevel);
+                    mHudIV.setText("IV = " + mDF.format(tempPokemon.getAverageIVPercent()) + "%\n(" + mDF.format(Collections.min(tempPokemon.getIVPercentRange())) + "-" + mDF.format(Collections.max(tempPokemon.getIVPercentRange())) + ")");
+                    if (mCPMax == mCPMin) {
+                        mHudCP.setText("CP = 100%");
+                    } else {
+                        mHudCP.setText("CP = " + mDF.format(tempPokemon.getAverageCPPercent()) + "%");
+                    }
+                    if (mHPMax == mHPMin) {
+                        mHudHP.setText("HP = 100%");
+                    } else {
+                        mHudHP.setText("HP = " + mDF.format(tempPokemon.getAverageHPPercent()) + "%");
+                    }
+                } catch (Exception e) {
+                    mHudIV.setText("IV = --");
+                    mHudCP.setText("CP = --");
+                    mHudHP.setText("HP = --");
+                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                isTouchingSeekBar = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                isTouchingSeekBar = false;
 
             }
         });
@@ -293,11 +327,31 @@ public class OverlayView extends GenericServiceView {
         mHPBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                Log.d(TAG, "onProgressChanged: HP Input " + mHPInput);
                 mHPInput = mHPMin + progress;
                 ed.putInt("OverlayView_HPInput", mHPInput).apply();
                 mHPText.setText("HP : " + mHPInput);
 
+
+                try {
+                    Pokemon tempPokemon = new Pokemon(mPokemonNameDisplay.getText().toString(), mHPInput, mCPInput, -1, false, mPokemonLevel);
+                    mHudIV.setText("IV = " + mDF.format(tempPokemon.getAverageIVPercent()) + "%\n(" + mDF.format(Collections.min(tempPokemon.getIVPercentRange())) + "-" + mDF.format(Collections.max(tempPokemon.getIVPercentRange())) + ")");
+                    if (mCPMax == mCPMin) {
+                        mHudCP.setText("CP = 100%");
+                    } else {
+                        mHudCP.setText("CP = " + mDF.format(tempPokemon.getAverageCPPercent()) + "%");
+                    }
+                    if (mHPMax == mHPMin) {
+                        mHudHP.setText("HP = 100%");
+                    } else {
+                        mHudHP.setText("HP = " + mDF.format(tempPokemon.getAverageHPPercent()) + "%");
+                    }
+
+                } catch (Exception e) {
+                    mHudIV.setText("IV = --");
+                    mHudCP.setText("CP = --");
+                    mHudHP.setText("HP = --");
+                }
             }
 
             @Override
@@ -310,8 +364,9 @@ public class OverlayView extends GenericServiceView {
 
             }
         });
-        Log.d(TAG, "onCreateView: Overlay Service");
+
         alterCPHPBars();
+
 
         mCalculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -420,40 +475,48 @@ public class OverlayView extends GenericServiceView {
     }
 
     private void alterCPHPBars() {
+
+        //need to save a snapshot cos setMax triggers the onProgressChanged which wrongly alters the mCP/HPInput before we can change the progress
+        //would otherwise need to change the setMax and progress simultaneously. This way can ignore whatever damage the listener does
+        //then after setting the max and progress manually, the listener will automatically set the right mHP/CPInput
+        int cpInputSnapshot = mCPInput;
+        int hpInputSnapshot = mHPInput;
+
+
         mCPMax = Pokemon.calculateMaxCPAtLevel(mPokemonNumber, mPokemonLevel);
         Log.d(TAG, "alterCPHPBars: calculate");
         mCPMin = Pokemon.calculateMinCPAtLevel(mPokemonNumber, mPokemonLevel);
 
-
-        if (mCPInput >= mCPMin && mCPInput <= mCPMax) {
-            mCPBar.setProgress(mCPInput - mCPMin);
-        } else if (mCPInput > mCPMax) {
-            mCPBar.setProgress(mCPBar.getMax());
-            mCPInput = mCPMax;
-        } else if (mCPInput < mCPMin) {
-            mCPBar.setProgress(0);
-            mCPInput = mCPMin;
-        }
         mCPBar.setMax(mCPMax - mCPMin);
+        if (cpInputSnapshot >= mCPMin && cpInputSnapshot <= mCPMax) {
+            mCPBar.setProgress(cpInputSnapshot - mCPMin);
+
+        } else if (cpInputSnapshot > mCPMax) {
+            //hack to make sure the listener registers a change if the progress stays the same but the mCPMax has actually changed
+            mCPBar.setProgress(0);
+            mCPBar.setProgress(mCPBar.getMax());
+        } else if (cpInputSnapshot < mCPMin) {
+            mCPBar.setProgress(mCPBar.getMax());
+            mCPBar.setProgress(0);
+        }
         mCPText.setText("CP : " + mCPInput);
-        ed.putInt("OverlayView_CPInput", mCPInput).apply();
 
         mHPMax = Pokemon.calculateMaxHPAtLevel(mPokemonNumber, mPokemonLevel);
         mHPMin = Pokemon.calculateMinHPAtLevel(mPokemonNumber, mPokemonLevel);
 
-
-        if (mHPInput >= mHPMin && mHPInput <= mHPMax) {
-            mHPBar.setProgress(mHPInput - mHPMin);
-        } else if (mHPInput > mHPMax) {
-            mHPBar.setProgress(mHPBar.getMax());
-            mHPInput = mHPMax;
-        } else if (mHPInput < mHPMin) {
-            mHPBar.setProgress(0);
-            mHPInput = mHPMin;
-        }
         mHPBar.setMax(mHPMax - mHPMin);
+        if (hpInputSnapshot >= mHPMin && hpInputSnapshot <= mHPMax) {
+            mHPBar.setProgress(hpInputSnapshot - mHPMin);
+
+        } else if (hpInputSnapshot > mHPMax) {
+            mHPBar.setProgress(0);
+            mHPBar.setProgress(mHPBar.getMax());
+        } else if (hpInputSnapshot < mHPMin) {
+            mHPBar.setProgress(mHPBar.getMax());
+            mHPBar.setProgress(0);
+        }
         mHPText.setText("HP : " + mHPInput);
-        ed.putInt("OverlayView_HPInput", mHPInput).apply();
+
     }
 
 

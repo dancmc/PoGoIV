@@ -17,7 +17,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/adview_overlay"
+            android:layout_above="@+id/adview_overlay_background"
             android:layout_marginTop="35dp"
             android:background="@null"
             android:fillViewport="true">
@@ -290,15 +290,25 @@
             </LinearLayout>
         </ScrollView>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@id/adview_overlay"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@id/adview_overlay_background"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@android:color/white"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id_test" />
+            android:gravity="center"
+            android:background="@android:color/white">
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adview_overlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/white"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id_test" />
+        </LinearLayout>
     </RelativeLayout>
 </com.dancmc.pogoiv.views.FrameLayoutIntercept>
 
